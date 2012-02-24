@@ -1,0 +1,1017 @@
+/*
+ * SlhaParserExample.cpp
+ *
+ *  Created on: Feb 22, 2012
+ *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses.
+ *
+ *      LesHouchesParserClasses is free software: you can redistribute it
+ *      and/or modify it under the terms of the GNU General Public License as
+ *      published by the Free Software Foundation, either version 3 of the
+ *      License, or (at your option) any later version.
+ *
+ *      LesHouchesParserClasses is distributed in the hope that it will be
+ *      useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with LesHouchesParserClasses.  If not, see
+ *      <http://www.gnu.org/licenses/>.
+ *
+ *      The GNU General Public License should be in GNU_public_license.txt
+ *      the C++ files of LesHouchesParserClasses are:
+ *      LHPC_CPP/BOLlib/Classes/AsciiXmlParser.hpp
+ *      LHPC_CPP/BOLlib/Classes/AsciiXmlParser.cpp
+ *      LHPC_CPP/BOLlib/Classes/CommentedTextParser.hpp
+ *      LHPC_CPP/BOLlib/Classes/CommentedTextParser.hpp
+ *      LHPC_CPP/BOLlib/Classes/StdVectorFiller.hpp
+ *      LHPC_CPP/BOLlib/Classes/StringParser.hpp
+ *      LHPC_CPP/BOLlib/Classes/StringParser.cpp
+ *      LHPC_CPP/BOLlib/Classes/UsefulStuff.hpp
+ *      LHPC_CPP/BOLlib/Classes/UsefulStuff.cpp
+ *      LHPC_CPP/BOLlib/Classes/VectorlikeArray.hpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/AutomaticEventFilter.hpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/AutomaticEventFilter.cpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/FilterRule.hpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/FilterRule.cpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/LhefEvent.hpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/LhefEvent.cpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/ParticleLine.hpp
+ *      LHPC_CPP/LesHouchesEventFileClasses/ParticleLine.cpp
+ *      6 files in LHPC_CPP/LesHouchesEventFileClasses/FilterRuleClasses/:
+ *      - ParticleCode.hpp
+ *      - ParticleCode.cpp
+ *      - PseudorapidityCut.hpp
+ *      - PseudorapidityCut.cpp
+ *      - TransverseMomentumCut.hpp
+ *      - TransverseMomentumCut.cpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/ExtendedMass.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/ExtendedMass.cpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MapAndVectorAndBools.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MapAndVectorAndBools.cpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.cpp
+ *      6 files and a subdirectory in
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrumClasses/:
+ *      - CodesAndDataForMassEigenstates.hpp
+ *      - CodesAndDataForMassEigenstates.cpp
+ *      - ParticleCode.hpp
+ *      - ParticleCode.cpp
+ *      - MinimalSupersymmetricStandardModel.hpp
+ *      - MinimalSupersymmetricStandardModel.cpp
+ *      - PseudorapidityCut.hpp
+ *      - PseudorapidityCut.cpp
+ *      - NextToMinimalSupersymmetricStandardModel.hpp
+ *      - NextToMinimalSupersymmetricStandardModel.cpp
+ *      - StandardModel.hpp
+ *      - StandardModel.cpp
+ *      - ParticleSpectrumSubsetClasses/ with 14 files:
+ *        - ChargedSleptonsOneToSix.hpp
+ *        - ChargedSleptonsOneToSix.cpp
+ *        - CharginosOneToTwo.hpp
+ *        - CharginosOneToTwo.cpp
+ *        - GluinoOneGeneration.hpp
+ *        - GluinoOneGeneration.cpp
+ *        - MssmExtraEwsbSpinZeroBosonSet.hpp
+ *        - MssmExtraEwsbSpinZeroBosonSet.cpp
+ *        - NeutralinosOneToFour.hpp
+ *        - NeutralinosOneToFour.cpp
+ *        - SneutrinosOneToThree.hpp
+ *        - SneutrinosOneToThree.cpp
+ *        - SquarksOneToSix.hpp
+ *        - SquarksOneToSix.cpp
+ *      LHPC_CPP/ParticleCodesAndData/NineDigitSlhaCodes.hpp
+ *      LHPC_CPP/ParticleCodesAndData/NineDigitSlhaCodes.cpp
+ *      LHPC_CPP/ParticleCodesAndData/PdgData.hpp
+ *      LHPC_CPP/ParticleCodesAndData/PdgData.cpp
+ *      LHPC_CPP/ParticleCodesAndData/SevenDigitSlhaCodes.hpp
+ *      LHPC_CPP/ParticleCodesAndData/SevenDigitSlhaCodes.cpp
+ *      LHPC_CPP/LhefParser.hpp
+ *      LHPC_CPP/LhefParser.cpp
+ *      LHPC_CPP/SlhaParser.hpp
+ *      LHPC_CPP/SlhaParser.cpp
+ *      and README.LHPC_CPP.txt which describes the package.
+ */
+
+#include "SlhaParser.hpp"
+#include "SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp"
+#include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
+#include "MassEigenstateCollectionClasses/DefaultSpectra.hpp"
+#include "ParticleCodesAndData/SevenDigitSlhaCodes.hpp"
+
+//.not_compiled_by_default
+int main( int argumentCount,
+          char* argumentCharArray[] )
+{
+  if( 3 != argumentCount )
+  {
+    std::cout
+    << std::endl
+    << "this testing program requires the name of 2 SLHA files to read in!";
+    std::cout << std::endl;
+  }
+  else
+  {
+    std::string firstFileName( argumentCharArray[ 1 ] );
+    std::string secondFileName( argumentCharArray[ 2 ] );
+    bool const isVerbose( true );
+
+    /* first, a demonstration where one picks the blocks to read: here MINPAR
+     * & NMIX were chosen. the user has to know what format they are, so that
+     * the parser knows how to interpret the data. MODSEL is a set of doubles
+     * ordered with a single index, & all indices from 1 to [maximum index]
+     * must be present, so SparseSinglyIndexed< double > would be appropriate,
+     * except most of the time the values are integers (& nobody ever seems to
+     * use MODSEL 12, which specifies the largest Q scale, which itself almost
+     * always is just the value for the EWSB scale. hence,
+     * SparseSinglyIndexed< int > is chosen for demonstration. MINPAR is a set
+     * of doubles ordered with a single index, & all indices from 1 to
+     * [maximum index] must be present, so DenseSinglyIndexed< double > is
+     * appropriate. likewise, NMIX is a set of doubles ordered by 2 indices, &
+     * no indices should be skipped so DenseDoublyIndexed< double > is
+     * appropriate.
+     */
+    LHPC::SLHA::BlockClass::SparseSinglyIndexed< int > modselBlock( "MODSEL",
+                                                                    -1,
+                                                                   isVerbose );
+    LHPC::SLHA::BlockClass::DenseSinglyIndexed< double > minparBlock( "MINPAR",
+                                                                      0.0,
+                                                                   isVerbose );
+    LHPC::SLHA::BlockClass::DenseDoublyIndexed< double > nmixBlock( "NMIX",
+                                                                    0.0,
+                                                                   isVerbose );
+
+    // a parser is also needed, to do the actual reading of the file & passing
+    // of strings to the blocks:
+    LHPC::SlhaParser testParser( isVerbose );
+    // true as the argument so that warnings are printed.
+
+    // the blocks have to be registered with the parser:
+    testParser.registerBlock( modselBlock );
+    testParser.registerBlock( minparBlock );
+    testParser.registerBlock( nmixBlock );
+
+    // one can also register a spectrum of particles, which automatically
+    // groups masses & decays together for each mass eigenstate:
+    LHPC::MassSpectrumClass::Mssm testSpectrum( isVerbose );
+
+    // the spectrum has to be registered with the parser:
+    testParser.registerSpectrum( testSpectrum );
+
+
+    // this line now does all the work!
+    testParser.readFile( firstFileName );
+
+
+    // this is just printing out some of what was read, demonstrating various
+    // ways of accessing the data from the blocks & spectrum:
+    std::cout
+    << std::endl
+    << "testParser.readFile( \"" << firstFileName << "\" ) successful.";
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "MODSEL( 1 ) = " << modselBlock( 1 );
+    std::cout
+    << std::endl
+    << "MODSEL[ 2 ] = " << modselBlock[ 2 ];
+    // both operator[] & operator() do the same thing for SparseSinglyIndexed
+    // blocks.
+    std::cout
+    << std::endl
+    << "MODSEL( 100 ) = " << modselBlock( 100 );
+    std::cout
+    << std::endl
+    << "MODSEL( -1 ) = " << modselBlock( -1 );
+    std::cout
+    << std::endl
+    << "MINPAR( 1 ) = " << minparBlock( 1 );
+    std::cout
+    << std::endl
+    << "MINPAR[ 2 ] = " << minparBlock[ 2 ];
+    // both operator[] & operator() do the same thing for DenseSinglyIndexed
+    // blocks.
+    std::cout
+    << std::endl
+    << "MODSEL between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << modselBlock.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout
+    << std::endl
+    << "MINPAR between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << minparBlock.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout
+    << std::endl
+    << "NMIX( 1, 3 ) = " << nmixBlock( 1, 3 );
+    std::cout
+    << std::endl
+    << "NMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << nmixBlock.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+
+    LHPC::MassEigenstate&
+    spositronL( testSpectrum.getSpositronL() );
+    /* instead of using the direct access function getSpositronL(), one could
+     * find it with testSpectrum.getMassEigenstate( -1000011 ) by knowing the
+     * spositron's 7-digit PDG code (one could also use
+     * -LHPC::PDGVII::selectronL (from
+     * SevenDigitSlhaCodes.hpp) to substitute for the explicit number), though
+     * one should note that the direct access function returns a reference
+     * while the searching function returns a pointer, since it might be asked
+     * for a particle it doesn't have, in which case it returns a NULL pointer.
+     */
+    std::cout
+    << std::endl
+    << "spositron_L: "
+    << spositronL.getAsciiName()
+    << " / " << spositronL.getLatexName()
+    << ", self-conjugate (0 = false, 1 = true): "
+    << spositronL.isSelfConjugate()
+    << ", absolute mass: " << spositronL.getAbsoluteMass()
+    << ", default code: " << spositronL.getCode()
+    << ", decay width: " << spositronL.getDecayWidth();
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "spositron_L decays(" << spositronL.getDecaySet().size()
+    << " lines):";
+    std::cout << std::endl;
+    std::list< LHPC::MassEigenstate const* > const* decayList( NULL );
+    for( size_t whichDecay( 0 );
+         spositronL.getDecaySet().size() > whichDecay;
+         ++whichDecay )
+    {
+      std::cout << "BR "
+      << spositronL.getDecay( whichDecay ).getPairedValue()
+      << " to ";
+      decayList
+      = &(spositronL.getDecay( whichDecay ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << " ";
+        }
+        else
+        {
+          std::cout << " + ";
+        }
+        std::cout << (*particleIterator)->getAsciiName();
+      }
+      std::cout << std::endl;
+    }
+
+    LHPC::MassEigenstate&
+    selectronL( spositronL.getChargeConjugate() );
+    std::cout
+    << std::endl
+    << "selectron_L: "
+    << selectronL.getAsciiName()
+    << " / " << selectronL.getLatexName()
+    << ", self-conjugate: " << selectronL.isSelfConjugate()
+    << ", absolute mass: " << selectronL.getAbsoluteMass()
+    << ", default code: " << selectronL.getCode()
+    << ", decay width: " << selectronL.getDecayWidth();
+    std::cout << std::endl;
+
+    std::cout
+    << std::endl
+    << "selectron_L decays (" << selectronL.getDecaySet().size()
+    << " lines):";
+    std::cout << std::endl;
+    for( size_t whichDecay( 0 );
+         selectronL.getDecaySet().size() > whichDecay;
+         ++whichDecay )
+    {
+      std::cout << "BR "
+      << selectronL.getDecay( whichDecay ).getPairedValue()
+      << " to ";
+      decayList
+      = &(selectronL.getDecay( whichDecay ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << " ";
+        }
+        else
+        {
+          std::cout << " + ";
+        }
+        std::cout << (*particleIterator)->getAsciiName();
+      }
+      std::cout << std::endl;
+    }
+
+    LHPC::MassEigenstate& gluinoFermion( testSpectrum.getGluino() );
+    double largestBr( 0.0 );
+    std::list< LHPC::MassEigenstate const* > const* subdecayList( NULL );
+    for( size_t whichDecay( 0 );
+         gluinoFermion.getDecaySet().size() > whichDecay;
+         ++whichDecay )
+    {
+      if( gluinoFermion.getDecay( whichDecay ).getPairedValue()
+          > largestBr )
+      {
+        decayList
+        = &(gluinoFermion.getDecay( whichDecay ).getPointerList());
+        largestBr
+        = gluinoFermion.getDecay( whichDecay ).getPairedValue();
+      }
+    }
+    std::cout
+    << std::endl
+    << "largest gluino BR = " << largestBr;
+    if( !(gluinoFermion.getDecaySet().empty()) )
+    {
+      std::cout << " to ";
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << std::endl << " ";
+        }
+        else
+        {
+          std::cout << std::endl << " + ";
+        }
+        largestBr = 0.0;
+        for( size_t whichDecay( 0 );
+             (*particleIterator)->getDecaySet().size() > whichDecay;
+             ++whichDecay )
+        {
+          if( (*particleIterator)->getDecay( whichDecay ).getPairedValue()
+              > largestBr )
+          {
+            subdecayList
+            = &((*particleIterator)->getDecay( whichDecay ).getPointerList());
+            largestBr
+            = (*particleIterator)->getDecay( whichDecay ).getPairedValue();
+          }
+        }
+        std::cout
+        << (*particleIterator)->getAsciiName();
+        if( (*particleIterator)->getDecaySet().empty() )
+        {
+          std::cout<< " (no decays)";
+        }
+        else
+        {
+          std::cout
+          << " (with its own largest BR = " << largestBr
+          << " to ";
+          for( std::list< LHPC::MassEigenstate const* >::const_iterator
+               productIterator( subdecayList->begin() );
+               subdecayList->end() != productIterator;
+               ++productIterator )
+          {
+            if( subdecayList->begin() == productIterator )
+            {
+              std::cout << " ";
+            }
+            else
+            {
+              std::cout << " + ";
+            }
+            std::cout << (*productIterator)->getAsciiName();
+          }
+          std::cout << ")";
+        }
+      }
+    }
+    if( 2<= gluinoFermion.getDecaySet().size() )
+    {
+      std::cout
+      << std::endl
+      << "1st 2 gluino decays from file:"
+      << std::endl << " to ";
+      decayList
+      = &(gluinoFermion.getDecay( 0 ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << std::endl << " ";
+        }
+        else
+        {
+          std::cout << std::endl << " + ";
+        }
+        largestBr = 0.0;
+        for( size_t whichDecay( 0 );
+             (*particleIterator)->getDecaySet().size() > whichDecay;
+             ++whichDecay )
+        {
+          if( (*particleIterator)->getDecay( whichDecay ).getPairedValue()
+              > largestBr )
+          {
+            subdecayList
+            = &((*particleIterator)->getDecay( whichDecay ).getPointerList());
+            largestBr
+            = (*particleIterator)->getDecay( whichDecay ).getPairedValue();
+          }
+        }
+        std::cout
+        << (*particleIterator)->getAsciiName();
+        if( (*particleIterator)->getDecaySet().empty() )
+        {
+          std::cout<< " (no decays)";
+        }
+        else
+        {
+          std::cout
+          << " (with its own largest BR = " << largestBr
+          << " to ";
+          for( std::list< LHPC::MassEigenstate const* >::const_iterator
+               productIterator( subdecayList->begin() );
+               subdecayList->end() != productIterator;
+               ++productIterator )
+          {
+            if( subdecayList->begin() == productIterator )
+            {
+              std::cout << " ";
+            }
+            else
+            {
+              std::cout << " + ";
+            }
+            std::cout << (*productIterator)->getAsciiName();
+          }
+          std::cout << ")";
+        }
+      }
+      std::cout << std::endl << " and to ";
+      decayList
+      = &(gluinoFermion.getDecay( 1 ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << std::endl << " ";
+        }
+        else
+        {
+          std::cout << std::endl << " + ";
+        }
+        largestBr = 0.0;
+        for( size_t whichDecay( 0 );
+             (*particleIterator)->getDecaySet().size() > whichDecay;
+             ++whichDecay )
+        {
+          if( (*particleIterator)->getDecay( whichDecay ).getPairedValue()
+              > largestBr )
+          {
+            subdecayList
+            = &((*particleIterator)->getDecay( whichDecay ).getPointerList());
+            largestBr
+            = (*particleIterator)->getDecay( whichDecay ).getPairedValue();
+          }
+        }
+        std::cout
+        << (*particleIterator)->getAsciiName();
+        if( (*particleIterator)->getDecaySet().empty() )
+        {
+          std::cout<< " (no decays)";
+        }
+        else
+        {
+          std::cout
+          << " (with its own largest BR = " << largestBr
+          << " to ";
+          for( std::list< LHPC::MassEigenstate const* >::const_iterator
+               productIterator( subdecayList->begin() );
+               subdecayList->end() != productIterator;
+               ++productIterator )
+          {
+            if( subdecayList->begin() == productIterator )
+            {
+              std::cout << " ";
+            }
+            else
+            {
+              std::cout << " + ";
+            }
+            std::cout << (*productIterator)->getAsciiName();
+          }
+          std::cout << ")";
+        }
+      }
+    }
+
+
+    // now the 2nd file is read in:
+    testParser.readFile( secondFileName );
+
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "testParser.readFile( \"" << secondFileName << "\" ) successful.";
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "MODSEL( 1 ) = " << modselBlock( 1 );
+    std::cout
+    << std::endl
+    << "MODSEL[ 2 ] = " << modselBlock[ 2 ];
+    // both operator[] & operator() do the same thing for SparseSinglyIndexed
+    // blocks.
+    std::cout
+    << std::endl
+    << "MODSEL( 100 ) = " << modselBlock( 100 );
+    std::cout
+    << std::endl
+    << "MODSEL( -1 ) = " << modselBlock( -1 );
+    std::cout
+    << std::endl
+    << "MINPAR( 1 ) = " << minparBlock( 1 );
+    std::cout
+    << std::endl
+    << "MINPAR[ 2 ] = " << minparBlock[ 2 ];
+    // both operator[] & operator() do the same thing for DenseSinglyIndexed
+    // blocks.
+    std::cout
+    << std::endl
+    << "MODSEL between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << modselBlock.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout
+    << std::endl
+    << "MINPAR between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << minparBlock.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout
+    << std::endl
+    << "NMIX( 1, 3 ) = " << nmixBlock( 1, 3 );
+    std::cout
+    << std::endl
+    << "NMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << nmixBlock.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+
+    std::cout
+    << std::endl
+    << "spositron_L: "
+    << spositronL.getAsciiName()
+    << " / " << spositronL.getLatexName()
+    << ", self-conjugate (0 = false, 1 = true): "
+    << spositronL.isSelfConjugate()
+    << ", absolute mass: " << spositronL.getAbsoluteMass()
+    << ", default code: " << spositronL.getCode()
+    << ", decay width: " << spositronL.getDecayWidth();
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "spositron_L decays(" << spositronL.getDecaySet().size()
+    << " lines):";
+    std::cout << std::endl;
+    for( size_t whichDecay( 0 );
+         spositronL.getDecaySet().size() > whichDecay;
+         ++whichDecay )
+    {
+      std::cout << "BR "
+      << spositronL.getDecay( whichDecay ).getPairedValue()
+      << " to ";
+      decayList
+      = &(spositronL.getDecay( whichDecay ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << " ";
+        }
+        else
+        {
+          std::cout << " + ";
+        }
+        std::cout << (*particleIterator)->getAsciiName();
+      }
+      std::cout << std::endl;
+    }
+
+    std::cout
+    << std::endl
+    << "selectron_L: "
+    << selectronL.getAsciiName()
+    << " / " << selectronL.getLatexName()
+    << ", self-conjugate: " << selectronL.isSelfConjugate()
+    << ", absolute mass: " << selectronL.getAbsoluteMass()
+    << ", default code: " << selectronL.getCode()
+    << ", decay width: " << selectronL.getDecayWidth();
+    std::cout << std::endl;
+
+    std::cout
+    << std::endl
+    << "selectron_L decays (" << selectronL.getDecaySet().size()
+    << " lines):";
+    std::cout << std::endl;
+    for( size_t whichDecay( 0 );
+         selectronL.getDecaySet().size() > whichDecay;
+         ++whichDecay )
+    {
+      std::cout << "BR "
+      << selectronL.getDecay( whichDecay ).getPairedValue()
+      << " to ";
+      decayList
+      = &(selectronL.getDecay( whichDecay ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << " ";
+        }
+        else
+        {
+          std::cout << " + ";
+        }
+        std::cout << (*particleIterator)->getAsciiName();
+      }
+      std::cout << std::endl;
+    }
+
+    largestBr = 0.0;
+    for( size_t whichDecay( 0 );
+         gluinoFermion.getDecaySet().size() > whichDecay;
+         ++whichDecay )
+    {
+      if( gluinoFermion.getDecay( whichDecay ).getPairedValue()
+          > largestBr )
+      {
+        decayList
+        = &(gluinoFermion.getDecay( whichDecay ).getPointerList());
+        largestBr
+        = gluinoFermion.getDecay( whichDecay ).getPairedValue();
+      }
+    }
+    std::cout
+    << std::endl
+    << "largest gluino BR = " << largestBr;
+    if( !(gluinoFermion.getDecaySet().empty()) )
+    {
+      std::cout << " to ";
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << std::endl << " ";
+        }
+        else
+        {
+          std::cout << std::endl << " + ";
+        }
+        largestBr = 0.0;
+        for( size_t whichDecay( 0 );
+             (*particleIterator)->getDecaySet().size() > whichDecay;
+             ++whichDecay )
+        {
+          if( (*particleIterator)->getDecay( whichDecay ).getPairedValue()
+              > largestBr )
+          {
+            subdecayList
+            = &((*particleIterator)->getDecay( whichDecay ).getPointerList());
+            largestBr
+            = (*particleIterator)->getDecay( whichDecay ).getPairedValue();
+          }
+        }
+        std::cout
+        << (*particleIterator)->getAsciiName();
+        if( (*particleIterator)->getDecaySet().empty() )
+        {
+          std::cout<< " (no decays)";
+        }
+        else
+        {
+          std::cout
+          << " (with its own largest BR = " << largestBr
+          << " to ";
+          for( std::list< LHPC::MassEigenstate const* >::const_iterator
+               productIterator( subdecayList->begin() );
+               subdecayList->end() != productIterator;
+               ++productIterator )
+          {
+            if( subdecayList->begin() == productIterator )
+            {
+              std::cout << " ";
+            }
+            else
+            {
+              std::cout << " + ";
+            }
+            std::cout << (*productIterator)->getAsciiName();
+          }
+          std::cout << ")";
+        }
+      }
+    }
+    if( 2<= gluinoFermion.getDecaySet().size() )
+    {
+      std::cout
+      << std::endl
+      << "1st 2 gluino decays from file:"
+      << std::endl << " to ";
+      decayList
+      = &(gluinoFermion.getDecay( 0 ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << std::endl << " ";
+        }
+        else
+        {
+          std::cout << std::endl << " + ";
+        }
+        largestBr = 0.0;
+        for( size_t whichDecay( 0 );
+             (*particleIterator)->getDecaySet().size() > whichDecay;
+             ++whichDecay )
+        {
+          if( (*particleIterator)->getDecay( whichDecay ).getPairedValue()
+              > largestBr )
+          {
+            subdecayList
+            = &((*particleIterator)->getDecay( whichDecay ).getPointerList());
+            largestBr
+            = (*particleIterator)->getDecay( whichDecay ).getPairedValue();
+          }
+        }
+        std::cout
+        << (*particleIterator)->getAsciiName();
+        if( (*particleIterator)->getDecaySet().empty() )
+        {
+          std::cout<< " (no decays)";
+        }
+        else
+        {
+          std::cout
+          << " (with its own largest BR = " << largestBr
+          << " to ";
+          for( std::list< LHPC::MassEigenstate const* >::const_iterator
+               productIterator( subdecayList->begin() );
+               subdecayList->end() != productIterator;
+               ++productIterator )
+          {
+            if( subdecayList->begin() == productIterator )
+            {
+              std::cout << " ";
+            }
+            else
+            {
+              std::cout << " + ";
+            }
+            std::cout << (*productIterator)->getAsciiName();
+          }
+          std::cout << ")";
+        }
+      }
+      std::cout << std::endl << " and to ";
+      decayList
+      = &(gluinoFermion.getDecay( 1 ).getPointerList());
+      for( std::list< LHPC::MassEigenstate const* >::const_iterator
+           particleIterator( decayList->begin() );
+           decayList->end() != particleIterator;
+           ++particleIterator )
+      {
+        if( decayList->begin() == particleIterator )
+        {
+          std::cout << std::endl << " ";
+        }
+        else
+        {
+          std::cout << std::endl << " + ";
+        }
+        largestBr = 0.0;
+        for( size_t whichDecay( 0 );
+             (*particleIterator)->getDecaySet().size() > whichDecay;
+             ++whichDecay )
+        {
+          if( (*particleIterator)->getDecay( whichDecay ).getPairedValue()
+              > largestBr )
+          {
+            subdecayList
+            = &((*particleIterator)->getDecay( whichDecay ).getPointerList());
+            largestBr
+            = (*particleIterator)->getDecay( whichDecay ).getPairedValue();
+          }
+        }
+        std::cout
+        << (*particleIterator)->getAsciiName();
+        if( (*particleIterator)->getDecaySet().empty() )
+        {
+          std::cout<< " (no decays)";
+        }
+        else
+        {
+          std::cout
+          << " (with its own largest BR = " << largestBr
+          << " to ";
+          for( std::list< LHPC::MassEigenstate const* >::const_iterator
+               productIterator( subdecayList->begin() );
+               subdecayList->end() != productIterator;
+               ++productIterator )
+          {
+            if( subdecayList->begin() == productIterator )
+            {
+              std::cout << " ";
+            }
+            else
+            {
+              std::cout << " + ";
+            }
+            std::cout << (*productIterator)->getAsciiName();
+          }
+          std::cout << ")";
+        }
+      }
+    }
+
+
+    // now a demonstration where one uses a set of pre-bundled blocks:
+
+    // a parser is needed for the block bundle:
+    LHPC::SlhaParser testParserForBlockSet( isVerbose );
+
+    // for demonstration, this has all the blocks specified in SLHA1 & SLHA2, &
+    // also includes some SPheno-specific blocks:
+    LHPC::SlhaTwoWithSpheno testBlockSet( testParserForBlockSet,
+                                          isVerbose );
+
+    // again, this line does all the work!
+    testParserForBlockSet.readFile( firstFileName );
+
+    // this is for showing that the const versions of the block member
+    // functions work:
+    LHPC::SLHA::BlockClass::DenseDoublyIndexed< double > const&
+    constNmix( testBlockSet.NMIX );
+
+    std::cout
+    << std::endl
+    << "SMINPUTS[ 2 ] = " << testBlockSet.SMINPUTS[ 2 ];
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "MASS( 1000024 ) = " << testBlockSet.MASS( 1000024 );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "NMIX( 1, 3 ) = " << testBlockSet.NMIX( 1, 3 );
+    std::cout
+    << std::endl
+    << "const NMIX( 1, 3 ) = " << constNmix( 1, 3 );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "NMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.NMIX.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "AU between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.AU.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "ALPHA between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.ALPHA.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "STOPMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.STOPMIX.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "HMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.HMIX.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "MSOFT between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.MSOFT.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+
+
+    std::cout
+    << std::endl
+    << "reading in 2nd file!";
+    std::cout << std::endl;
+
+    // again, this line does all the work!
+    testParserForBlockSet.readFile( secondFileName );
+
+    std::cout
+    << std::endl
+    << "SMINPUTS[ 2 ] = " << testBlockSet.SMINPUTS[ 2 ];
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "MASS( 1000024 ) = " << testBlockSet.MASS( 1000024 );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "NMIX( 1, 3 ) = " << testBlockSet.NMIX( 1, 3 );
+    std::cout
+    << std::endl
+    << "const NMIX( 1, 3 ) = " << constNmix( 1, 3 );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "NMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.NMIX.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "AU between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.AU.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "ALPHA between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.ALPHA.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "STOPMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.STOPMIX.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "HMIX between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.HMIX.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "MSOFT between dashed lines: " << std::endl
+    << "-------------------------" << std::endl
+    << testBlockSet.MSOFT.getAsStringIncludingHeader() << std::endl
+    << "-------------------------" << std::endl;
+    std::cout << std::endl;
+
+    std::cout
+    << std::endl
+    << "ended successfully, I hope.";
+    std::cout << std::endl;
+  }  // end of if correct number of arguments was given.
+
+  // this was a triumph! I'm making a note here:
+  return EXIT_SUCCESS;
+}

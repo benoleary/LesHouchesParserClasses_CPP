@@ -2,7 +2,13 @@
  * StandardBlockTemplate.hpp
  *
  *  Created on: Feb 8, 2012
- *      Author: oleary
+ *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef STANDARDBLOCKTEMPLATE_HPP_
@@ -51,7 +57,7 @@ namespace LHPC
         // this sets stringFromValue according to the interpretation of
         // valueToConvert.
         void
-        putIndexIntoReturnString( int const indexToPrint );
+        putIndexIntoReturnString( int indexToPrint );
         // this puts a single space then indexToStream with indexDigits into
         // returnString.
         void
@@ -96,16 +102,29 @@ namespace LHPC
       template< typename ValueType >
       inline void
       StandardBlockTemplate< ValueType >::putIndexIntoReturnString(
-                                                       int const indexToPrint )
+                                                             int indexToPrint )
       // this puts a single space then indexToStream with indexDigits into
       // stringParsingStream.
       {
         returnString.append( " " );
-        returnString.append( BOL::StringParser::intToString( indexToPrint,
-                                                             indexDigits,
-                                                             "",
-                                                             "-",
-                                                             ' ' ) );
+        if( 0 > indexToPrint )
+        {
+          currentWord.assign( "-" );
+          indexToPrint = -indexToPrint;
+        }
+        else
+        {
+          currentWord.assign( "" );
+        }
+        currentWord.append( BOL::StringParser::intToString( indexToPrint,
+                                                            1,
+                                                            "" ) );
+        if( (int)currentWord.size() < indexDigits )
+        {
+          returnString.append( ( indexDigits - currentWord.size() ),
+                               ' ' );
+        }
+        returnString.append( currentWord );
       }
 
       template< typename ValueType >

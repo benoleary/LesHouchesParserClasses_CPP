@@ -2,7 +2,13 @@
  * SparseSinglyIndexed.hpp
  *
  *  Created on: Feb 7, 2012
- *      Author: oleary
+ *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef SPARSESINGLYINDEXED_HPP_
@@ -135,8 +141,14 @@ namespace LHPC
        * soughtIndex, a new one is made & copied from defaultUnsetValue.
        */
       {
+        this->currentIndex = this->findScaleIndex( blockScale );
+        if( 0 >= valueMapArray[ this->currentIndex ].count( soughtIndex ) )
+        {
+          valueMapArray[ this->currentIndex ][ soughtIndex ]
+          = this->defaultUnsetValue;
+        }
         return
-        valueMapArray[ this->findScaleIndex( blockScale ) ][ soughtIndex ];
+        valueMapArray[ this->currentIndex ][ soughtIndex ];
       }
 
       template< typename ValueType >
@@ -168,6 +180,11 @@ namespace LHPC
        * one is made & copied from defaultUnsetValue.
        */
       {
+        if( 0 >= valueMapArray[ this->lowestScaleIndex ].count( soughtIndex ) )
+        {
+          valueMapArray[ this->currentIndex ][ soughtIndex ]
+          = this->defaultUnsetValue;
+        }
         return valueMapArray[ this->lowestScaleIndex ][ soughtIndex ];
       }
 
@@ -198,7 +215,7 @@ namespace LHPC
                                                       double const blockScale )
       // see base version's description.
       {
-        this->findScaleIndex( blockScale );
+        this->currentIndex = this->findScaleIndex( blockScale );
         SlhaBlock::returnString.clear();
         valueFinder = valueMapArray[ this->currentIndex ].begin();
         while( valueFinder != valueMapArray[ this->currentIndex ].end() )

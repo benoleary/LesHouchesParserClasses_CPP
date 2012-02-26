@@ -49,6 +49,7 @@ namespace LHPC
 
     protected:
       static int const scaleIndex;
+      static int const labelSizeIndex;
       static int const gnuplotIndex;
       static int const latexIndex;
       static int const dvipsIndex;
@@ -65,7 +66,9 @@ namespace LHPC
       MassBlock const* const massPointer;
       FmassBlock const* const fmassPointer;
       double scaleMaximum;
+      double largestMass;
       BOL::VectorlikeArray< LineList > columnSet;
+      LineList* columnPointer;
       LineMap::const_iterator plotLineMap;
       LineMap::const_iterator lineIterator;
       int whichMassEigenstate;
@@ -85,7 +88,7 @@ namespace LHPC
       void
       loadLines();
       void
-      floatLabels();
+      sortAndFloatLinesAndLabels();
       bool
       writeGnuplotFiles();
     };

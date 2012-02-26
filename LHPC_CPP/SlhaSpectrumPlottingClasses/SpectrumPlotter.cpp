@@ -12,12 +12,13 @@ namespace LHPC
   namespace SLHA
   {
     int const SpectrumPlotter::scaleIndex( 1 );
-    int const SpectrumPlotter::gnuplotIndex( 2 );
-    int const SpectrumPlotter::latexIndex( 3 );
-    int const SpectrumPlotter::dvipsIndex( 4 );
-    int const SpectrumPlotter::ps2epsIndex( 5 );
-    int const SpectrumPlotter::rmIndex( 6 );
-    int const SpectrumPlotter::mvIndex( 7 );
+    int const SpectrumPlotter::labelSizeIndex( 2 );
+    int const SpectrumPlotter::gnuplotIndex( 3 );
+    int const SpectrumPlotter::latexIndex( 4 );
+    int const SpectrumPlotter::dvipsIndex( 5 );
+    int const SpectrumPlotter::ps2epsIndex( 6 );
+    int const SpectrumPlotter::rmIndex( 7 );
+    int const SpectrumPlotter::mvIndex( 8 );
     std::string const SpectrumPlotter::gnuplotDataFileName(
                                           "LHPC_SpectrumPlotter_gnuplot.dat" );
     std::string const SpectrumPlotter::gnuplotCommandFileName(
@@ -84,7 +85,7 @@ namespace LHPC
     {
       loadCommands( plotFileName );
       loadLines();
-      floatLabels();
+      sortAndFloatLinesAndLabels();
       lastOperationSuccessful = writeGnuplotFiles();
       if( lastOperationSuccessful )
       {
@@ -236,6 +237,10 @@ namespace LHPC
         if( lastOperationSuccessful )
           // if there was a mass recorded for this mass eigenstate...
         {
+          if( 0.0 > massValue )
+          {
+            massValue = -massValue;
+          }
           if( lineIterator->second.getColumn() >= columnSet.getSize() )
           {
             columnSet.setSize( lineIterator->second.getColumn() + 1 );
@@ -251,7 +256,25 @@ namespace LHPC
     }
 
     void
-    SpectrumPlotter::floatLabels();
+    SpectrumPlotter::sortAndFloatLinesAndLabels()
+    {
+      sortMasses();
+
+
+      largestMass = 0.0;
+      for( int whichColumn( columnSet.getLastIndex() );
+           0 < whichColumn;
+           --whichColumn )
+      {
+        columnPointer = columnSet.getPointer( whichColumn );
+        if( !(columnPointer->empty()) )
+        {
+          columnPointer->sort( &(SpectrumPlotting::MassLine::lowToHigh) );
+          largestMass = columnPointer->back().getMass();
+        }
+      }
+    }
+
     bool
     SpectrumPlotter::writeGnuplotFiles();
 

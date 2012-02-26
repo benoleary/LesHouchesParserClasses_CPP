@@ -76,6 +76,11 @@ namespace LHPC
         virtual IntToValueMap const*
         getMap( double const blockScale = 0.0 );
         // this returns a pointer to the scale-appropriate std::map.
+        bool
+        hasEntry( int const soughtIndex,
+                  double const blockScale = 0.0 ) const;
+        // this returns true if there is an entry at soughtIndex for the block
+        // with scale nearest blockScale.
 
 
       protected:
@@ -160,11 +165,12 @@ namespace LHPC
        * there already.
        */
       {
-        valueFinder = valueMapArray[ this->findScaleIndex( blockScale )
-                                                         ].find( soughtIndex );
-        if( valueMapArray.end() != valueFinder )
+        IntToValueMapIterator
+        valueSeeker( valueMapArray[ this->findScaleIndex( blockScale ) ].find(
+                                                               soughtIndex ) );
+        if( valueMapArray.end() != valueSeeker )
         {
-          return valueFinder->second;
+          return valueSeeker->second;
         }
         else
         {
@@ -288,6 +294,23 @@ namespace LHPC
         {
           return
           valueMapArray.getPointer( this->findScaleIndex( blockScale ) );
+        }
+      }
+
+      template< typename ValueType >
+      inline bool
+      SparseSinglyIndexed< ValueType >::hasEntry( int const soughtIndex,
+                                                  double const blockScale )
+      // this returns true if there is an entry at soughtIndex.
+      {
+        if( 0 >= valueMapArray[ this->findScaleIndex( blockScale ) ].count(
+                                                                soughtIndex ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
         }
       }
 

@@ -11,25 +11,250 @@ namespace LHPC
 {
   namespace SLHA
   {
-    SpectrumPlotter::SpectrumPlotter( MassBlock const* const massPointer ) :
+    int const SpectrumPlotter::scaleIndex( 1 );
+    int const SpectrumPlotter::gnuplotIndex( 2 );
+    int const SpectrumPlotter::latexIndex( 3 );
+    int const SpectrumPlotter::dvipsIndex( 4 );
+    int const SpectrumPlotter::ps2epsIndex( 5 );
+    int const SpectrumPlotter::rmIndex( 6 );
+    int const SpectrumPlotter::mvIndex( 7 );
+    std::string const SpectrumPlotter::gnuplotDataFileName(
+                                          "LHPC_SpectrumPlotter_gnuplot.dat" );
+    std::string const SpectrumPlotter::gnuplotCommandFileName(
+                                        "LHPC_SpectrumPlotter_gnuplot.input" );
+    std::string const
+    SpectrumPlotter::gnuplotTexBaseName( "LHPC_SpectrumPlotter_gnuplot_TeX" );
+    std::string const
+    SpectrumPlotter::fullLatexBaseName( "LHPC_SpectrumPlotter_LaTeX" );
+
+
+    SpectrumPlotter::SpectrumPlotter( ControlBlock const& plotControlBlock,
+                                      LineBlock const& linePlottingBlock,
+                                      MassBlock const* const massPointer ) :
+        plotControlBlock( plotControlBlock ),
+        linePlottingBlock( linePlottingBlock ),
         massPointer( massPointer ),
-        fmassPointer( NULL )
+        fmassPointer( NULL ),
+        scaleMaximum( -1.0 ),
+        columnSet(),
+        lastOperationSuccessful( false ),
+        systemCallReturn( -1 ),
+        gnuplotCommand( "" ),
+        latexCommand( "" ),
+        dvipsCommand( "" ),
+        ps2epsCommand( "" ),
+        epsiInstead( false ),
+        mainCleanupCommand( "" ),
+        moveCommand( "" )
     {
-      // TODO Auto-generated constructor stub
+      // just an initialization list.
     }
 
-    SpectrumPlotter::SpectrumPlotter( FmassBlock const* const fmassPointer ) :
+    SpectrumPlotter::SpectrumPlotter( ControlBlock const& plotControlBlock,
+                                      LineBlock const& linePlottingBlock,
+                                      FmassBlock const* const fmassPointer ) :
+        plotControlBlock( plotControlBlock ),
+        linePlottingBlock( linePlottingBlock ),
         massPointer( NULL ),
-        fmassPointer( fmassPointer )
+        fmassPointer( fmassPointer ),
+        scaleMaximum( -1.0 ),
+        columnSet(),
+        lastOperationSuccessful( false ),
+        systemCallReturn( -1 ),
+        gnuplotCommand( "" ),
+        latexCommand( "" ),
+        dvipsCommand( "" ),
+        ps2epsCommand( "" ),
+        epsiInstead( false ),
+        mainCleanupCommand( "" ),
+        moveCommand( "" )
     {
-      // TODO Auto-generated constructor stub
-
+      // just an initialization list.
     }
 
     SpectrumPlotter::~SpectrumPlotter()
     {
-      // TODO Auto-generated destructor stub
+      // does nothing.
     }
+
+
+    bool
+    SpectrumPlotter::plotSpectrum( std::string const& plotFileName,
+                                   bool const shouldCleanUp )
+    {
+      loadCommands( plotFileName );
+      loadLines();
+      floatLabels();
+      lastOperationSuccessful = writeGnuplotFiles();
+      if( lastOperationSuccessful )
+      {
+        systemCallReturn = system( gnuplotCommand.c_str() );
+        // "gnuplot LHPC_SpectrumPlotter_gnuplot.input"
+      }
+      if( -1 != systemCallReturn )
+      {
+        systemCallReturn = system( latexCommand.c_str() );
+        // "latex LHPC_SpectrumPlotter_LaTeX.tex"
+      }
+      if( -1 != systemCallReturn )
+      {
+        systemCallReturn = system( dvipsCommand.c_str() );
+        // "dvips LHPC_SpectrumPlotter_LaTeX.dvi"
+      }
+      if( -1 != systemCallReturn )
+      {
+        systemCallReturn = system( ps2epsCommand.c_str() );
+        // "ps2eps LHPC_SpectrumPlotter_LaTeX.ps"
+      }
+      if( ( -1 != systemCallReturn )
+          &&
+          shouldCleanUp )
+      {
+        systemCallReturn = system( mainCleanupCommand.c_str() );
+        /* "rm LHPC_SpectrumPlotter_gnuplot.dat \
+         * LHPC_SpectrumPlotter_gnuplot.input \
+         * LHPC_SpectrumPlotter_gnuplot_TeX.eps \
+         * LHPC_SpectrumPlotter_gnuplot_TeX.tex \
+         * LHPC_SpectrumPlotter_LaTeX.aux \
+         * LHPC_SpectrumPlotter_LaTeX.dvi \
+         * LHPC_SpectrumPlotter_LaTeX.log \
+         * LHPC_SpectrumPlotter_LaTeX.ps \
+         * LHPC_SpectrumPlotter_LaTeX.tex"
+         */
+      }
+      if( -1 != systemCallReturn )
+      {
+        systemCallReturn = system( moveCommand.c_str() );
+        // "mv LHPC_SpectrumPlotter_LaTeX.eps plotFileName"
+      }
+      if( -1 != systemCallReturn )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+
+    void
+    SpectrumPlotter::loadCommands( std::string const& plotFileName )
+    {
+      gnuplotCommand.assign( plotControlBlock[ gnuplotIndex ] );
+      gnuplotCommand.append( " " );
+      gnuplotCommand.append( gnuplotCommandFileName );
+      // "gnuplot LHPC_SpectrumPlotter_gnuplot.input"
+      latexCommand.assign( plotControlBlock[ latexIndex ] );
+      latexCommand.append( " " );
+      latexCommand.append( fullLatexBaseName );
+      latexCommand.append( ".tex" );
+      // "latex LHPC_SpectrumPlotter_LaTeX.tex"
+      dvipsCommand.assign( plotControlBlock[ dvipsIndex ] );
+      dvipsCommand.append( " " );
+      dvipsCommand.append( fullLatexBaseName );
+      dvipsCommand.append( ".dvi" );
+      // "dvips LHPC_SpectrumPlotter_LaTeX.dvi"
+      ps2epsCommand.assign( plotControlBlock[ ps2epsIndex ] );
+      if( 0 == ps2epsCommand.compare( ( ps2epsCommand.size() - 7 ),
+                                      7,
+                                      "ps2epsi" ) )
+      {
+        epsiInstead = true;
+      }
+      ps2epsCommand.append( " " );
+      ps2epsCommand.append( fullLatexBaseName );
+      ps2epsCommand.append( ".ps" );
+      // "ps2eps LHPC_SpectrumPlotter_LaTeX.ps"
+      mainCleanupCommand.assign( plotControlBlock[ rmIndex ] );
+      mainCleanupCommand.append( " " );
+      mainCleanupCommand.append( gnuplotDataFileName );
+      mainCleanupCommand.append( " " );
+      mainCleanupCommand.append( gnuplotCommandFileName );
+      mainCleanupCommand.append( " " );
+      mainCleanupCommand.append( gnuplotTexBaseName );
+      mainCleanupCommand.append( ".eps " );
+      mainCleanupCommand.append( gnuplotTexBaseName );
+      mainCleanupCommand.append( ".tex " );
+      mainCleanupCommand.append( fullLatexBaseName );
+      mainCleanupCommand.append( ".aux " );
+      mainCleanupCommand.append( fullLatexBaseName );
+      mainCleanupCommand.append( ".dvi " );
+      mainCleanupCommand.append( fullLatexBaseName );
+      mainCleanupCommand.append( ".log " );
+      mainCleanupCommand.append( fullLatexBaseName );
+      mainCleanupCommand.append( ".ps " );
+      mainCleanupCommand.append( fullLatexBaseName );
+      mainCleanupCommand.append( ".tex" );
+      /* "rm LHPC_SpectrumPlotter_gnuplot.dat \
+       * LHPC_SpectrumPlotter_gnuplot.input \
+       * LHPC_SpectrumPlotter_gnuplot_TeX.eps \
+       * LHPC_SpectrumPlotter_gnuplot_TeX.tex \
+       * LHPC_SpectrumPlotter_LaTeX.aux \
+       * LHPC_SpectrumPlotter_LaTeX.dvi \
+       * LHPC_SpectrumPlotter_LaTeX.log \
+       * LHPC_SpectrumPlotter_LaTeX.ps \
+       * LHPC_SpectrumPlotter_LaTeX.tex"
+       */
+      moveCommand.assign( plotControlBlock[ mvIndex ] );
+      moveCommand.append( fullLatexBaseName );
+      moveCommand.append( ".eps" );
+      if( epsiInstead )
+      {
+        moveCommand.append( "i" );
+      }
+      moveCommand.append( " " );
+      moveCommand.append( plotFileName );
+      // "mv LHPC_SpectrumPlotter_LaTeX.eps plotFileName"
+    }
+
+    void
+    SpectrumPlotter::loadLines()
+    {
+      plotLineMap = linePlottingBlock.getMap();
+      lineIterator = plotLineMap.begin();
+      while( plotLineMap.end() != lineIterator )
+        // for each mass eigenstate specified to be plotted...
+      {
+        whichMassEigenstate = lineIterator->second.getCode();
+        lastOperationSuccessful = false;
+        // whether there is a mass for the line needs to be checked:
+        if( ( NULL != massPointer )
+            &&
+            ( massPointer->hasEntry( whichMassEigenstate ) ) )
+        {
+          massValue = massPointer[ whichMassEigenstate ];
+          lastOperationSuccessful = true;
+        }
+        else if( ( NULL != fmassPointer )
+                 &&
+                 ( fmassPointer->hasEntry( whichMassEigenstate ) ) )
+        {
+          massValue = fmassPointer[ whichMassEigenstate ].getMass();
+          lastOperationSuccessful = true;
+        }
+        if( lastOperationSuccessful )
+          // if there was a mass recorded for this mass eigenstate...
+        {
+          if( lineIterator->second.getColumn() >= columnSet.getSize() )
+          {
+            columnSet.setSize( lineIterator->second.getColumn() + 1 );
+          }
+          // now columnSet is large enough for the line to be put into its
+          // appropriate column:
+          columnSet[ lineIterator->second.getColumn() ].push_back(
+                                new MassLine( lineIterator->second,
+                                                          massValue ) );
+        }
+        ++lineIterator;
+      }
+    }
+
+    void
+    SpectrumPlotter::floatLabels();
+    bool
+    SpectrumPlotter::writeGnuplotFiles();
+
 
   }
 

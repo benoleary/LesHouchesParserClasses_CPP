@@ -96,6 +96,10 @@
  *      LHPC_CPP/ParticleCodesAndDataClasses/PdgData.cpp
  *      LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp
  *      LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.hpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.cpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/MassLine.hpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/MassLine.cpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp

@@ -15,7 +15,7 @@
 #include "SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp"
 #include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
 #include "MassEigenstateCollectionClasses/DefaultSpectra.hpp"
-#include "ParticleCodesAndData/SevenDigitSlhaCodes.hpp"
+#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 //.not_compiled_by_default
 int main( int argumentCount,

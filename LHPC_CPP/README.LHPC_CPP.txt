@@ -90,12 +90,15 @@
  *        - SneutrinosOneToThree.cpp
  *        - SquarksOneToSix.hpp
  *        - SquarksOneToSix.cpp
- *      LHPC_CPP/ParticleCodesAndData/NineDigitSlhaCodes.hpp
- *      LHPC_CPP/ParticleCodesAndData/NineDigitSlhaCodes.cpp
- *      LHPC_CPP/ParticleCodesAndData/PdgData.hpp
- *      LHPC_CPP/ParticleCodesAndData/PdgData.cpp
- *      LHPC_CPP/ParticleCodesAndData/SevenDigitSlhaCodes.hpp
- *      LHPC_CPP/ParticleCodesAndData/SevenDigitSlhaCodes.cpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.cpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/PdgData.hpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/PdgData.cpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp

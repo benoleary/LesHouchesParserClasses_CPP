@@ -111,12 +111,14 @@ namespace LHPC
 
       static std::string returnString;
       static BOL::StringParser slhaDoubleMaker;
+      static BOL::StringParser slhaIntHelper;
       static BOL::StringParser particleCodeMaker;
       static std::string comparisonString;
       static DoublePairedWithInt pairMaker;
       static std::string currentWord;
       static std::string firstRemainder;
       static std::string secondRemainder;
+      static std::string intString;
 
       static bool
       lowToHighScale( DoublePairedWithInt const& firstPair,
@@ -153,11 +155,14 @@ namespace LHPC
       double
       findNearestScale( double const blockScale ) const;
       // this finds the recorded scale nearest blockScale.
-      std::stringstream&
-      getStringParsingStream( std::string const& stringToParse );
-      void
-      prepareStringStream();
-      // this empties stringParsingStream.
+      std::string const&
+      spacePaddedSlhaInt( int const intToConvert,
+                          int const returnStringLength );
+      /* this returns a string for intToConvert that is at least
+       * returnStringLength chars long, with no prefix for positive numbers &
+       * '-' prefixing negative numbers, padded out with spaces before the
+       * prefix.
+       */
     };
 
 
@@ -321,6 +326,25 @@ namespace LHPC
     // it is a non-empty data line.
     {
       // the default version doesn't interpret anything.
+    }
+
+    inline std::string const&
+    SlhaBlock::spacePaddedSlhaInt( int const intToConvert,
+                                   int const returnStringLength )
+    /* this returns a string for intToConvert that is at least
+     * returnStringLength chars long, with no prefix for positive numbers &
+     * '-' prefixing negative numbers, padded out with spaces before the
+     * prefix.
+     */
+    {
+      intString.assign( slhaIntHelper.intToString( intToConvert ) );
+      if( (size_t)returnStringLength > intString.size() )
+      {
+        intString.insert( 0,
+                          ( returnStringLength - intString.size() ),
+                          ' ' );
+      }
+      return intString;
     }
 
   }

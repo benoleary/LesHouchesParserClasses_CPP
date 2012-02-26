@@ -15,8 +15,8 @@
 #define CODESANDDATAFORMASSEIGENSTATES_HPP_
 
 #include "../MassSpectrum.hpp"
-#include "../../ParticleCodesAndData/PdgData.hpp"
-#include "../../ParticleCodesAndData/NineDigitSlhaCodes.hpp"
-#include "../../ParticleCodesAndData/SevenDigitSlhaCodes.hpp"
+#include "../../ParticleCodesAndDataClasses/PdgData.hpp"
+#include "../../ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp"
+#include "../../ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 #endif /* CODESANDDATAFORMASSEIGENSTATES_HPP_ */

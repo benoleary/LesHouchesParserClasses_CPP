@@ -19,13 +19,7 @@
 #include "BOLlib/Classes/CommentedTextParser.hpp"
 #include "BOLlib/Classes/VectorlikeArray.hpp"
 #include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
-#include "MassEigenstateCollectionClasses/ExtendedMass.hpp"
-#include "SusyLesHouchesAccordClasses/SlhaBlock.hpp"
-#include "SusyLesHouchesAccordClasses/BlockClasses/JustSingleValue.hpp"
-#include "SusyLesHouchesAccordClasses/BlockClasses/SparseSinglyIndexed.hpp"
-#include "SusyLesHouchesAccordClasses/BlockClasses/DenseSinglyIndexed.hpp"
-#include "SusyLesHouchesAccordClasses/BlockClasses/DenseDoublyIndexed.hpp"
-#include "SusyLesHouchesAccordClasses/BlockClasses/DenseTriplyIndexed.hpp"
+#include "SusyLesHouchesAccordClasses/BlockTypes.hpp"
 
 namespace LHPC
 {
@@ -34,11 +28,6 @@ namespace LHPC
   class SlhaParser
   {
   public:
-    typedef
-    SLHA::BlockClass::SparseSinglyIndexed< double > MassBlock;
-    typedef
-    SLHA::BlockClass::SparseSinglyIndexed< ExtendedMass >
-    FmassBlock;
     SlhaParser( bool const isVerbose = true );
     ~SlhaParser();
 
@@ -55,11 +44,11 @@ namespace LHPC
      * block of the same name.
      */
     SlhaParser&
-    registerBlock( MassBlock& blockToUpdate );
+    registerBlock( SLHA::MassBlock& blockToUpdate );
     // this is a special case to try to catch if a MASS block is given, so that
     // the spectrum (if any) can read from it rather than needing its own.
     SlhaParser&
-    registerBlock( FmassBlock& blockToUpdate );
+    registerBlock( SLHA::FmassBlock& blockToUpdate );
     // this is a special case to try to catch if an FMASS block is given, so
     // that the spectrum (if any) can read from it rather than needing its own.
     bool
@@ -87,9 +76,9 @@ namespace LHPC
     MassSpectrum* spectrumToUpdate;
     StringToBlockMap blockMap;
     StringToBlockMap::iterator blockMapIterator;
-    MassBlock* massBlockPointer;
+    SLHA::MassBlock* massBlockPointer;
     bool ownsMassBlock;
-    FmassBlock* fmassBlockPointer;
+    SLHA::FmassBlock* fmassBlockPointer;
     bool ownsFmassBlock;
     SLHA::SlhaBlock* currentBlockPointer;
     MassEigenstate* currentMassEigenstate;
@@ -170,7 +159,7 @@ namespace LHPC
   }
 
   inline SlhaParser&
-  SlhaParser::registerBlock( MassBlock& blockToUpdate )
+  SlhaParser::registerBlock( SLHA::MassBlock& blockToUpdate )
   // this is a special case to try to catch if a MASS block is given, so that
   // the spectrum (if any) can read from it rather than needing its own.
   {
@@ -183,7 +172,7 @@ namespace LHPC
   }
 
   inline SlhaParser&
-  SlhaParser::registerBlock( FmassBlock& blockToUpdate )
+  SlhaParser::registerBlock( SLHA::FmassBlock& blockToUpdate )
   // this is a special case to try to catch if an FMASS block is given, so
   // that the spectrum (if any) can read from it rather than needing its own.
   {
@@ -245,18 +234,18 @@ namespace LHPC
         // if there is a spectrum to update, but no mass block...
       {
         ownsMassBlock = true;
-        massBlockPointer = new MassBlock( "MASS",
-                                          BOL::UsefulStuff::notANumber,
-                                          9 );
+        massBlockPointer = new SLHA::MassBlock( "MASS",
+                                                BOL::UsefulStuff::notANumber,
+                                                9 );
         addBlockToMap( massBlockPointer );
       }
       if( NULL == fmassBlockPointer )
         // if there is a spectrum to update, but no fmass block...
       {
         ownsFmassBlock = true;
-        fmassBlockPointer = new FmassBlock( "FMASS",
-                                            ExtendedMass(),
-                                            9 );
+        fmassBlockPointer = new SLHA::FmassBlock( "FMASS",
+                                                  ExtendedMass(),
+                                                  9 );
         addBlockToMap( fmassBlockPointer );
       }
       // mass & fmass blocks for the spectrum/spectra should be made,

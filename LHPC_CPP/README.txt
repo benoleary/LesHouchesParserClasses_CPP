@@ -104,6 +104,8 @@
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/SpectrumDrawer.hpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/SpectrumDrawer.cpp
  *      6 files in LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
  *      - DenseDoublyIndexed.hpp
  *      - DenseSinglyIndexed.hpp

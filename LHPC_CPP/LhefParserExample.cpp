@@ -15,7 +15,7 @@
 #include "LesHouchesEventFileClasses/FilterRuleClasses/InitialOrIntermediateOrFinalState.hpp"
 #include "LesHouchesEventFileClasses/FilterRuleClasses/ParticleCode.hpp"
 #include "LesHouchesEventFileClasses/FilterRuleClasses/TransverseMomentumCut.hpp"
-#include "ParticleCodesAndData/SevenDigitSlhaCodes.hpp"
+#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 class exampleRule : public LHPC::LHEF::FilterRule
 {

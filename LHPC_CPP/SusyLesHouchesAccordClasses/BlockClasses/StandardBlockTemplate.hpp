@@ -107,24 +107,8 @@ namespace LHPC
       // stringParsingStream.
       {
         returnString.append( " " );
-        if( 0 > indexToPrint )
-        {
-          currentWord.assign( "-" );
-          indexToPrint = -indexToPrint;
-        }
-        else
-        {
-          currentWord.assign( "" );
-        }
-        currentWord.append( BOL::StringParser::intToString( indexToPrint,
-                                                            1,
-                                                            "" ) );
-        if( (int)currentWord.size() < indexDigits )
-        {
-          returnString.append( ( indexDigits - currentWord.size() ),
-                               ' ' );
-        }
-        returnString.append( currentWord );
+        returnString.append( spacePaddedSlhaInt( indexToPrint,
+                                                 indexDigits ) );
       }
 
       template< typename ValueType >

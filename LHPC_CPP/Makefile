@@ -49,9 +49,9 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  $(SHORTDIRC)/NmssmExtraEwsbSpinZeroBosonSet.cpp \
  $(SHORTDIRC)/SneutrinosOneToThree.cpp \
  $(SHORTDIRC)/SquarksOneToSix.cpp \
- ParticleCodesAndData/NineDigitSlhaCodes.cpp \
- ParticleCodesAndData/PdgData.cpp \
- ParticleCodesAndData/SevenDigitSlhaCodes.cpp \
+ ParticleCodesAndDataClasses/NineDigitSlhaCodes.cpp \
+ ParticleCodesAndDataClasses/PdgData.cpp \
+ ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp \
  SusyLesHouchesAccordClasses/SlhaBlock.cpp \
  SusyLesHouchesAccordClasses/SlhaOne.cpp \
  SusyLesHouchesAccordClasses/SlhaTwo.cpp \

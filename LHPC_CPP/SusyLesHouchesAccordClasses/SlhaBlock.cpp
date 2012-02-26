@@ -22,6 +22,11 @@ namespace LHPC
                                                   ' ',
                                                   9,
                                                   3 );
+    BOL::StringParser SlhaBlock::slhaIntHelper( 1,
+                                                ' ',
+                                                1,
+                                                1,
+                                                "" );
     BOL::StringParser SlhaBlock::particleCodeMaker( 9,
                                                     ' ',
                                                     1,
@@ -33,6 +38,7 @@ namespace LHPC
     std::string SlhaBlock::currentWord( "" );
     std::string SlhaBlock::firstRemainder( "" );
     std::string SlhaBlock::secondRemainder( "" );
+    std::string SlhaBlock::intString( "" );
 
     SlhaBlock::SlhaBlock( std::string const& blockName,
                           bool const& isVerbose,

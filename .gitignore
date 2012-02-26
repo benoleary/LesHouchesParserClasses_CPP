@@ -307,3 +307,23 @@ Release/makefile
 Release/objects.mk
 
 Release/sources.mk
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.d
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.o
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/PdgData.d
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/PdgData.o
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.d
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.o
+
+Release/LHPC_CPP/ParticleCodesAndDataClasses/subdir.mk
+
+Release/LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumPlotter.d
+
+Release/LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumPlotter.o
+
+Release/LHPC_CPP/SlhaSpectrumPlottingClasses/subdir.mk

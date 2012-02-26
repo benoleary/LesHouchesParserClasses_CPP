@@ -22,8 +22,8 @@
 #include "LesHouchesEventFileClasses/FilterRuleClasses/ParticleCode.hpp"
 #include "LesHouchesEventFileClasses/FilterRuleClasses/PseudorapidityCut.hpp"
 #include "LesHouchesEventFileClasses/FilterRuleClasses/TransverseMomentumCut.hpp"
-#include "ParticleCodesAndData/NineDigitSlhaCodes.hpp"
-#include "ParticleCodesAndData/SevenDigitSlhaCodes.hpp"
+#include "ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp"
+#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 namespace LHPC
 {

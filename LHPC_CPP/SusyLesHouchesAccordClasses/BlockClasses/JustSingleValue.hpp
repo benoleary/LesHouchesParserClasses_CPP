@@ -173,10 +173,8 @@ namespace LHPC
       JustSingleValue< ValueType >::interpretBodyLine()
       // this interprets the entirity of comparisonString as the held value.
       {
-        SlhaBlock::currentWord.assign( BOL::StringParser::trimFromFront(
-                                               BOL::StringParser::trimFromBack(
+        SlhaBlock::currentWord.assign( BOL::StringParser::trimFromFrontAndBack(
                                                    SlhaBlock::comparisonString,
-                                                                   " \t\r\n" ),
                                                                  " \t\r\n" ) );
         if( !(SlhaBlock::currentWord.empty()) )
         {

@@ -312,10 +312,8 @@ namespace BOL
   inline std::string const&
   AsciiXmlParser::getCurrentElementContentTrimmedOfWhitespace() const
   {
-    return StringParser::trimFromFront( StringParser::trimFromBack(
-                                                     fullElementContentAsFound,
-                                                   allowedXmlWhitespaceChars ),
-                                        allowedXmlWhitespaceChars );
+    return StringParser::trimFromFrontAndBack( fullElementContentAsFound,
+                                               allowedXmlWhitespaceChars );
   }
 
   inline std::string const&

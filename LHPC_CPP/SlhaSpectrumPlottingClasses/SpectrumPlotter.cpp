@@ -3,6 +3,12 @@
  *
  *  Created on: Feb 26, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #include "SpectrumPlotter.hpp"
@@ -27,6 +33,7 @@ namespace LHPC
     SpectrumPlotter::gnuplotTexBaseName( "LHPC_SpectrumPlotter_gnuplot_TeX" );
     std::string const
     SpectrumPlotter::fullLatexBaseName( "LHPC_SpectrumPlotter_LaTeX" );
+    double const automaticScaleFactor( 1.1 );
 
 
     SpectrumPlotter::SpectrumPlotter( StringBlock const& plotControlBlock,
@@ -138,10 +145,35 @@ namespace LHPC
       }
     }
 
-
     void
     SpectrumPlotter::loadCommands( std::string const& plotFileName )
     {
+      if( plotControlBlock.hasEntry( scaleIndex ) )
+      {
+        scaleMaximum
+        = BOL::StringParser::stringToDouble( plotControlBlock[ scaleIndex ] );
+      }
+      else
+      {
+        scaleMaximum = -1.0;
+      }
+      if( plotControlBlock.hasEntry( labelSizeIndex ) )
+      {
+        labelSeparation = BOL::StringParser::stringToDouble( plotControlBlock[
+                                                            labelSizeIndex ] );
+      }
+      else
+      {
+        labelSeparation = 5.0;
+      }
+      if( plotControlBlock.hasEntry( gnuplotIndex ) )
+      {
+        gnuplotCommand.assign( plotControlBlock[ gnuplotIndex ] );
+      }
+      else
+      {
+        gnuplotCommand.assign( "" );
+      }
       gnuplotCommand.assign( plotControlBlock[ gnuplotIndex ] );
       gnuplotCommand.append( " " );
       gnuplotCommand.append( gnuplotCommandFileName );
@@ -237,10 +269,6 @@ namespace LHPC
         if( lastOperationSuccessful )
           // if there was a mass recorded for this mass eigenstate...
         {
-          if( 0.0 > massValue )
-          {
-            massValue = -massValue;
-          }
           if( lineIterator->second.getColumn() >= columnSet.getSize() )
           {
             columnSet.setSize( lineIterator->second.getColumn() + 1 );
@@ -277,6 +305,28 @@ namespace LHPC
 
     bool
     SpectrumPlotter::writeGnuplotFiles();
+    void
+    SpectrumPlotter::sortMasses()
+    // this sorts all the masses in the columns, & then sets the scale range.
+    {
+      largestMass = 0.0;
+      for( int whichColumn( columnSet.getLastIndex() );
+           0 < whichColumn;
+           --whichColumn )
+      {
+        columnPointer = columnSet.getPointer( whichColumn );
+        if( !(columnPointer->empty()) )
+        {
+          columnPointer->sort( &(SpectrumPlotting::MassLine::lowToHigh) );
+          largestMass = columnPointer->back().getMass();
+        }
+      }
+      if( 0.0 >= scaleMaximum )
+        // if the scale is to be automatically decided by the largest mass...
+      {
+        scaleMaximum = ( largestMass * automaticScaleFactor );
+      }
+    }
 
 
   }

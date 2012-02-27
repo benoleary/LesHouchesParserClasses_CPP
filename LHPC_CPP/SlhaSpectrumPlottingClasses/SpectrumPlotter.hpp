@@ -3,6 +3,12 @@
  *
  *  Created on: Feb 26, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef SPECTRUMPLOTTER_HPP_
@@ -56,6 +62,7 @@ namespace LHPC
       static std::string const gnuplotCommandFileName;
       static std::string const gnuplotTexBaseName;
       static std::string const fullLatexBaseName;
+      static double const automaticScaleFactor;
 
       StringBlock const& plotControlBlock;
       StringBlock const& linePlottingBlock;
@@ -69,6 +76,7 @@ namespace LHPC
       LineMap::const_iterator lineIterator;
       int whichMassEigenstate;
       double massValue;
+      double labelSeparation;
       bool lastOperationSuccessful;
       int systemCallReturn;
       std::string gnuplotCommand;

@@ -210,9 +210,8 @@ namespace LHPC
      * calls interpretBodyLine() if comparisonString is not then empty.
      */
     {
-      comparisonString.assign( BOL::StringParser::trimFromFront(
-                                   BOL::StringParser::trimFromBack( dataString,
-                                          BOL::StringParser::whitespaceChars ),
+      comparisonString.assign( BOL::StringParser::trimFromFrontAndBack(
+                                                                    dataString,
                                         BOL::StringParser::whitespaceChars ) );
       if( !(comparisonString.empty()) )
       {

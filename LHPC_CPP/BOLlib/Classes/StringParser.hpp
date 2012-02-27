@@ -133,6 +133,14 @@ namespace BOL
      * last char which is not in charsToTrim.
      */
     static std::string const&
+    trimFromFrontAndBack( std::string const& stringToTrim,
+                          std::string const& charsToTrim );
+    /* this returns the substring of stringToTrim which has had all the chars
+     * removed which are in charsToTrim and appear in stringToTrim before the
+     * first char which is not in charsToTrim and after the last char which is
+     * not in charsToTrim.
+     */
+    static std::string const&
     firstWordOf( std::string const& stringToParse,
                  std::string* const remainderString = NULL,
                  std::string const& separatorChars = whitespaceChars );
@@ -404,6 +412,31 @@ namespace BOL
     {
       returnString.assign( stringToTrim.begin(),
                            ( stringToTrim.begin() + endOfReturnString + 1 ) );
+    }
+    return returnString;
+  }
+
+  inline std::string const&
+  StringParser::trimFromFrontAndBack( std::string const& stringToTrim,
+                                      std::string const& charsToTrim )
+  /* this returns the substring of stringToTrim which has had all the chars
+   * removed which are in charsToTrim and appear in stringToTrim before the
+   * first char which is not in charsToTrim and after the last char which is
+   * not in charsToTrim.
+   */
+  {
+    size_t
+    startOfReturnString( stringToTrim.find_first_not_of( charsToTrim ) );
+    if( startOfReturnString == std::string::npos )
+    {
+      returnString.assign( "" );
+    }
+    else
+    {
+      returnString.assign( ( stringToTrim.begin() + startOfReturnString ),
+                           ( stringToTrim.begin()
+                             + stringToTrim.find_last_not_of( charsToTrim )
+                             + 1 ) );
     }
     return returnString;
   }

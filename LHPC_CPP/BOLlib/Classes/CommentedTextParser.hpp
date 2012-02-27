@@ -238,9 +238,8 @@ namespace BOL
        * stringToFill & throws away the remainder. now all trimmingChars chars
        * are trimmed from the front & back of stringToFill:
        */
-      stringToFill.assign( BOL::StringParser::trimFromBack( stringToFill,
-                                                            trimmingChars ) );
-      stringToFill.assign( BOL::StringParser::trimFromFront( stringToFill,
+      stringToFill.assign( BOL::StringParser::trimFromFrontAndBack(
+                                                                  stringToFill,
                                                              trimmingChars ) );
     }
     // now either stringToFill is not empty, or inputFile ran out of lines.

@@ -172,7 +172,7 @@ namespace LHPC
       }
       else
       {
-        gnuplotCommand.assign( "" );
+        gnuplotCommand.assign( "/usr/bin/gnuplot" );
       }
       gnuplotCommand.assign( plotControlBlock[ gnuplotIndex ] );
       gnuplotCommand.append( " " );

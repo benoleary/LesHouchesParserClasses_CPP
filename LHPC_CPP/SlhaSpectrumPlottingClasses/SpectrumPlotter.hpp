@@ -15,7 +15,6 @@
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "../SusyLesHouchesAccordClasses/BlockTypes.hpp"
 #include "../SlhaSpectrumPlottingClasses/LineData.hpp"
-#include "../SlhaSpectrumPlottingClasses/MassLine.hpp"
 
 namespace LHPC
 {
@@ -28,8 +27,8 @@ namespace LHPC
     public:
       typedef BlockClass::SparseSinglyIndexed< std::string > StringBlock;
       typedef std::map< int,
-                        SpectrumPlotting::LineData > LineMap;
-      typedef std::list< SpectrumPlotting::MassLine > LineList;
+                        std::string > LineMap;
+      typedef std::list< SpectrumPlotting::LineData > LineList;
 
       SpectrumPlotter( StringBlock const& plotControlBlock,
                        StringBlock const& linePlottingBlock,
@@ -66,7 +65,7 @@ namespace LHPC
       double largestMass;
       BOL::VectorlikeArray< LineList > columnSet;
       LineList* columnPointer;
-      LineMap::const_iterator plotLineMap;
+      LineMap* plotLineMap;
       LineMap::const_iterator lineIterator;
       int whichMassEigenstate;
       double massValue;

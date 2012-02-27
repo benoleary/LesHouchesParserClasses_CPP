@@ -213,8 +213,8 @@ namespace LHPC
     SpectrumPlotter::loadLines()
     {
       plotLineMap = linePlottingBlock.getMap();
-      lineIterator = plotLineMap.begin();
-      while( plotLineMap.end() != lineIterator )
+      lineIterator = plotLineMap->begin();
+      while( plotLineMap->end() != lineIterator )
         // for each mass eigenstate specified to be plotted...
       {
         whichMassEigenstate = lineIterator->second.getCode();

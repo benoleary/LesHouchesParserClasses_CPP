@@ -19,6 +19,7 @@
 #include <list>
 #include <map>
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
+#include "../BOLlib/Classes/StringParser.hpp"
 #include "../SusyLesHouchesAccordClasses/BlockTypes.hpp"
 #include "../SlhaSpectrumPlottingClasses/LineData.hpp"
 
@@ -50,6 +51,7 @@ namespace LHPC
 
 
     protected:
+      static int const unitIndex;
       static int const scaleIndex;
       static int const labelSizeIndex;
       static int const gnuplotIndex;
@@ -58,22 +60,28 @@ namespace LHPC
       static int const ps2epsIndex;
       static int const rmIndex;
       static int const mvIndex;
+      static std::string const unitString;
       static std::string const gnuplotDataFileName;
       static std::string const gnuplotCommandFileName;
       static std::string const gnuplotTexBaseName;
       static std::string const fullLatexBaseName;
       static double const automaticScaleFactor;
+      static double const labelMinimumPosition;
+      static int const maximumLabelFloatingShuffles;
 
       StringBlock const& plotControlBlock;
       StringBlock const& linePlottingBlock;
       MassBlock const* const massPointer;
       FmassBlock const* const fmassPointer;
+      double unitFactor;
       double scaleMaximum;
       double largestMass;
       BOL::VectorlikeArray< LineList > columnSet;
       LineList* columnPointer;
       LineMap* plotLineMap;
       LineMap::const_iterator lineIterator;
+      std::list< SpectrumPlotting::LineData >::iterator lowerMassIterator;
+      std::list< SpectrumPlotting::LineData >::iterator upperMassIterator;
       int whichMassEigenstate;
       double massValue;
       double labelSeparation;
@@ -98,6 +106,10 @@ namespace LHPC
       void
       sortMasses();
       // this sorts all the masses in the columns, & then sets the scale range.
+      void
+      floatLabels();
+      // this tries to move all the labels up or down until they are all
+      // separated by ( labelSeparation * scaleMaximum ).
     };
 
   }

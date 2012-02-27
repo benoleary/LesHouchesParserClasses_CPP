@@ -20,10 +20,16 @@ namespace LHPC
     namespace SpectrumPlotting
     {
       std::string LineData::remainderString( "" );
+      BOL::StringParser LineData::overlargeMassPrinter( 1,
+                                                        '0',
+                                                        3,
+                                                        2,
+                                                        "" );
 
       LineData::LineData( std::string const& dataString,
                           double const massValue ) :
           columnIndex( 0 ),
+          whichJustification( leftJustified ),
           massValue( massValue ),
           labelPosition( -1.0 ),
           labelString( "error" ),
@@ -38,6 +44,10 @@ namespace LHPC
                                                                     dataString,
                                                               &remainderString,
                                         BOL::StringParser::whitespaceChars ) );
+        if( 0 == ( columnIndex % 2 ) )
+        {
+          whichJustification = rightJustified;
+        }
         colorString.assign( BOL::StringParser::firstWordOf( remainderString,
                                                             &labelString,
                                         BOL::StringParser::whitespaceChars ) );

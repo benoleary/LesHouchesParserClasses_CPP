@@ -28,10 +28,27 @@ namespace LHPC
       class LineData
       {
       public:
+        enum JustificationStyle
+        {
+          leftJustified,
+          centerJustified,
+          rightJustified
+        };
+
+        static bool
+        lowToHigh( LineData const& firstLineData,
+                   LineData const& secondLineData );
+        // this returns true if firstLineData has a massValue lower than or
+        // equal to that of secondLineData.
+
         LineData( std::string const& dataString,
                   double const massValue );
         ~LineData();
 
+        JustificationStyle
+        getJustification() const;
+        void
+        setJustification( JustificationStyle const whichJustification );
         int
         getColumn() const;
         double
@@ -42,14 +59,18 @@ namespace LHPC
         setLabelPosition( double const labelPosition );
         std::string const&
         getLabelString() const;
+        void
+        relabelForOverlargeMass( double const scaleMaximum );
         std::string const&
         getColor() const;
 
 
       protected:
         static std::string remainderString;
+        static BOL::StringParser overlargeMassPrinter;
 
         int columnIndex;
+        JustificationStyle whichJustification;
         double massValue;
         double labelPosition;
         std::string labelString;
@@ -58,6 +79,36 @@ namespace LHPC
 
 
 
+
+
+      inline bool
+      lowToHigh( LineData const& firstLineData,
+                 LineData const& secondLineData )
+      // this returns true if firstLineData has a massValue lower than or
+      // equal to that of secondLineData.
+      {
+        if( firstLineData.getMass() > secondLineData.getMass() )
+        {
+          return false;
+        }
+        else
+        {
+          return true;
+        }
+      }
+
+      inline LineData::JustificationStyle
+      LineData::getJustification() const
+      {
+        return whichJustification;
+      }
+
+      inline void
+      LineData::setJustification(
+                        LineData::JustificationStyle const whichJustification )
+      {
+        this->whichJustification = whichJustification;
+      }
 
       inline int
       LineData::getColumn() const
@@ -87,6 +138,16 @@ namespace LHPC
       LineData::getLabelString() const
       {
         return labelString;
+      }
+
+      inline void
+      LineData::relabelForOverlargeMass( double const scaleMaximum )
+      {
+        whichJustification = centerJustified;
+        labelString.append( " (" );
+        labelString.append( overlargeMassPrinter.doubleToString( massValue ) );
+        labelString.append( ")" );
+        labelPosition = ( 0.99 * scaleMaximum );
       }
 
       inline std::string const&

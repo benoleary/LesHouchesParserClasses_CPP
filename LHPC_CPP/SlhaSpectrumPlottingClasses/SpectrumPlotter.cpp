@@ -29,8 +29,8 @@ namespace LHPC
     SpectrumPlotter::fullLatexBaseName( "LHPC_SpectrumPlotter_LaTeX" );
 
 
-    SpectrumPlotter::SpectrumPlotter( ControlBlock const& plotControlBlock,
-                                      LineBlock const& linePlottingBlock,
+    SpectrumPlotter::SpectrumPlotter( StringBlock const& plotControlBlock,
+                                      StringBlock const& linePlottingBlock,
                                       MassBlock const* const massPointer ) :
         plotControlBlock( plotControlBlock ),
         linePlottingBlock( linePlottingBlock ),
@@ -51,8 +51,8 @@ namespace LHPC
       // just an initialization list.
     }
 
-    SpectrumPlotter::SpectrumPlotter( ControlBlock const& plotControlBlock,
-                                      LineBlock const& linePlottingBlock,
+    SpectrumPlotter::SpectrumPlotter( StringBlock const& plotControlBlock,
+                                      StringBlock const& linePlottingBlock,
                                       FmassBlock const* const fmassPointer ) :
         plotControlBlock( plotControlBlock ),
         linePlottingBlock( linePlottingBlock ),
@@ -248,7 +248,7 @@ namespace LHPC
           // now columnSet is large enough for the line to be put into its
           // appropriate column:
           columnSet[ lineIterator->second.getColumn() ].push_back(
-                                new MassLine( lineIterator->second,
+                                            new MassLine( lineIterator->second,
                                                           massValue ) );
         }
         ++lineIterator;

@@ -26,19 +26,16 @@ namespace LHPC
     class SpectrumPlotter
     {
     public:
-      typedef BlockClass::SparseSinglyIndexed< std::string > ControlBlock;
-      typedef
-      BlockClass::SparseSinglyIndexed< SpectrumPlotting::LineData >
-      LineBlock;
+      typedef BlockClass::SparseSinglyIndexed< std::string > StringBlock;
       typedef std::map< int,
                         SpectrumPlotting::LineData > LineMap;
       typedef std::list< SpectrumPlotting::MassLine > LineList;
 
-      SpectrumPlotter( ControlBlock const& plotControlBlock,
-                       LineBlock const& linePlottingBlock,
+      SpectrumPlotter( StringBlock const& plotControlBlock,
+                       StringBlock const& linePlottingBlock,
                        MassBlock const* const massPointer );
-      SpectrumPlotter( ControlBlock const& plotControlBlock,
-                       LineBlock const& linePlottingBlock,
+      SpectrumPlotter( StringBlock const& plotControlBlock,
+                       StringBlock const& linePlottingBlock,
                        FmassBlock const* const fmassPointer );
       virtual
       ~SpectrumPlotter();
@@ -61,8 +58,8 @@ namespace LHPC
       static std::string const gnuplotTexBaseName;
       static std::string const fullLatexBaseName;
 
-      ControlBlock const& plotControlBlock;
-      LineBlock const& linePlottingBlock;
+      StringBlock const& plotControlBlock;
+      StringBlock const& linePlottingBlock;
       MassBlock const* const massPointer;
       FmassBlock const* const fmassPointer;
       double scaleMaximum;
@@ -91,6 +88,9 @@ namespace LHPC
       sortAndFloatLinesAndLabels();
       bool
       writeGnuplotFiles();
+      void
+      sortMasses();
+      // this sorts all the masses in the columns, & then sets the scale range.
     };
 
   }

@@ -33,7 +33,7 @@ namespace LHPC
           massValue( massValue ),
           labelPosition( -1.0 ),
           labelString( "error" ),
-          colorString( black )
+          colorString( "black" )
       {
         if( 0.0 > massValue )
         {
@@ -54,6 +54,17 @@ namespace LHPC
         labelString.assign( BOL::StringParser::trimFromFrontAndBack(
                                                                    labelString,
                                         BOL::StringParser::whitespaceChars ) );
+      }
+
+      LineData::LineData( LineData const& copySource ) :
+          columnIndex( copySource.columnIndex ),
+          whichJustification( copySource.whichJustification ),
+          massValue( copySource.massValue ),
+          labelPosition( copySource.labelPosition ),
+          labelString( copySource.labelString ),
+          colorString( copySource.colorString )
+      {
+        // just an initialization list.
       }
 
       LineData::~LineData()

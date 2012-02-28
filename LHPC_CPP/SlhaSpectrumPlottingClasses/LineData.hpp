@@ -43,6 +43,7 @@ namespace LHPC
 
         LineData( std::string const& dataString,
                   double const massValue );
+        LineData( LineData const& copySource );
         ~LineData();
 
         JustificationStyle

@@ -15,6 +15,7 @@
 #define SPECTRUMPLOTTER_HPP_
 
 #include <cstdlib>
+#include <fstream>
 #include <string>
 #include <list>
 #include <map>
@@ -47,7 +48,8 @@ namespace LHPC
       ~SpectrumPlotter();
 
       bool
-      plotSpectrum( std::string const& plotFileName );
+      plotSpectrum( std::string const& plotFileName,
+                    bool const shouldCleanUp = true );
 
 
     protected:
@@ -60,13 +62,19 @@ namespace LHPC
       static int const ps2epsIndex;
       static int const rmIndex;
       static int const mvIndex;
-      static std::string const unitString;
+      static std::string unitString;
       static std::string const gnuplotDataFileName;
       static std::string const gnuplotCommandFileName;
       static std::string const gnuplotTexBaseName;
       static std::string const fullLatexBaseName;
       static double const automaticScaleFactor;
       static double const labelMinimumPosition;
+      static double const labelSeparationShuffleFactor;
+      static double const labelWidth;
+      static double const joinerWidth;
+      static double const flatBitWidth;
+      static double const columnPairOffset;
+      static double const fullColumnWidth;
       static int const maximumLabelFloatingShuffles;
 
       StringBlock const& plotControlBlock;
@@ -78,13 +86,17 @@ namespace LHPC
       double largestMass;
       BOL::VectorlikeArray< LineList > columnSet;
       LineList* columnPointer;
-      LineMap* plotLineMap;
+      LineMap const* plotLineMap;
       LineMap::const_iterator lineIterator;
+      SpectrumPlotting::LineData* linePointer;
       std::list< SpectrumPlotting::LineData >::iterator lowerMassIterator;
       std::list< SpectrumPlotting::LineData >::iterator upperMassIterator;
+      bool notYetFinishedShuffling;
+      int remainingShuffles;
       int whichMassEigenstate;
       double massValue;
       double labelSeparation;
+      double labelAverage;
       bool lastOperationSuccessful;
       int systemCallReturn;
       std::string gnuplotCommand;
@@ -94,6 +106,11 @@ namespace LHPC
       bool epsiInstead;
       std::string mainCleanupCommand;
       std::string moveCommand;
+      bool leftColumnRatherThanRight;
+      double leftLineXValue;
+      double middleLineXValue;
+      double rightLineXValue;
+      int gnuplotLineIndex;
 
       void
       loadCommands( std::string const& plotFileName );

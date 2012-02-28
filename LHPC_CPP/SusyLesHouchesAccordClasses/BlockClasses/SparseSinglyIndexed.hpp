@@ -74,7 +74,7 @@ namespace LHPC
         interpretAsString( double const blockScale = 0.0 );
         // see base version's description.
         virtual IntToValueMap const*
-        getMap( double const blockScale = 0.0 );
+        getMap( double const blockScale = 0.0 ) const;
         // this returns a pointer to the scale-appropriate std::map.
         bool
         hasEntry( int const soughtIndex,
@@ -86,6 +86,9 @@ namespace LHPC
       protected:
         typedef typename std::map< int,
                                    ValueType >::iterator IntToValueMapIterator;
+        typedef typename
+        std::map< int,
+                  ValueType >::const_iterator IntToValueMapConstIterator;
 
         BOL::VectorlikeArray< IntToValueMap > valueMapArray;
         IntToValueMapIterator valueFinder;
@@ -165,7 +168,7 @@ namespace LHPC
        * there already.
        */
       {
-        IntToValueMapIterator
+        IntToValueMapConstIterator
         valueSeeker( valueMapArray[ this->findScaleIndex( blockScale ) ].find(
                                                                soughtIndex ) );
         if( valueMapArray.end() != valueSeeker )
@@ -203,11 +206,12 @@ namespace LHPC
        * there already.
        */
       {
-        valueFinder
-        = valueMapArray[ this->lowestScaleIndex ].find( soughtIndex );
-        if( valueMapArray.end() != valueFinder )
+        IntToValueMapConstIterator
+        valueSeeker( valueMapArray[ this->lowestScaleIndex ].find(
+                                                               soughtIndex ) );
+        if( valueMapArray[ this->lowestScaleIndex ].end() != valueSeeker )
         {
-          return valueFinder->second;
+          return valueSeeker->second;
         }
         else
         {
@@ -283,7 +287,7 @@ namespace LHPC
       template< typename ValueType >
       inline std::map< int,
                        ValueType > const*
-      SparseSinglyIndexed< ValueType >::getMap( double const blockScale )
+      SparseSinglyIndexed< ValueType >::getMap( double const blockScale ) const
       // this returns a pointer to the scale-appropriate std::map.
       {
         if( valueMapArray.isEmpty() )
@@ -300,7 +304,7 @@ namespace LHPC
       template< typename ValueType >
       inline bool
       SparseSinglyIndexed< ValueType >::hasEntry( int const soughtIndex,
-                                                  double const blockScale )
+                                                double const blockScale ) const
       // this returns true if there is an entry at soughtIndex.
       {
         if( 0 >= valueMapArray[ this->findScaleIndex( blockScale ) ].count(

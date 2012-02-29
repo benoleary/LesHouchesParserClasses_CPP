@@ -128,7 +128,7 @@
  */
  
 /* CHANGELOG:
- * 29th February 2012: version 0.1 released!
+ * 29th February 2012: version 0.1.0 released!
  * (LHEF & SLHA parsers seem to work, spectrum plotter seems to work; after
  * some beta testing, this version will be tweaked & released as 1.0.0)
  */

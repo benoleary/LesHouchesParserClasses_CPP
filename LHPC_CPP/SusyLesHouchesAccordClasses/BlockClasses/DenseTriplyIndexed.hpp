@@ -357,7 +357,9 @@ namespace LHPC
                              (--firstRecordingIndex),
                              (--secondRecordingIndex),
                              (--thirdRecordingIndex) )
-            = this->stringToValue( SlhaBlock::firstRemainder );
+            = this->stringToValue( BOL::StringParser::trimFromFrontAndBack(
+                                                     SlhaBlock::firstRemainder,
+                                                                 " \t\r\n" ) );
           }
           else if( this->isVerbose )
           {
@@ -377,7 +379,9 @@ namespace LHPC
                                                  int const secondIndex,
                                                  int const thirdIndex ) const
       {
-        if( ( 0 <= firstIndex )
+        if( ( whichData < valueMatrixArray.getSize() )
+            &&
+            ( 0 <= firstIndex )
             &&
             ( 0 <= secondIndex )
             &&

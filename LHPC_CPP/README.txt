@@ -90,12 +90,17 @@
  *        - SneutrinosOneToThree.cpp
  *        - SquarksOneToSix.hpp
  *        - SquarksOneToSix.cpp
- *      LHPC_CPP/ParticleCodesAndData/NineDigitSlhaCodes.hpp
- *      LHPC_CPP/ParticleCodesAndData/NineDigitSlhaCodes.cpp
- *      LHPC_CPP/ParticleCodesAndData/PdgData.hpp
- *      LHPC_CPP/ParticleCodesAndData/PdgData.cpp
- *      LHPC_CPP/ParticleCodesAndData/SevenDigitSlhaCodes.hpp
- *      LHPC_CPP/ParticleCodesAndData/SevenDigitSlhaCodes.cpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.cpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/PdgData.hpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/PdgData.cpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp
+ *      LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.hpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.cpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
+ *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp
@@ -104,8 +109,6 @@
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/SpectrumDrawer.hpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/SpectrumDrawer.cpp
  *      6 files in LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
  *      - DenseDoublyIndexed.hpp
  *      - DenseSinglyIndexed.hpp
@@ -123,6 +126,12 @@
  *      and README.LHPC_CPP.txt which describes the package (copied as
  *      README.txt).
  */
+ 
+/* CHANGELOG:
+ * 29th February 2012: version 0.1 released!
+ * (LHEF & SLHA parsers seem to work, spectrum plotter seems to work; after
+ * some beta testing, this version will be tweaked & released as 1.0.0)
+ */
 
 /* LesHouchesParserClasses (LHPC) is a set of classes for interpretting Les
  * Houches Event File (LHEF) format files and SUSY Les Houches Accord (SLHA)
@@ -130,7 +139,13 @@
  * less functionality. this LHPC_CPP set of files is the version written in
  * C++.
  * there are 2 main parts to LHPC: the LHEF parser & associated structures;
- * & the SLHA parser & associated structures.
+ * & the SLHA parser & associated structures. there is also code to
+ * automatically plot SLHA spectra using the SLHA parser, though this requires
+ * the use of external programs: gnuplot, latex, dvips, & ps2eps (or ps2epsi).
+ *
+ * SLHA spectrum plotter: running make will produce LhpcSpectrumPlotter.exe,
+ * which can be run without any arguments to show further information on how to
+ * use it.
  *
  * LHPC::LhefParser, the class for reading in events from a file in the LHEF
  * format:

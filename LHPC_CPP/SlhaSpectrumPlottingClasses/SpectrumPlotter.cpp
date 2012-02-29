@@ -17,15 +17,16 @@ namespace LHPC
 {
   namespace SLHA
   {
-    int const SpectrumPlotter::unitIndex( 1 );
-    int const SpectrumPlotter::scaleIndex( 2 );
-    int const SpectrumPlotter::labelSizeIndex( 3 );
-    int const SpectrumPlotter::gnuplotIndex( 4 );
-    int const SpectrumPlotter::latexIndex( 5 );
-    int const SpectrumPlotter::dvipsIndex( 6 );
-    int const SpectrumPlotter::ps2epsIndex( 7 );
-    int const SpectrumPlotter::rmIndex( 8 );
-    int const SpectrumPlotter::mvIndex( 9 );
+    int const SpectrumPlotter::unitIndex( 11 );
+    int const SpectrumPlotter::scaleIndex( 12 );
+    int const SpectrumPlotter::labelYSizeIndex( 13 );
+    int const SpectrumPlotter::labelXSizeIndex( 14 );
+    int const SpectrumPlotter::gnuplotIndex( 21 );
+    int const SpectrumPlotter::latexIndex( 22 );
+    int const SpectrumPlotter::dvipsIndex( 23 );
+    int const SpectrumPlotter::ps2epsIndex( 24 );
+    int const SpectrumPlotter::rmIndex( 25 );
+    int const SpectrumPlotter::mvIndex( 26 );
     std::string SpectrumPlotter::unitString( "GeV" );
     std::string const SpectrumPlotter::gnuplotDataFileName(
                                           "LHPC_SpectrumPlotter_gnuplot.dat" );
@@ -36,68 +37,22 @@ namespace LHPC
     std::string const
     SpectrumPlotter::fullLatexBaseName( "LHPC_SpectrumPlotter_LaTeX" );
     double const SpectrumPlotter::automaticScaleFactor( 1.1 );
-    double const SpectrumPlotter::labelMinimumPosition( 0.05 );
     double const SpectrumPlotter::labelSeparationShuffleFactor( 0.51 );
-    double const SpectrumPlotter::labelWidth( 30.0 );
-    double const SpectrumPlotter::joinerWidth( 20.0 );
-    double const SpectrumPlotter::flatBitWidth( 100.0 );
+    double const SpectrumPlotter::marginWidth( 10.0 );
+    double const SpectrumPlotter::joinerWidth( 15.0 );
+    double const SpectrumPlotter::flatBitWidth( 100.0 - joinerWidth );
     double const SpectrumPlotter::columnPairOffset( 10.0 );
-    double const
-    SpectrumPlotter::fullColumnWidth( labelWidth + joinerWidth
-                                      + flatBitWidth + columnPairOffset
-                                      + joinerWidth + labelWidth );
     int const SpectrumPlotter::maximumLabelFloatingShuffles( 100 );
 
 
     SpectrumPlotter::SpectrumPlotter( StringBlock const& plotControlBlock,
                                       StringBlock const& linePlottingBlock,
+                                      FmassBlock const* const fmassPointer,
                                       MassBlock const* const massPointer ) :
         plotControlBlock( plotControlBlock ),
         linePlottingBlock( linePlottingBlock ),
-        massPointer( massPointer ),
-        fmassPointer( NULL ),
-        unitFactor( 1.0 ),
-        scaleMaximum( -1.0 ),
-        largestMass( 0.0 ),
-        columnSet(),
-        columnPointer( NULL ),
-        plotLineMap( NULL ),
-        lineIterator(),
-        lineAdder(),
-        lowerMassIterator(),
-        upperMassIterator(),
-        notYetFinishedShuffling( false ),
-        remainingShuffles( maximumLabelFloatingShuffles ),
-        whichMassEigenstate( 0 ),
-        massValue( 0.0 ),
-        labelSeparation( labelMinimumPosition ),
-        labelAverage( 0.0 ),
-        lastOperationSuccessful( false ),
-        systemCallReturn( -1 ),
-        gnuplotCommand( "" ),
-        latexCommand( "" ),
-        dvipsCommand( "" ),
-        ps2epsCommand( "" ),
-        epsiInstead( false ),
-        mainCleanupCommand( "" ),
-        moveCommand( "" ),
-        leftColumnRatherThanRight( false ),
-        leftLineXValue( 0.0 ),
-        middleLineXValue( 0.0 ),
-        rightLineXValue( 0.0 ),
-        gnuplotLineIndex( 0 ),
-        gnuplotLabelString( "" )
-    {
-      // just an initialization list.
-    }
-
-    SpectrumPlotter::SpectrumPlotter( StringBlock const& plotControlBlock,
-                                      StringBlock const& linePlottingBlock,
-                                      FmassBlock const* const fmassPointer ) :
-        plotControlBlock( plotControlBlock ),
-        linePlottingBlock( linePlottingBlock ),
-        massPointer( NULL ),
         fmassPointer( fmassPointer ),
+        massPointer( massPointer ),
         unitFactor( 1.0 ),
         scaleMaximum( -1.0 ),
         largestMass( 0.0 ),
@@ -112,10 +67,16 @@ namespace LHPC
         remainingShuffles( maximumLabelFloatingShuffles ),
         whichMassEigenstate( 0 ),
         massValue( 0.0 ),
-        labelSeparation( labelMinimumPosition ),
+        labelRoomWidth( 30.0 ),
+        labelLatexWidth( labelRoomWidth ),
+        fullColumnWidth( labelRoomWidth + joinerWidth
+                         + flatBitWidth + columnPairOffset
+                         + joinerWidth + labelRoomWidth ),
+        labelSeparation( 0.05 ),
         labelAverage( 0.0 ),
         lastOperationSuccessful( false ),
         systemCallReturn( -1 ),
+        fullLatexFilename( fullLatexBaseName ),
         gnuplotCommand( "" ),
         latexCommand( "" ),
         dvipsCommand( "" ),
@@ -130,7 +91,7 @@ namespace LHPC
         gnuplotLineIndex( 0 ),
         gnuplotLabelString( "" )
     {
-      // just an initialization list.
+      fullLatexFilename.append( ".tex" );
     }
 
     SpectrumPlotter::~SpectrumPlotter()
@@ -145,7 +106,8 @@ namespace LHPC
     {
       loadCommands( plotFileName );
       loadLines();
-      sortAndFloatLinesAndLabels();
+      sortMasses();
+      floatLabels();
       lastOperationSuccessful = writeGnuplotFiles();
       if( lastOperationSuccessful )
       {
@@ -205,25 +167,25 @@ namespace LHPC
       {
         unitString.assign( plotControlBlock[ unitIndex ] );
         BOL::StringParser::transformToUppercase( unitString );
-        if( unitString.compare( "GEV" ) )
+        if( 0 == unitString.compare( "GEV" ) )
         {
           unitFactor = 1.0;
         }
-        else if( unitString.compare( "TEV" ) )
-        {
-          unitFactor = 1000.0;
-        }
-        else if( unitString.compare( "MEV" ) )
+        else if( 0 == unitString.compare( "TEV" ) )
         {
           unitFactor = 0.001;
         }
-        else if( unitString.compare( "KEV" ) )
+        else if( 0 == unitString.compare( "MEV" ) )
         {
-          unitFactor = 0.000001;
+          unitFactor = 1000.0;
         }
-        else if( unitString.compare( "EV" ) )
+        else if( 0 == unitString.compare( "KEV" ) )
         {
-          unitFactor = 0.000000001;
+          unitFactor = 1000000.0;
+        }
+        else if( 0 == unitString.compare( "EV" ) )
+        {
+          unitFactor = 1000000000.0;
         }
         else
         {
@@ -250,17 +212,32 @@ namespace LHPC
       {
         scaleMaximum = -1.0;
       }
-      if( plotControlBlock.hasEntry( labelSizeIndex ) )
+      if( plotControlBlock.hasEntry( labelYSizeIndex ) )
       {
         labelSeparation
         = ( 0.01 * BOL::StringParser::stringToDouble( plotControlBlock[
-                                                          labelSizeIndex ] ) );
-        // the label separation is given as a percentage in the control block.
+                                                         labelYSizeIndex ] ) );
+        // the label separation is given as a percentage of the scale range in
+        // the control block.
       }
       else
       {
         labelSeparation = 0.05;
       }
+      if( plotControlBlock.hasEntry( labelXSizeIndex ) )
+      {
+        labelRoomWidth = BOL::StringParser::stringToDouble( plotControlBlock[
+                                                           labelXSizeIndex ] );
+        // the label separation is given as a percentage of the plot line width
+        // in the control block.
+      }
+      else
+      {
+        labelRoomWidth = 30.0;
+      }
+      fullColumnWidth = ( labelRoomWidth + joinerWidth
+                          + flatBitWidth + columnPairOffset
+                          + joinerWidth + labelRoomWidth );
       if( plotControlBlock.hasEntry( gnuplotIndex ) )
       {
         gnuplotCommand.assign( plotControlBlock[ gnuplotIndex ] );
@@ -310,7 +287,7 @@ namespace LHPC
       {
         epsiInstead = true;
       }
-      ps2epsCommand.append( " " );
+      ps2epsCommand.append( " -f " );
       ps2epsCommand.append( fullLatexBaseName );
       ps2epsCommand.append( ".ps" );
       // "ps2eps LHPC_SpectrumPlotter_LaTeX.ps"
@@ -357,8 +334,9 @@ namespace LHPC
       }
       else
       {
-        mainCleanupCommand.assign( "/bin/mv" );
+        moveCommand.assign( "/bin/mv" );
       }
+      moveCommand.append( " " );
       moveCommand.append( fullLatexBaseName );
       moveCommand.append( ".eps" );
       if( epsiInstead )
@@ -380,22 +358,25 @@ namespace LHPC
       {
         whichMassEigenstate = lineIterator->first;
         lastOperationSuccessful = false;
-        // whether there is a mass for the line needs to be checked:
-        if( ( NULL != massPointer )
+
+        // whether there is a mass for the line needs to be checked (FMASS is
+        // checked for before MASS):
+        if( ( NULL != fmassPointer )
             &&
-            ( massPointer->hasEntry( whichMassEigenstate ) ) )
-        {
-          massValue = ( unitFactor * (*massPointer)[ whichMassEigenstate ] );
-          lastOperationSuccessful = true;
-        }
-        else if( ( NULL != fmassPointer )
-                 &&
-                 ( fmassPointer->hasEntry( whichMassEigenstate ) ) )
+            ( fmassPointer->hasEntry( whichMassEigenstate ) ) )
         {
           massValue = ( unitFactor
                         * (*fmassPointer)[ whichMassEigenstate ].getMass() );
           lastOperationSuccessful = true;
         }
+        else if( ( NULL != massPointer )
+                 &&
+                 ( massPointer->hasEntry( whichMassEigenstate ) ) )
+        {
+          massValue = ( unitFactor * (*massPointer)[ whichMassEigenstate ] );
+          lastOperationSuccessful = true;
+        }
+
         if( lastOperationSuccessful )
           // if there was a mass recorded for this mass eigenstate...
         {
@@ -414,10 +395,141 @@ namespace LHPC
     }
 
     void
-    SpectrumPlotter::sortAndFloatLinesAndLabels()
+    SpectrumPlotter::sortMasses()
+    // this sorts all the masses in the columns, & then sets the scale range,
+    // then deals with any labels above the final scaleMaximum.
     {
-      sortMasses();
-      floatLabels();
+      largestMass = 0.0;
+      for( int whichColumn( columnSet.getLastIndex() );
+           0 < whichColumn;
+           --whichColumn )
+      {
+        columnPointer = columnSet.getPointer( whichColumn );
+        if( !(columnPointer->empty()) )
+        {
+          columnPointer->sort( &(SpectrumPlotting::LineData::lowToHigh) );
+          if( columnPointer->back().getMass() > largestMass )
+          {
+            largestMass = columnPointer->back().getMass();
+          }
+        }
+      }
+      if( 0.0 >= scaleMaximum )
+        // if the scale is to be automatically decided by the largest mass...
+      {
+        scaleMaximum = ( largestMass * automaticScaleFactor );
+      }
+      // now that the scale range is known, the separation between labels can
+      // be fixed.
+      labelSeparation = ( labelSeparation * scaleMaximum );
+
+      // now labels above scaleMaximum get the mass appended in brackets, get
+      // moved to just beneath scaleMaximum, & get flagged as center-justified.
+      for( int whichColumn( columnSet.getLastIndex() );
+           0 < whichColumn;
+           --whichColumn )
+      {
+        columnPointer = columnSet.getPointer( whichColumn );
+        for( std::list< SpectrumPlotting::LineData >::iterator
+             lineIterator( columnPointer->begin() );
+             columnPointer->end() != lineIterator;
+             ++lineIterator )
+        {
+          if( lineIterator->getMass() > scaleMaximum )
+          {
+            lineIterator->relabelForOverlargeMass( scaleMaximum );
+          }
+        }
+      }
+    }
+
+    void
+    SpectrumPlotter::floatLabels()
+    // this tries to move all the labels up or down until they are all
+    // separated by ( labelSeparation * scaleMaximum ).
+    {
+      for( int whichColumn( columnSet.getLastIndex() );
+           0 < whichColumn;
+           --whichColumn )
+      {
+        columnPointer = columnSet.getPointer( whichColumn );
+        if( 1 < columnPointer->size() )
+          // the labels only need to be checked for overlap if there are at
+          // least 2 lines in the column.
+        {
+          notYetFinishedShuffling = true;
+          // at least one iteration of the shuffling loop must be performed so
+          // that at least the labels are checked to be in position.
+          remainingShuffles = maximumLabelFloatingShuffles;
+          // each column is allowed to try floating the labels apart
+          // maximumLabelFloatingShuffles times.
+          while( notYetFinishedShuffling
+                &&
+                ( 0 < remainingShuffles ) )
+          {
+            notYetFinishedShuffling = false;
+            // each iteration starts by assuming that it just finds that all
+            // the labels are sufficiently separate, with no floating needed.
+            --remainingShuffles;
+            lowerMassIterator = columnPointer->begin();
+            // if the lowest label is too low, it is bumped up to its lowest
+            // allowed position:
+            if( labelSeparation > lowerMassIterator->getLabelPosition() )
+            {
+              notYetFinishedShuffling = true;
+              // moving the lowest label means that the column has to be
+              // checked again for overlapping labels.
+              lowerMassIterator->setLabelPosition( labelSeparation );
+            }
+            upperMassIterator = lowerMassIterator;
+            ++upperMassIterator;
+            while( upperMassIterator != columnPointer->end() )
+              // lowerMassIterator is always 1 step behind upperMassIterator.
+            {
+              if( labelSeparation > ( upperMassIterator->getLabelPosition()
+                                    - lowerMassIterator->getLabelPosition() ) )
+                // if a pair of overlapping labels is found...
+              {
+                notYetFinishedShuffling = true;
+                /* ... first notYetFinishedShuffling is set to true since this
+                 * iteration did not merely confirm that the labels are in
+                 * order & well separated. then the labels are floated away
+                 * from each other around their average position. since the
+                 * conditional does not check for the absolute separation, if
+                 * labels ever get twisted past each other, the conditional
+                 * will find them, & since the lines are sorted according to
+                 * their mass value rather than their current label position,
+                 * the labels get separated in the right direction.
+                 */
+                labelAverage
+                = ( 0.5 * ( upperMassIterator->getLabelPosition()
+                            + lowerMassIterator->getLabelPosition() ) );
+                lowerMassIterator->setLabelPosition( labelAverage
+                                                 - labelSeparationShuffleFactor
+                                                   * labelSeparation );
+                upperMassIterator->setLabelPosition( labelAverage
+                                                 + labelSeparationShuffleFactor
+                                                   * labelSeparation );
+              }
+              ++lowerMassIterator;
+              ++upperMassIterator;
+            }
+            /* now upperMassIterator is at columnPointer->end(), so
+             * lowerMassIterator is at the highest label, which is ensured to
+             * be lower than its highest value:
+             */
+            if( ( scaleMaximum - labelSeparation )
+                < lowerMassIterator->getLabelPosition() )
+            {
+              notYetFinishedShuffling = true;
+              // moving the highest label means that the column has to be
+              // checked again for overlapping labels.
+              lowerMassIterator->setLabelPosition( scaleMaximum
+                                                   - labelSeparation );
+            }
+          }  // end of loop over shuffles.
+        }  // end of if the column had 2 or more lines.
+      }  // end of loop over columns.
     }
 
     bool
@@ -434,6 +546,8 @@ namespace LHPC
         << "set term epslatex color solid"
         << std::endl << "set output \"" << gnuplotTexBaseName << ".eps\""
         << std::endl << "set format x \"\""
+        << std::endl << "unset xtics"
+        << std::endl << "set ytics out"
         << std::endl;
 
         gnuplotLineIndex = 0;
@@ -441,6 +555,7 @@ namespace LHPC
              0 < whichColumn;
              --whichColumn )
         {
+          columnPointer = columnSet.getPointer( whichColumn );
           if( 1 == ( whichColumn % 2 ) )
             // if the column gets its labels to its left...
           {
@@ -452,8 +567,8 @@ namespace LHPC
           }
 
           leftLineXValue
-          = ( ( ((double)( whichColumn / 2 )) * fullColumnWidth )
-              + labelWidth );
+          = ( ( ((double)( ( whichColumn - 1 ) / 2 )) * fullColumnWidth )
+              + labelRoomWidth + marginWidth );
           if( leftColumnRatherThanRight )
           {
             middleLineXValue = ( leftLineXValue + joinerWidth );
@@ -471,28 +586,38 @@ namespace LHPC
                columnPointer->end() != lineIterator;
                ++lineIterator )
           {
+            gnuplotLabelString.assign( "{" );
+
+            /* since the labels are centered by gnuplot, left justification is
+             * hacked in by having a phantom to the left, so that the label
+             * is only visible from the right of the center point of the label,
+             * & similar for right justification.
+             */
             if( SpectrumPlotting::LineData::leftJustified
                 == lineIterator->getJustification() )
             {
-              gnuplotLabelEnvironmentString.assign( "flushleft" );
+              gnuplotLabelString.append( "{\\phantom{" );
+              gnuplotLabelString.append( lineIterator->getLabelString() );
+              gnuplotLabelString.append( "}{" );
+              gnuplotLabelString.append( lineIterator->getLabelString() );
+              gnuplotLabelString.append( "}}" );
             }
             else if( SpectrumPlotting::LineData::rightJustified
-                == lineIterator->getJustification() )
+                     == lineIterator->getJustification() )
             {
-              gnuplotLabelEnvironmentString.assign( "flushright" );
+              gnuplotLabelString.append( "{" );
+              gnuplotLabelString.append( lineIterator->getLabelString() );
+              gnuplotLabelString.append( "}{\\phantom{" );
+              gnuplotLabelString.append( lineIterator->getLabelString() );
+              gnuplotLabelString.append( "}}" );
             }
             else
               // this case should only be center-justified.
             {
-              gnuplotLabelEnvironmentString.assign( "center" );
+              gnuplotLabelString.append( lineIterator->getLabelString() );
             }
-            gnuplotLabelString.assign( "{\\begin{" );
-            gnuplotLabelString.append( gnuplotLabelEnvironmentString );
-            gnuplotLabelString.append( "}{" );
-            gnuplotLabelString.append( lineIterator->getLabelString() );
-            gnuplotLabelString.append( "}\\end{" );
-            gnuplotLabelString.append( gnuplotLabelEnvironmentString );
-            gnuplotLabelString.append( "}}" );
+            gnuplotLabelString.append( "}" );
+
             if( leftColumnRatherThanRight )
             {
               gnuplotDataFile
@@ -534,7 +659,6 @@ namespace LHPC
             << std::endl;
             // gnuplotLineIndex is incremented to give each line its own unique
             // linestyle.
-
           }  // end of loop over lines within the column.
         }  // end of loop over columns.
 
@@ -543,8 +667,10 @@ namespace LHPC
         // finally construct the plot command:
         gnuplotCommandFile
         << "plot [0:"
-        << ( (double)( ( columnSet.getLastIndex() / 2 )
-                       + ( columnSet.getLastIndex() % 2 ) ) * fullColumnWidth )
+        << ( ( (double)( ( columnSet.getLastIndex() / 2 )
+                         + ( columnSet.getLastIndex() % 2 ) )
+             * fullColumnWidth )
+             + 2.0 * marginWidth )
         // this should correctly count the number of column pairs, even if the
         // last pair is only one column.
         << "] [0:" << scaleMaximum << "] '" << gnuplotDataFileName
@@ -561,7 +687,7 @@ namespace LHPC
         gnuplotCommandFile << std::endl;
         gnuplotCommandFile.close();
 
-        std::ofstream fullLatexFile( fullLatexBaseName.c_str() );
+        std::ofstream fullLatexFile( fullLatexFilename.c_str() );
         if( fullLatexFile.is_open() )
         {
           fullLatexFile
@@ -586,133 +712,6 @@ namespace LHPC
       {
         return false;
       }
-    }
-
-    void
-    SpectrumPlotter::sortMasses()
-    // this sorts all the masses in the columns, & then sets the scale range,
-    // then deals with any labels above the final scaleMaximum.
-    {
-      largestMass = 0.0;
-      for( int whichColumn( columnSet.getLastIndex() );
-           0 < whichColumn;
-           --whichColumn )
-      {
-        columnPointer = columnSet.getPointer( whichColumn );
-        if( !(columnPointer->empty()) )
-        {
-          columnPointer->sort( &(SpectrumPlotting::LineData::lowToHigh) );
-          largestMass = columnPointer->back().getMass();
-        }
-      }
-      if( 0.0 >= scaleMaximum )
-        // if the scale is to be automatically decided by the largest mass...
-      {
-        scaleMaximum = ( largestMass * automaticScaleFactor );
-      }
-
-      // now labels above scaleMaximum get the mass appended in brackets, get
-      // moved to just beneath scaleMaximum, & get flagged as center-justified.
-      for( int whichColumn( columnSet.getLastIndex() );
-           0 < whichColumn;
-           --whichColumn )
-      {
-        columnPointer = columnSet.getPointer( whichColumn );
-        for( std::list< SpectrumPlotting::LineData >::iterator
-             lineIterator( columnPointer->begin() );
-             columnPointer->end() != lineIterator;
-             ++lineIterator )
-        {
-          if( lineIterator->getMass() > scaleMaximum )
-          {
-            lineIterator->relabelForOverlargeMass( scaleMaximum );
-          }
-        }
-      }
-    }
-
-    void
-    SpectrumPlotter::floatLabels()
-    // this tries to move all the labels up or down until they are all
-    // separated by ( labelSeparation * scaleMaximum ).
-    {
-      for( int whichColumn( columnSet.getLastIndex() );
-           0 < whichColumn;
-           --whichColumn )
-      {
-        columnPointer = columnSet.getPointer( whichColumn );
-        if( 1 < columnPointer->size() )
-          // the labels only need to be checked for overlap if there are at
-          // least 2 lines in the column.
-        {
-          remainingShuffles = maximumLabelFloatingShuffles;
-          // each column is allowed to try floating the labels apart
-          // maximumLabelFloatingShuffles times.
-          while( notYetFinishedShuffling
-                &&
-                ( 0 < remainingShuffles ) )
-          {
-            notYetFinishedShuffling = false;
-            // each iteration starts by assuming that it just finds that all
-            // the labels are sufficiently separate, with no floating needed.
-            --remainingShuffles;
-            lowerMassIterator = columnPointer->begin();
-            // if the lowest label is too low, it is bumped up to its lowest
-            // allowed position:
-            if( labelMinimumPosition > lowerMassIterator->getLabelPosition() )
-            {
-              notYetFinishedShuffling = true;
-              // moving the lowest label means that the column has to be
-              // checked again for overlapping labels.
-              lowerMassIterator->setLabelPosition( labelMinimumPosition );
-            }
-            upperMassIterator = lowerMassIterator;
-            ++upperMassIterator;
-            while( upperMassIterator != columnPointer->end() )
-              // lowerMassIterator is always 1 step behind upperMassIterator.
-            {
-              if( labelSeparation < ( upperMassIterator->getLabelPosition()
-                                    - lowerMassIterator->getLabelPosition() ) )
-                // if a pair of overlapping labels is found...
-              {
-                notYetFinishedShuffling = true;
-                /* ... first notYetFinishedShuffling is set to true since this
-                 * iteration did not merely confirm that the labels are in
-                 * order & well separated. then the labels are floated away
-                 * from each other around their average position. since the
-                 * conditional does not check for the absolute separation, if
-                 * labels ever get twisted past each other, the conditional
-                 * will find them, & since the lines are sorted according to
-                 * their mass value rather than their current label position,
-                 * the labels get separated in the right direction.
-                 */
-                labelAverage
-                = ( 0.5 * ( upperMassIterator->getLabelPosition()
-                            + lowerMassIterator->getLabelPosition() ) );
-                lowerMassIterator->setLabelPosition( labelAverage
-                                                 - labelSeparationShuffleFactor
-                                                   * labelSeparation );
-                upperMassIterator->setLabelPosition( labelAverage
-                                                 + labelSeparationShuffleFactor
-                                                   * labelSeparation );
-              }
-              ++lowerMassIterator;
-              ++upperMassIterator;
-            }
-            /* now upperMassIterator is at columnPointer->end(), so
-             * lowerMassIterator is at the highest label, which is ensured to
-             * be lower than its highest value:
-             */
-            if( scaleMaximum < lowerMassIterator->getLabelPosition() )
-            {
-              notYetFinishedShuffling = true;
-              // moving the highest label means that the column has to be
-              // checked again for overlapping labels.
-              lowerMassIterator->setLabelPosition( scaleMaximum );
-            }
-          }  // end of loop over shuffles.
-        }  // end of if the column had 2 or more lines.
-      }  // end of loop over columns.
     }
 
   }

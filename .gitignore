@@ -331,3 +331,7 @@ Release/LHPC_CPP/SlhaSpectrumPlottingClasses/subdir.mk
 Release/LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.d
 
 Release/LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.o
+
+Release/LHPC_CPP/LhpcSpectrumPlotter.d
+
+Release/LHPC_CPP/LhpcSpectrumPlotter.o

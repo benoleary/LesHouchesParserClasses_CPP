@@ -280,7 +280,9 @@ namespace LHPC
              */
             findOrMakeEntry( this->currentIndex,
                              (--recordingIndex) )
-            = this->stringToValue( SlhaBlock::firstRemainder );
+            = this->stringToValue( BOL::StringParser::trimFromFrontAndBack(
+                                                     SlhaBlock::firstRemainder,
+                                                                 " \t\r\n" ) );
           }
           else if( this->isVerbose )
           {
@@ -305,7 +307,9 @@ namespace LHPC
          * looking up directly (converted from SLHA sane starts-from-one to C++
          * silly starts-from-zero).
          */
-        if( ( 0 <= soughtIndex )
+        if( ( whichData < valueVectorArray.getSize() )
+            &&
+            ( 0 <= soughtIndex )
             &&
             ( (size_t)soughtIndex < valueVectorArray[ whichData ].size() ) )
         {

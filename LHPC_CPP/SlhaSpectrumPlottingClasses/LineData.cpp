@@ -23,8 +23,12 @@ namespace LHPC
       BOL::StringParser LineData::overlargeMassPrinter( 1,
                                                         '0',
                                                         3,
-                                                        2,
-                                                        "" );
+                                                        1,
+                                                        "",
+                                                        "-",
+                                                        "",
+                                                        "-",
+                                                        "e" );
 
       LineData::LineData() :
           columnIndex( 0 ),

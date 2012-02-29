@@ -275,11 +275,10 @@ namespace LHPC
         {
           valueRecorder.first
           = BOL::StringParser::stringToInt( SlhaBlock::currentWord );
-          SlhaBlock::currentWord.assign( BOL::StringParser::firstWordOf(
+          valueRecorder.second
+          = this->stringToValue( BOL::StringParser::trimFromFrontAndBack(
                                                      SlhaBlock::firstRemainder,
-                                                 &(SlhaBlock::secondRemainder),
                                                                  " \t\r\n" ) );
-          valueRecorder.second = this->stringToValue( SlhaBlock::currentWord );
           valueMapArray[ this->currentIndex ].insert( valueRecorder );
         }
       }
@@ -307,14 +306,16 @@ namespace LHPC
                                                 double const blockScale ) const
       // this returns true if there is an entry at soughtIndex.
       {
-        if( 0 >= valueMapArray[ this->findScaleIndex( blockScale ) ].count(
-                                                                soughtIndex ) )
+        if( valueMapArray.isEmpty()
+            ||
+            ( 0 >= valueMapArray[ this->findScaleIndex( blockScale ) ].count(
+                                                              soughtIndex ) ) )
         {
-          return true;
+          return false;
         }
         else
         {
-          return false;
+          return true;
         }
       }
 

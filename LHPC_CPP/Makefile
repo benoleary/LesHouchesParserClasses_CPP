@@ -62,12 +62,14 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  SlhaParser.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIBRARYFILE=libLHPC_CPP.a
+PLOTTERCPP=LhpcSpectrumPlotter.cpp
+PLOTTERGEXE=LhpcSpectrumPlotter.exe
 LHEFEGCPP=LhefParserExample.cpp
 LHEFEGEXE=LhefParserExample.exe
 SLHAEGCPP=SlhaParserExample.cpp
 SLHAEGEXE=SlhaParserExample.exe
 
-all: $(SOURCES) $(LIBRARYFILE) $(LHEFEGEXE) $(SLHAEGEXE)
+all: $(SOURCES) $(LIBRARYFILE) $(PLOTTERGEXE) $(LHEFEGEXE) $(SLHAEGEXE)
 
 $(SOURCES):
 	$(CC) $(CCOBJFLAGS) $(CCFLAGS) $< -o $@
@@ -75,12 +77,19 @@ $(SOURCES):
 $(LIBRARYFILE): $(OBJECTS)
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
 
+$(PLOTTERGEXE): $(LIBRARYFILE)
+	$(CC) $(CCEXEFLAGS) $(CCFLAGS) -o $@ $(PLOTTERCPP) $(LDFLAGS)
+
 $(LHEFEGEXE): $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) $(CCFLAGS) -o $@ $(LHEFEGCPP) $(LDFLAGS)
 
 $(SLHAEGEXE): $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) $(CCFLAGS) -o $@ $(SLHAEGCPP) $(LDFLAGS)
 
+.PHONY: deleteobjects
+deleteobjects:
+	\rm -f $(OBJECTS)
+
 .PHONY: clean
 clean:
-	\rm -f $(OBJECTS) $(LIBRARYFILE) $(LHEFEGEXE) $(SLHAEGEXE)
+	\rm -f $(OBJECTS) $(LIBRARYFILE) $(PLOTTERGEXE) $(LHEFEGEXE) $(SLHAEGEXE)

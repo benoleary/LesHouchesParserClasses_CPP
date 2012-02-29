@@ -317,7 +317,9 @@ namespace LHPC
             findOrMakeEntry( this->currentIndex,
                              (--firstRecordingIndex),
                              (--secondRecordingIndex) )
-            = this->stringToValue( SlhaBlock::secondRemainder );
+            = this->stringToValue( BOL::StringParser::trimFromFrontAndBack(
+                                                    SlhaBlock::secondRemainder,
+                                                                 " \t\r\n" ) );
           }
           else if( this->isVerbose )
           {
@@ -343,7 +345,9 @@ namespace LHPC
          * looking up directly (converted from SLHA sane starts-from-one to C++
          * silly starts-from-zero).
          */
-        if( ( 0 <= firstIndex )
+        if( ( whichData < valueMatrixArray.getSize() )
+            &&
+            ( 0 <= firstIndex )
             &&
             ( 0 <= secondIndex )
             &&

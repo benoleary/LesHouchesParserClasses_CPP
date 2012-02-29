@@ -81,7 +81,6 @@ exampleRule::operator()( LHPC::LHEF::ParticleLine const& lineToCheck ) const
   }
 }
 
-//.not_compiled_by_default
 int main( int argumentCount,
           char* argumentCharArray[] )
 {

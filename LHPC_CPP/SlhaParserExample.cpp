@@ -17,7 +17,6 @@
 #include "MassEigenstateCollectionClasses/DefaultSpectra.hpp"
 #include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
-//.not_compiled_by_default
 int main( int argumentCount,
           char* argumentCharArray[] )
 {

@@ -40,10 +40,8 @@ namespace LHPC
 
       SpectrumPlotter( StringBlock const& plotControlBlock,
                        StringBlock const& linePlottingBlock,
-                       MassBlock const* const massPointer );
-      SpectrumPlotter( StringBlock const& plotControlBlock,
-                       StringBlock const& linePlottingBlock,
-                       FmassBlock const* const fmassPointer );
+                       FmassBlock const* const fmassPointer,
+                       MassBlock const* const massPointer = NULL );
       virtual
       ~SpectrumPlotter();
 
@@ -55,7 +53,8 @@ namespace LHPC
     protected:
       static int const unitIndex;
       static int const scaleIndex;
-      static int const labelSizeIndex;
+      static int const labelYSizeIndex;
+      static int const labelXSizeIndex;
       static int const gnuplotIndex;
       static int const latexIndex;
       static int const dvipsIndex;
@@ -68,19 +67,17 @@ namespace LHPC
       static std::string const gnuplotTexBaseName;
       static std::string const fullLatexBaseName;
       static double const automaticScaleFactor;
-      static double const labelMinimumPosition;
       static double const labelSeparationShuffleFactor;
-      static double const labelWidth;
+      static double const marginWidth;
       static double const joinerWidth;
       static double const flatBitWidth;
       static double const columnPairOffset;
-      static double const fullColumnWidth;
       static int const maximumLabelFloatingShuffles;
 
       StringBlock const& plotControlBlock;
       StringBlock const& linePlottingBlock;
-      MassBlock const* const massPointer;
       FmassBlock const* const fmassPointer;
+      MassBlock const* const massPointer;
       double unitFactor;
       double scaleMaximum;
       double largestMass;
@@ -95,10 +92,14 @@ namespace LHPC
       int remainingShuffles;
       int whichMassEigenstate;
       double massValue;
+      double labelRoomWidth;
+      double labelLatexWidth;
+      double fullColumnWidth;
       double labelSeparation;
       double labelAverage;
       bool lastOperationSuccessful;
       int systemCallReturn;
+      std::string fullLatexFilename;
       std::string gnuplotCommand;
       std::string latexCommand;
       std::string dvipsCommand;
@@ -112,16 +113,11 @@ namespace LHPC
       double rightLineXValue;
       int gnuplotLineIndex;
       std::string gnuplotLabelString;
-      std::string gnuplotLabelEnvironmentString;
 
       void
       loadCommands( std::string const& plotFileName );
       void
       loadLines();
-      void
-      sortAndFloatLinesAndLabels();
-      bool
-      writeGnuplotFiles();
       void
       sortMasses();
       // this sorts all the masses in the columns, & then sets the scale range.
@@ -129,6 +125,8 @@ namespace LHPC
       floatLabels();
       // this tries to move all the labels up or down until they are all
       // separated by ( labelSeparation * scaleMaximum ).
+      bool
+      writeGnuplotFiles();
     };
 
   }

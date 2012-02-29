@@ -147,9 +147,9 @@ namespace LHPC
       LineData::relabelForOverlargeMass( double const scaleMaximum )
       {
         whichJustification = centerJustified;
-        labelString.append( " (" );
+        labelString.append( "{\\footnotesize (" );
         labelString.append( overlargeMassPrinter.doubleToString( massValue ) );
-        labelString.append( ")" );
+        labelString.append( ")}" );
         labelPosition = ( 0.99 * scaleMaximum );
       }
 

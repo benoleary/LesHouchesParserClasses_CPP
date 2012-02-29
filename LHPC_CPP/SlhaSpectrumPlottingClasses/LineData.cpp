@@ -26,34 +26,15 @@ namespace LHPC
                                                         2,
                                                         "" );
 
-      LineData::LineData( std::string const& dataString,
-                          double const massValue ) :
+      LineData::LineData() :
           columnIndex( 0 ),
-          whichJustification( leftJustified ),
+          whichJustification( centerJustified ),
           massValue( massValue ),
           labelPosition( -1.0 ),
           labelString( "error" ),
           colorString( "black" )
       {
-        if( 0.0 > massValue )
-        {
-          this->massValue = -massValue;
-        }
-        columnIndex
-        = BOL::StringParser::stringToInt( BOL::StringParser::firstWordOf(
-                                                                    dataString,
-                                                              &remainderString,
-                                        BOL::StringParser::whitespaceChars ) );
-        if( 0 == ( columnIndex % 2 ) )
-        {
-          whichJustification = rightJustified;
-        }
-        colorString.assign( BOL::StringParser::firstWordOf( remainderString,
-                                                            &labelString,
-                                        BOL::StringParser::whitespaceChars ) );
-        labelString.assign( BOL::StringParser::trimFromFrontAndBack(
-                                                                   labelString,
-                                        BOL::StringParser::whitespaceChars ) );
+        // just an initialization list (with default unset values).
       }
 
       LineData::LineData( LineData const& copySource ) :
@@ -70,6 +51,49 @@ namespace LHPC
       LineData::~LineData()
       {
         // does nothing.
+      }
+
+
+      void
+      LineData::setValues( std::string const& dataString,
+                           double const massValue )
+      {
+        if( 0.0 > massValue )
+        {
+          this->massValue = -massValue;
+        }
+        else
+        {
+          this->massValue = massValue;
+        }
+        labelPosition = this->massValue;
+        columnIndex
+        = BOL::StringParser::stringToInt( BOL::StringParser::firstWordOf(
+                                                                    dataString,
+                                                              &remainderString,
+                                        BOL::StringParser::whitespaceChars ) );
+        if( 0 == ( columnIndex % 2 ) )
+        {
+          whichJustification = leftJustified;
+          /* columns 2, 4, ... are the right-hand columns of their pairs & get
+           * their labels flushed up against their right side, thus the labels'
+           * left sides.
+           */
+        }
+        else
+        {
+          whichJustification = rightJustified;
+          /* columns 2, 4, ... are the left-hand columns of their pairs & get
+           * their labels flushed up against their left side, thus the labels'
+           * right sides.
+           */
+        }
+        colorString.assign( BOL::StringParser::firstWordOf( remainderString,
+                                                            &labelString,
+                                        BOL::StringParser::whitespaceChars ) );
+        labelString.assign( BOL::StringParser::trimFromFrontAndBack(
+                                                                   labelString,
+                                        BOL::StringParser::whitespaceChars ) );
       }
 
     }

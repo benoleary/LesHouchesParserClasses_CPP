@@ -63,7 +63,7 @@ namespace LHPC
         columnPointer( NULL ),
         plotLineMap( NULL ),
         lineIterator(),
-        linePointer( NULL ),
+        lineAdder(),
         lowerMassIterator(),
         upperMassIterator(),
         notYetFinishedShuffling( false ),
@@ -85,7 +85,8 @@ namespace LHPC
         leftLineXValue( 0.0 ),
         middleLineXValue( 0.0 ),
         rightLineXValue( 0.0 ),
-        gnuplotLineIndex( 0 )
+        gnuplotLineIndex( 0 ),
+        gnuplotLabelString( "" )
     {
       // just an initialization list.
     }
@@ -104,7 +105,7 @@ namespace LHPC
         columnPointer( NULL ),
         plotLineMap( NULL ),
         lineIterator(),
-        linePointer( NULL ),
+        lineAdder(),
         lowerMassIterator(),
         upperMassIterator(),
         notYetFinishedShuffling( false ),
@@ -126,7 +127,8 @@ namespace LHPC
         leftLineXValue( 0.0 ),
         middleLineXValue( 0.0 ),
         rightLineXValue( 0.0 ),
-        gnuplotLineIndex( 0 )
+        gnuplotLineIndex( 0 ),
+        gnuplotLabelString( "" )
     {
       // just an initialization list.
     }
@@ -397,15 +399,15 @@ namespace LHPC
         if( lastOperationSuccessful )
           // if there was a mass recorded for this mass eigenstate...
         {
-          linePointer = new SpectrumPlotting::LineData( lineIterator->second,
-                                                        massValue );
-          if( linePointer->getColumn() >= columnSet.getSize() )
+          lineAdder.setValues( lineIterator->second,
+                               massValue );
+          if( lineAdder.getColumn() >= columnSet.getSize() )
           {
-            columnSet.setSize( linePointer->getColumn() + 1 );
+            columnSet.setSize( lineAdder.getColumn() + 1 );
           }
           // now columnSet is large enough for the line to be put into its
           // appropriate column:
-          columnSet[ linePointer->getColumn() ].push_back( *linePointer );
+          columnSet[ lineAdder.getColumn() ].push_back( lineAdder );
         }
         ++lineIterator;
       }
@@ -469,6 +471,28 @@ namespace LHPC
                columnPointer->end() != lineIterator;
                ++lineIterator )
           {
+            if( SpectrumPlotting::LineData::leftJustified
+                == lineIterator->getJustification() )
+            {
+              gnuplotLabelEnvironmentString.assign( "flushleft" );
+            }
+            else if( SpectrumPlotting::LineData::rightJustified
+                == lineIterator->getJustification() )
+            {
+              gnuplotLabelEnvironmentString.assign( "flushright" );
+            }
+            else
+              // this case should only be center-justified.
+            {
+              gnuplotLabelEnvironmentString.assign( "center" );
+            }
+            gnuplotLabelString.assign( "{\\begin{" );
+            gnuplotLabelString.append( gnuplotLabelEnvironmentString );
+            gnuplotLabelString.append( "}{" );
+            gnuplotLabelString.append( lineIterator->getLabelString() );
+            gnuplotLabelString.append( "}\\end{" );
+            gnuplotLabelString.append( gnuplotLabelEnvironmentString );
+            gnuplotLabelString.append( "}}" );
             if( leftColumnRatherThanRight )
             {
               gnuplotDataFile
@@ -478,6 +502,11 @@ namespace LHPC
               << std::endl
               << rightLineXValue << " " << lineIterator->getMass()
               << std::endl;
+
+              gnuplotCommandFile
+              << "set label '" << gnuplotLabelString << "' at "
+              << leftLineXValue << ", "
+              << lineIterator->getLabelPosition() << std::endl;
             }
             else
             {
@@ -488,6 +517,11 @@ namespace LHPC
               << std::endl
               << rightLineXValue << " " << lineIterator->getLabelPosition()
               << std::endl;
+
+              gnuplotCommandFile
+              << "set label '" << gnuplotLabelString << "' at "
+              << rightLineXValue << ", "
+              << lineIterator->getLabelPosition() << std::endl;
             }
 
             // gnuplot treats double blank lines as meaning that the data
@@ -500,6 +534,7 @@ namespace LHPC
             << std::endl;
             // gnuplotLineIndex is incremented to give each line its own unique
             // linestyle.
+
           }  // end of loop over lines within the column.
         }  // end of loop over columns.
 

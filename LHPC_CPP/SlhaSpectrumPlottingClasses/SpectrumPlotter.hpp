@@ -88,7 +88,7 @@ namespace LHPC
       LineList* columnPointer;
       LineMap const* plotLineMap;
       LineMap::const_iterator lineIterator;
-      SpectrumPlotting::LineData* linePointer;
+      SpectrumPlotting::LineData lineAdder;
       std::list< SpectrumPlotting::LineData >::iterator lowerMassIterator;
       std::list< SpectrumPlotting::LineData >::iterator upperMassIterator;
       bool notYetFinishedShuffling;
@@ -111,6 +111,8 @@ namespace LHPC
       double middleLineXValue;
       double rightLineXValue;
       int gnuplotLineIndex;
+      std::string gnuplotLabelString;
+      std::string gnuplotLabelEnvironmentString;
 
       void
       loadCommands( std::string const& plotFileName );

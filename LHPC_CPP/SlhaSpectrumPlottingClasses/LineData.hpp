@@ -41,11 +41,13 @@ namespace LHPC
         // this returns true if firstLineData has a massValue lower than or
         // equal to that of secondLineData.
 
-        LineData( std::string const& dataString,
-                  double const massValue );
+        LineData();
         LineData( LineData const& copySource );
         ~LineData();
 
+        void
+        setValues( std::string const& dataString,
+                   double const massValue );
         JustificationStyle
         getJustification() const;
         void
@@ -83,8 +85,8 @@ namespace LHPC
 
 
       inline bool
-      lowToHigh( LineData const& firstLineData,
-                 LineData const& secondLineData )
+      LineData::lowToHigh( LineData const& firstLineData,
+                           LineData const& secondLineData )
       // this returns true if firstLineData has a massValue lower than or
       // equal to that of secondLineData.
       {

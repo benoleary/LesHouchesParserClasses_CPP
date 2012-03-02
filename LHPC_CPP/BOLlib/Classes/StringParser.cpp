@@ -15,17 +15,15 @@
 
 namespace BOL
 {
-  std::string StringParser::returnString;
+  char const StringParser::lowercaseMinusUppercase( 'a' - 'A' );
   std::stringstream StringParser::stringParsingStream;
   std::string const StringParser::whitespaceChars( " \t" );
   std::string const StringParser::newlineChars( "\n\r" );
   std::vector< char > StringParser::charBuffer;
   VectorlikeArray< std::string > StringParser::stringVector( 0 );
-  int StringParser::numberOfDigits( 0 );
-  int StringParser::tenToNumberOfDigits( 0 );
 
 
-  std::string const&
+  std::string
   StringParser::intToString( int inputInt,
                              int const minimumNumberOfDigits,
                              std::string const prefixForPositiveNumbers,
@@ -40,6 +38,7 @@ namespace BOL
    *  (e.g. intToString( 23, 4, "+", "-", '0' ) returns "+0023").
    */
   {
+    std::string returnString;
     if( 0 >= minimumNumberOfDigits )
     {
       std::cout
@@ -64,8 +63,9 @@ namespace BOL
       }
       // now the '+' or '-' or whatever is substituting has been inserted &
       // inputInt is positive semi-definite.
-      positiveIntToCharBuffer( inputInt );
-      int numberOfZeroesToInsert( minimumNumberOfDigits - numberOfDigits );
+      std::string unpaddedIntAsString( positiveIntToString( inputInt ) );
+      int numberOfZeroesToInsert( minimumNumberOfDigits
+                                  - (int)(unpaddedIntAsString.size()) );
       // if numberOfZeroesToInsert is negative, then the number was longer than
       // the minimum output string length specified.
       if( 0 < numberOfZeroesToInsert )
@@ -73,13 +73,12 @@ namespace BOL
         returnString.append( (size_t)numberOfZeroesToInsert,
                              paddingChar );
       }
-      returnString.append( charBuffer.begin(),
-                           charBuffer.end() );
+      returnString.append( unpaddedIntAsString );
     }
     return returnString;
   }
 
-  std::string const&
+  std::string
   StringParser::doubleToString( double inputDouble,
                                 int const numberOfMantissaDigits,
                                 int const numberOfExponentDigits,
@@ -105,6 +104,7 @@ namespace BOL
    * NaNs are returned as "NaN".
    */
   {
+    std::string returnString;
     if( ( 0 >= numberOfMantissaDigits )
         ||
         ( 0 >= numberOfExponentDigits ) )
@@ -187,13 +187,15 @@ namespace BOL
           = ( mantissaTimesTenToSomePowerAsInt / 10 );
           ++formattedExponent;
         }
-        positiveIntToCharBuffer( mantissaTimesTenToSomePowerAsInt );
+        std::string mantissaTimesTenToSomePowerAsString( positiveIntToString(
+                                          mantissaTimesTenToSomePowerAsInt ) );
         returnString.append( 1,
-                             charBuffer[ 0 ] );
+                             mantissaTimesTenToSomePowerAsString[ 0 ] );
         returnString.append( 1,
                              '.' );
-        returnString.append( ( charBuffer.begin() + 1 ),
-                             charBuffer.end() );
+        returnString.append( mantissaTimesTenToSomePowerAsString,
+                             1,
+                          ( mantissaTimesTenToSomePowerAsString.size() - 1 ) );
         formattedExponent += ( numberOfMantissaDigits - 1 );
         // this accounts for all the multiplication to get the mantissa as an
         // int of the appropriate length.
@@ -207,15 +209,16 @@ namespace BOL
         {
           returnString.append( positiveExponentPrefix );
         }
-        positiveIntToCharBuffer( formattedExponent );
-        int exponentZeroesToPrepend( numberOfExponentDigits - numberOfDigits );
+        std::string
+        exponentIntAsString( positiveIntToString( formattedExponent ) );
+        int exponentZeroesToPrepend( numberOfExponentDigits
+                                     - (int)(exponentIntAsString.size()) );
         if( 0 < exponentZeroesToPrepend )
         {
           returnString.append( exponentZeroesToPrepend,
                                '0' );
         }
-        returnString.append( charBuffer.begin(),
-                             charBuffer.end() );
+        returnString.append( exponentIntAsString );
       }
       else
         // if it failed the comparison, it should be a NaN.
@@ -226,239 +229,178 @@ namespace BOL
     return returnString;
   }
 
-  void
-  StringParser::transformToLowercase( std::string& stringToTransform )
+  bool
+  StringParser::stringsMatchIgnoringCase( std::string const& firstString,
+                                          std::string const& secondString )
+  // this returns true if both strings would be identical if all their
+  // uppercase chars were converted to lowercase.
   {
-    unsigned int stringSize( stringToTransform.size() );
-    for( unsigned int charCounter( 0 );
-         stringSize > charCounter;
-         ++charCounter )
-      // go through each character in the string:
+    size_t stringSize( firstString.size() );
+    if( secondString.size() == stringSize )
+      // if the strings match in size...
     {
-      // if it's a lowercase character, replace it with its uppercase:
-      if( 'A' == stringToTransform[ charCounter ] )
+      bool returnBool( true );
+      // it is assumed that the strings match, unless a char turns out to
+      // differ.
+      for( unsigned int charCounter( 0 );
+           ( returnBool
+             &&
+             ( stringSize > charCounter ) );
+           ++charCounter )
+        // go through each character in the string:
       {
-        stringToTransform[ charCounter ] = 'a';
+        // if the strings do not match at this char, check to see if they are
+        // letters that just differ in case:
+        if( ( secondString[ charCounter ] != firstString[ charCounter ] )
+            &&
+            !( ( firstString[ charCounter ] >= 'A' )
+               &&
+               ( firstString[ charCounter ] <= 'Z' )
+               &&
+               ( secondString[ charCounter ]
+                 == ( firstString[ charCounter ]
+                      + lowercaseMinusUppercase ) ) )
+             &&
+             !( ( firstString[ charCounter ] >= 'a' )
+                &&
+                ( firstString[ charCounter ] <= 'z' )
+                &&
+                ( secondString[ charCounter ]
+                  == ( firstString[ charCounter ]
+                       - lowercaseMinusUppercase ) ) ) )
+        {
+          returnBool = false;
+        }
       }
-      else if( 'B' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'b';
-      }
-      else if( 'C' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'c';
-      }
-      else if( 'D' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'd';
-      }
-      else if( 'E' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'e';
-      }
-      else if( 'F' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'f';
-      }
-      else if( 'F' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'g';
-      }
-      else if( 'H' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'h';
-      }
-      else if( 'I' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'i';
-      }
-      else if( 'J' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'j';
-      }
-      else if( 'K' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'k';
-      }
-      else if( 'L' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'l';
-      }
-      else if( 'M' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'm';
-      }
-      else if( 'N' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'n';
-      }
-      else if( 'O' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'o';
-      }
-      else if( 'P' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'p';
-      }
-      else if( 'Q' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'q';
-      }
-      else if( 'R' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'r';
-      }
-      else if( 'S' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 's';
-      }
-      else if( 'T' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 't';
-      }
-      else if( 'U' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'u';
-      }
-      else if( 'V' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'v';
-      }
-      else if( 'W' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'w';
-      }
-      else if( 'X' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'x';
-      }
-      else if( 'Y' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'y';
-      }
-      else if( 'Z' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'z';
-      }
+      return returnBool;
+    }
+    else
+    {
+      return false;
     }
   }
 
-  void
-  StringParser::transformToUppercase( std::string& stringToTransform )
+  std::string
+  StringParser::substringToFirst( std::string const& stringToParse,
+                   VectorlikeArray< std::string > const& delimitersOfSubstring,
+                                  std::string* const remainderString )
+  /* this returns the substring of stringToParse from its beginning up to the
+   * first instance of any of the strings in delimitersOfSubstring within
+   * stringToParse. if stringToParse does not contain any of those strings as
+   * a substring, the whole of stringToParse is returned, otherwise the
+   * substring up to but not including the first of any found strings from
+   * delimitersOfSubstring is returned. if remainderString is not NULL, the
+   * remainder of stringToParse that is not returned is put into
+   * remainderString.
+   */
   {
-    unsigned int stringSize( stringToTransform.size() );
-    for( unsigned int charCounter( 0 );
-         stringSize > charCounter;
-         ++charCounter )
-      // go through each character in the string:
+    size_t
+    delimiterPosition( stringToParse.find( delimitersOfSubstring[ 0 ] ) );
+    size_t comparisonPosition;
+    for( int stringIndex( delimitersOfSubstring.getLastIndex() );
+         0 < stringIndex;
+         --stringIndex )
     {
-      // if it's a lowercase character, replace it with its uppercase:
-      if( 'a' == stringToTransform[ charCounter ] )
+      comparisonPosition
+      = stringToParse.find( delimitersOfSubstring[ stringIndex ] );
+      if( comparisonPosition < delimiterPosition )
       {
-        stringToTransform[ charCounter ] = 'A';
-      }
-      else if( 'b' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'B';
-      }
-      else if( 'c' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'C';
-      }
-      else if( 'd' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'D';
-      }
-      else if( 'e' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'E';
-      }
-      else if( 'f' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'F';
-      }
-      else if( 'g' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'G';
-      }
-      else if( 'h' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'H';
-      }
-      else if( 'i' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'I';
-      }
-      else if( 'j' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'J';
-      }
-      else if( 'k' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'K';
-      }
-      else if( 'l' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'L';
-      }
-      else if( 'm' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'M';
-      }
-      else if( 'n' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'N';
-      }
-      else if( 'o' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'O';
-      }
-      else if( 'p' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'P';
-      }
-      else if( 'q' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'Q';
-      }
-      else if( 'r' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'R';
-      }
-      else if( 's' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'S';
-      }
-      else if( 't' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'T';
-      }
-      else if( 'u' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'U';
-      }
-      else if( 'v' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'V';
-      }
-      else if( 'w' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'W';
-      }
-      else if( 'x' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'X';
-      }
-      else if( 'y' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'Y';
-      }
-      else if( 'z' == stringToTransform[ charCounter ] )
-      {
-        stringToTransform[ charCounter ] = 'Z';
+        delimiterPosition = comparisonPosition;
       }
     }
+
+    // now delimiterPosition marks the position of the first of any of the
+    // strings in delimitersOfSubstring which were found in stringToParse.
+    if( std::string::npos == delimiterPosition )
+    {
+      return stringToParse;
+      if( NULL != remainderString )
+      {
+        remainderString->assign( "" );
+      }
+    }
+    else
+    {
+      std::string returnString( stringToParse.begin(),
+                               ( stringToParse.begin() + delimiterPosition ) );
+      if( NULL != remainderString )
+      {
+        remainderString->assign( ( stringToParse.begin() + delimiterPosition ),
+                                 stringToParse.end() );
+      }
+      return returnString;
+    }
   }
+
+  std::string
+  StringParser::firstWordOf( std::string const& stringToParse,
+                             std::string* const remainderString,
+                             std::string const& separatorChars )
+  /* this parses the first substring without any of the characters in
+   * separatorChars & returns it, filling remainderString with the rest if
+   * it is not NULL.
+   */
+  {
+    size_t wordStart( stringToParse.find_first_not_of( separatorChars ) );
+    if( std::string::npos == wordStart )
+    {
+      if( NULL != remainderString )
+      {
+        remainderString->assign( "" );
+      }
+      return "";
+    }
+    else
+    {
+      size_t wordEnd( stringToParse.find_first_of( separatorChars,
+                                                   wordStart ) );
+      std::string returnString( stringToParse.substr( wordStart,
+                                                   ( wordEnd - wordStart ) ) );
+      if( NULL != remainderString )
+      {
+        wordStart = stringToParse.find_first_not_of( separatorChars,
+                                                     wordEnd );
+        if( std::string::npos != wordStart )
+        {
+          remainderString->assign( stringToParse.substr( wordStart ) );
+        }
+        else
+        {
+          remainderString->assign( "" );
+        }
+      }
+      return returnString;
+    }
+  }
+
+
+  StringParser::StringParser( int const minimumNumberOfDigitsForInts,
+                              char const paddingCharForInts,
+                              int const numberOfMantissaDigits,
+                              int const numberOfExponentDigits,
+                              std::string const prefixForPositiveNumbers,
+                              std::string const prefixForNegativeNumbers,
+                              std::string const positiveExponentPrefix,
+                              std::string const negativeExponentPrefix,
+                              std::string const exponentCharacter ) :
+      minimumNumberOfDigitsForInts( minimumNumberOfDigitsForInts ),
+      paddingCharForInts( paddingCharForInts ),
+      numberOfMantissaDigits( numberOfMantissaDigits ),
+      numberOfExponentDigits( numberOfExponentDigits ),
+      prefixForPositiveNumbers( prefixForPositiveNumbers ),
+      prefixForNegativeNumbers( prefixForNegativeNumbers ),
+      positiveExponentPrefix( positiveExponentPrefix ),
+      negativeExponentPrefix( negativeExponentPrefix ),
+      exponentCharacter( exponentCharacter )
+  {
+    // just an initialization list.
+  }
+
+  StringParser::~StringParser()
+  {
+    // does nothing.
+  }
+
 
   char
   StringParser::charForSingleDigit( int const singleDigitAsInt )
@@ -529,107 +471,6 @@ namespace BOL
       returnChar = 'F';
     }
     return returnChar;
-  }
-
-  std::string const&
-  StringParser::substringToFirst( std::string const& stringToParse,
-                   VectorlikeArray< std::string > const& delimitersOfSubstring,
-                                  std::string* const remainderString )
-  /* this returns the substring of stringToParse from its beginning up to the
-   * first instance of any of the strings in delimitersOfSubstring within
-   * stringToParse. if stringToParse does not contain any of those strings as
-   * a substring, the whole of stringToParse is returned, otherwise the
-   * substring up to but not including the first of any found strings from
-   * delimitersOfSubstring is returned. if remainderString is not NULL, the
-   * remainder of stringToParse that is not returned is put into
-   * remainderString.
-   */
-  {
-    size_t
-    delimiterPosition( stringToParse.find( delimitersOfSubstring[ 0 ] ) );
-    size_t comparisonPosition;
-    for( int stringIndex( delimitersOfSubstring.getLastIndex() );
-         0 < stringIndex;
-         --stringIndex )
-    {
-      comparisonPosition
-      = stringToParse.find( delimitersOfSubstring[ stringIndex ] );
-      if( comparisonPosition < delimiterPosition )
-      {
-        delimiterPosition = comparisonPosition;
-      }
-    }
-    // debugging:
-    /**std::cout << std::endl << "debugging:"
-    << std::endl
-    << "StringParser::substringToFirst( \n\"" << stringToParse << "\", \""
-    << delimitersOfSubstring[ 0 ] << "\" + "
-    << delimitersOfSubstring.getLastIndex() << " other delimiter strings, "
-    << remainderString << " ) found delimiterPosition = " << delimiterPosition;
-    std::cout << std::endl;**/
-
-    // now delimiterPosition marks the position of the first of any of the
-    // strings in delimitersOfSubstring which were found in stringToParse.
-    if( std::string::npos == delimiterPosition )
-    {
-      return stringToParse;
-      if( NULL != remainderString )
-      {
-        remainderString->assign( "" );
-      }
-    }
-    else
-    {
-      returnString.assign( stringToParse.begin(),
-                           ( stringToParse.begin() + delimiterPosition ) );
-      if( NULL != remainderString )
-      {
-        remainderString->assign( ( stringToParse.begin() + delimiterPosition ),
-                                 stringToParse.end() );
-      }
-      return returnString;
-    }
-  }
-
-  std::string const&
-  StringParser::firstWordOf( std::string const& stringToParse,
-                             std::string* const remainderString,
-                             std::string const& separatorChars )
-  /* this parses the first substring without any of the characters in
-   * separatorChars & returns it, filling remainderString with the rest if
-   * it is not NULL.
-   */
-  {
-    size_t wordStart( stringToParse.find_first_not_of( separatorChars ) );
-    if( std::string::npos == wordStart )
-    {
-      returnString.assign( "" );
-      if( NULL != remainderString )
-      {
-        remainderString->assign( "" );
-      }
-    }
-    else
-    {
-      size_t wordEnd( stringToParse.find_first_of( separatorChars,
-                                                   wordStart ) );
-      returnString.assign( stringToParse.substr( wordStart,
-                                                 ( wordEnd - wordStart ) ) );
-      if( NULL != remainderString )
-      {
-        wordStart = stringToParse.find_first_not_of( separatorChars,
-                                                     wordEnd );
-        if( std::string::npos != wordStart )
-        {
-          remainderString->assign( stringToParse.substr( wordStart ) );
-        }
-        else
-        {
-          remainderString->assign( "" );
-        }
-      }
-    }
-    return returnString;
   }
 
   int
@@ -703,32 +544,38 @@ namespace BOL
     return returnInt;
   }
 
-
-  StringParser::StringParser( int const minimumNumberOfDigitsForInts,
-                              char const paddingCharForInts,
-                              int const numberOfMantissaDigits,
-                              int const numberOfExponentDigits,
-                              std::string const prefixForPositiveNumbers,
-                              std::string const prefixForNegativeNumbers,
-                              std::string const positiveExponentPrefix,
-                              std::string const negativeExponentPrefix,
-                              std::string const exponentCharacter ) :
-      minimumNumberOfDigitsForInts( minimumNumberOfDigitsForInts ),
-      paddingCharForInts( paddingCharForInts ),
-      numberOfMantissaDigits( numberOfMantissaDigits ),
-      numberOfExponentDigits( numberOfExponentDigits ),
-      prefixForPositiveNumbers( prefixForPositiveNumbers ),
-      prefixForNegativeNumbers( prefixForNegativeNumbers ),
-      positiveExponentPrefix( positiveExponentPrefix ),
-      negativeExponentPrefix( negativeExponentPrefix ),
-      exponentCharacter( exponentCharacter )
+  std::string
+  StringParser::positiveIntToString( int positiveInt )
+  // this puts the digits of positiveInt into charBuffer in the order of
+  // digit for highest power of 10 1st.
   {
-    // just an initialization list.
-  }
-
-  StringParser::~StringParser()
-  {
-    // does nothing.
+    int numberOfDigits( 1 );
+    int tenToNumberOfDigits( 10 );
+    while( positiveInt >= tenToNumberOfDigits )
+    {
+      tenToNumberOfDigits *= 10;
+      ++numberOfDigits;
+    }
+    std::string digitBuffer( "" );
+    int digitInt;
+    while( 0 < positiveInt )
+    {
+      tenToNumberOfDigits = ( tenToNumberOfDigits / 10 );
+      digitInt = 0;
+      while( tenToNumberOfDigits <= positiveInt )
+      {
+        positiveInt -= tenToNumberOfDigits;
+        ++digitInt;
+      }
+      digitBuffer.push_back( charForSingleDigit( digitInt ) );
+    }
+    for( int zeroesToPushBack( numberOfDigits - digitBuffer.size() );
+         0 < zeroesToPushBack;
+         --zeroesToPushBack )
+    {
+      digitBuffer.push_back( '0' );
+    }
+    return digitBuffer;
   }
 
 }

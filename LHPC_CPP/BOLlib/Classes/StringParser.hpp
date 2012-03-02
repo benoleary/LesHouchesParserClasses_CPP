@@ -39,7 +39,7 @@ namespace BOL
     static int
     numberOfDigitsInInt( int inputInt );
     // this returns the number of digits of the int in base 10, ignoring '-'.
-    static std::string const&
+    static std::string
     intToString( int inputInt,
                  int const minimumNumberOfDigits,
                  std::string const prefixForPositiveNumbers = "+",
@@ -53,7 +53,7 @@ namespace BOL
      * paddingChars after prefixForPositiveNumbers/prefixForNegativeNumbers
      *  (e.g. intToString( 23, 4, "+", "-" ) returns "+0023").
      */
-    static std::string const&
+    static std::string
     doubleToString( double inputDouble,
                     int const numberOfMantissaDigits,
                     int const numberOfExponentDigits,
@@ -78,6 +78,11 @@ namespace BOL
      * numberOfExponentDigits digit characters.
      * NaNs are returned as "NaN".
      */
+    static bool
+    stringsMatchIgnoringCase( std::string const& firstString,
+                              std::string const& secondString );
+    // this returns true if both strings would be identical if all their
+    // uppercase chars were converted to lowercase.
     static void
     transformToLowercase( std::string& stringToTransform );
     static void
@@ -99,7 +104,7 @@ namespace BOL
     isOnlyCharsIn( std::string const& queryString,
                    std::string const& charSet );
     // this returns true if queryString consists only of chars in charSet.
-    static std::string const&
+    static std::string
     substringToFirst( std::string const& stringToParse,
                    VectorlikeArray< std::string > const& delimitersOfSubstring,
                       std::string* const remainderString = NULL );
@@ -112,27 +117,27 @@ namespace BOL
      * remainder of stringToParse that is not returned is put into
      * remainderString.
      */
-    static std::string const&
+    static std::string
     substringToFirst( std::string const& stringToParse,
                       std::string const& delimiterOfSubstring,
                       std::string* const remainderString = NULL );
     // this sets delimiterOfSubstring as the single element of stringVector &
     // calls the above substringToFirst with stringVector.
-    static std::string const&
+    static std::string
     trimFromFront( std::string const& stringToTrim,
                    std::string const& charsToTrim );
     /* this returns the substring of stringToTrim which has had all the chars
      * removed which are in charsToTrim and appear in stringToTrim before the
      * first char which is not in charsToTrim.
      */
-    static std::string const&
+    static std::string
     trimFromBack( std::string const& stringToTrim,
                   std::string const& charsToTrim );
     /* this returns the substring of stringToTrim which has had all the chars
      * removed which are in charsToTrim and appear in stringToTrim after the
      * last char which is not in charsToTrim.
      */
-    static std::string const&
+    static std::string
     trimFromFrontAndBack( std::string const& stringToTrim,
                           std::string const& charsToTrim );
     /* this returns the substring of stringToTrim which has had all the chars
@@ -140,7 +145,7 @@ namespace BOL
      * first char which is not in charsToTrim and after the last char which is
      * not in charsToTrim.
      */
-    static std::string const&
+    static std::string
     firstWordOf( std::string const& stringToParse,
                  std::string* const remainderString = NULL,
                  std::string const& separatorChars = whitespaceChars );
@@ -163,25 +168,26 @@ namespace BOL
                  VectorlikeArray< std::string >& destinationArray,
                  char const& divisionChar );
     // this calls parseByChar with a string that consists just of divisionChar.
-    //static void
-    //parseByChar( std::string const& stringToParse,
-    //             VectorlikeArray< std::string >& destinationArray );
-    /* this is equivalent to parseByChar( stringToParse,
-     *                                    destinationArray,
-     *                                    whitespaceChars )
-     * above.
+    /*template< class ForwardIteratorOfString >
+    static std::string
+    joinWithSeparator( ForwardIteratorOfString const beginIterator,
+                       ForwardIteratorOfString const endIterator,
+                       std::string const& separatorString );*/
+    /* this returns a string that is the concatenation of all the strings from
+     * ForwardIterator beginIterator to ForwardIterator beginIterator,
+     * separated by separatorString.
      */
-    static std::string const&
+    static std::string
     joinWithSeparator( VectorlikeArray< std::string > const& stringsToJoin,
                        std::string const& separatorString );
-    // this prepares destinationString so that is the concatenation of all the
-    // strings in stringsToJoin separated by separatorString.
-    static std::string const&
+    // this returns a string that is the concatenation of all the strings in
+    // stringsToJoin separated by separatorString.
+    static std::string
     joinWithSeparator( std::vector< std::string* > const& stringsToJoin,
                        std::string const& separatorString );
     // this prepares destinationString so that is the concatenation of all the
     // strings in stringsToJoin separated by separatorString.
-    static std::string const&
+    static std::string
     joinWithSeparator( std::list< std::string* > const& stringsToJoin,
                        std::string const& separatorString );
     // this prepares destinationString so that is the concatenation of all the
@@ -210,23 +216,21 @@ namespace BOL
                  std::string const exponentCharacter = "E" );
     // this sets the default values that the StringParser instance uses as the
     // arguments for the static functions it calls with its own functions.
-    std::string const&
+    std::string
     intToString( int inputInt ) const;
     // this calls the static intToString with the StringParser instance's
     // arguments.
-    std::string const&
+    std::string
     doubleToString( double inputDouble ) const;
     // this calls the static doubleToString with the StringParser instance's
     // arguments.
 
 
   private:
-    static std::string returnString;
+    static char const lowercaseMinusUppercase;
     static std::stringstream stringParsingStream;
     static std::vector< char > charBuffer;
     static VectorlikeArray< std::string > stringVector;
-    static int numberOfDigits;
-    static int tenToNumberOfDigits;
 
     static std::stringstream&
     getStringParsingStream( std::string const& stringToParse );
@@ -238,10 +242,10 @@ namespace BOL
     fillNumberOfDigitsAndTenTo( int const positiveInt );
     // this finds out how many digits, in base 10, positiveInt has, putting the
     // result in numberOfDigits, getting tenToNumberOfDigits in the process.
-    static void
-    positiveIntToCharBuffer( int positiveInt );
-    // this puts the digits of positiveInt into charBuffer in the order of
-    // digit for highest power of 10 1st.
+    static std::string
+    positiveIntToString( int positiveInt );
+    // this puts the digits of positiveInt into a std::string in the order of
+    // digit for highest power of 10 1st, & returns it.
 
     int minimumNumberOfDigitsForInts;
     char paddingCharForInts;
@@ -264,8 +268,52 @@ namespace BOL
     {
       inputInt = -inputInt;
     }
-    fillNumberOfDigitsAndTenTo( inputInt );
+    int numberOfDigits( 1 );
+    int tenToNumberOfDigits( 10 );
+    while( inputInt >= tenToNumberOfDigits )
+    {
+      tenToNumberOfDigits *= 10;
+      ++numberOfDigits;
+    }
     return numberOfDigits;
+  }
+
+  inline void
+  StringParser::transformToLowercase( std::string& stringToTransform )
+  {
+    unsigned int stringSize( stringToTransform.size() );
+    for( unsigned int charCounter( 0 );
+         stringSize > charCounter;
+         ++charCounter )
+      // go through each character in the string:
+    {
+      if( ( 'A' <= stringToTransform[ charCounter ] )
+          &&
+          ( 'Z' <= stringToTransform[ charCounter ] ) )
+      // if it's an uppercase character, replace it with its lowercase:
+      {
+        stringToTransform[ charCounter ] += lowercaseMinusUppercase;
+      }
+    }
+  }
+
+  inline void
+  StringParser::transformToUppercase( std::string& stringToTransform )
+  {
+    unsigned int stringSize( stringToTransform.size() );
+    for( unsigned int charCounter( 0 );
+         stringSize > charCounter;
+         ++charCounter )
+      // go through each character in the string:
+    {
+      if( ( 'a' <= stringToTransform[ charCounter ] )
+          &&
+          ( 'z' <= stringToTransform[ charCounter ] ) )
+        // if it's a lowercase character, replace it with its uppercase:
+      {
+        stringToTransform[ charCounter ] -= lowercaseMinusUppercase;
+      }
+    }
   }
 
   inline void
@@ -359,7 +407,7 @@ namespace BOL
     }
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::substringToFirst( std::string const& stringToParse,
                                   std::string const& delimiterOfSubstring,
                                   std::string* const remainderString )
@@ -373,7 +421,7 @@ namespace BOL
                              remainderString );
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::trimFromFront( std::string const& stringToTrim,
                                std::string const& charsToTrim )
   /* this returns the substring of stringToTrim which has had all the chars
@@ -385,17 +433,16 @@ namespace BOL
     startOfReturnString( stringToTrim.find_first_not_of( charsToTrim ) );
     if( startOfReturnString == std::string::npos )
     {
-      returnString.assign( "" );
+      return "";
     }
     else
     {
-      returnString.assign( ( stringToTrim.begin() + startOfReturnString ),
-                           stringToTrim.end() );
+      return std::string( ( stringToTrim.begin() + startOfReturnString ),
+                          stringToTrim.end() );
     }
-    return returnString;
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::trimFromBack( std::string const& stringToTrim,
                               std::string const& charsToTrim )
   /* this returns the substring of stringToTrim which has had all the chars
@@ -406,17 +453,16 @@ namespace BOL
     size_t endOfReturnString( stringToTrim.find_last_not_of( charsToTrim ) );
     if( endOfReturnString == std::string::npos )
     {
-      returnString.assign( "" );
+      return "";
     }
     else
     {
-      returnString.assign( stringToTrim.begin(),
-                           ( stringToTrim.begin() + endOfReturnString + 1 ) );
+      return std::string( stringToTrim.begin(),
+                          ( stringToTrim.begin() + endOfReturnString + 1 ) );
     }
-    return returnString;
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::trimFromFrontAndBack( std::string const& stringToTrim,
                                       std::string const& charsToTrim )
   /* this returns the substring of stringToTrim which has had all the chars
@@ -429,16 +475,15 @@ namespace BOL
     startOfReturnString( stringToTrim.find_first_not_of( charsToTrim ) );
     if( startOfReturnString == std::string::npos )
     {
-      returnString.assign( "" );
+      return "";
     }
     else
     {
-      returnString.assign( ( stringToTrim.begin() + startOfReturnString ),
-                           ( stringToTrim.begin()
-                             + stringToTrim.find_last_not_of( charsToTrim )
-                             + 1 ) );
+      return std::string( ( stringToTrim.begin() + startOfReturnString ),
+                          ( stringToTrim.begin()
+                            + stringToTrim.find_last_not_of( charsToTrim )
+                            + 1 ) );
     }
-    return returnString;
   }
 
   inline void
@@ -480,14 +525,33 @@ namespace BOL
                              char const& divisionChar )
   // this calls parseByChar with a string that consists just of divisionChar.
   {
-    returnString.assign( 1,
-                         divisionChar );
     parseByChar( stringToParse,
                  destinationArray,
-                 returnString );
+                 std::string( 1,
+                              divisionChar ) );
   }
 
-  inline std::string const&
+  /*template< class ForwardIteratorOfString >
+  inline std::string
+  joinWithSeparator( ForwardIteratorOfString const beginIterator,
+                     ForwardIteratorOfString const endIterator,
+                     std::string const& separatorString )
+  *//* this returns a string that is the concatenation of all the strings from
+   *  ForwardIterator beginIterator to  ForwardIterator beginIterator,
+   * separated by separatorString.
+   *//*
+  {
+    ForwardIteratorOfString localIterator( beginIterator );
+    std::string returnString( "" );
+    while( endIterator != beginIterator)
+    {
+      returnString.append( *localIterator );
+      ++localIterator;
+    }
+    return returnString;
+  }*/
+
+  inline std::string
   StringParser::joinWithSeparator(
                            VectorlikeArray< std::string > const& stringsToJoin,
                                    std::string const& separatorString )
@@ -496,25 +560,23 @@ namespace BOL
   {
     if( 0 < stringsToJoin.getSize() )
     {
-      std::stringstream&
-      stringBuilder( getStringParsingStream( "" ) );
-      stringBuilder << stringsToJoin.getFront();
+      std::string returnString( stringsToJoin.getFront() );
       for( int stringIndex( 1 );
            stringsToJoin.getSize() > stringIndex;
            ++stringIndex )
       {
-        stringBuilder << separatorString << stringsToJoin[ stringIndex ];
+        returnString.append( separatorString );
+        returnString.append( stringsToJoin[ stringIndex ] );
       }
-      returnString.assign( stringBuilder.str() );
+      return returnString;
     }
     else
     {
-      returnString.assign( "" );
+      return "";
     }
-    return returnString;
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::joinWithSeparator(
                               std::vector< std::string* > const& stringsToJoin,
                                    std::string const& separatorString )
@@ -523,26 +585,24 @@ namespace BOL
   {
     if( !(stringsToJoin.empty()) )
     {
-      std::stringstream&
-      stringBuilder( getStringParsingStream( "" ) );
-      stringBuilder << *(stringsToJoin.front());
+      std::string returnString( *(stringsToJoin.front()) );
       for( std::vector< std::string* >::const_iterator
            stringIterator( stringsToJoin.begin() + 1 );
            stringsToJoin.end() > stringIterator;
            ++stringIterator )
       {
-        stringBuilder << separatorString << *(*stringIterator);
+        returnString.append( separatorString );
+        returnString.append( *(*stringIterator) );
       }
-      returnString.assign( stringBuilder.str() );
+      return returnString;
     }
     else
     {
-      returnString.assign( "" );
+      return "";
     }
-    return returnString;
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::joinWithSeparator(
                                 std::list< std::string* > const& stringsToJoin,
                                    std::string const& separatorString )
@@ -551,24 +611,22 @@ namespace BOL
   {
     if( !(stringsToJoin.empty()) )
     {
-      std::stringstream&
-      stringBuilder( getStringParsingStream( "" ) );
       std::list< std::string* >::const_iterator
       stringIterator( stringsToJoin.begin() );
-      stringBuilder << *(*stringIterator);
+      std::string returnString( *(*stringIterator) );
       ++stringIterator;
       while( stringsToJoin.end() != stringIterator )
       {
-        stringBuilder << separatorString << *(*stringIterator);
+        returnString.append( separatorString );
+        returnString.append( *(*stringIterator) );
         ++stringIterator;
       }
-      returnString.assign( stringBuilder.str() );
+      return returnString;
     }
     else
     {
-      returnString.assign( "" );
+      return "";
     }
-    return returnString;
   }
 
   inline StringParser&
@@ -596,7 +654,7 @@ namespace BOL
     return *this;
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::intToString( int inputInt ) const
   // this calls the static intToString with the StringParser instance's
   // arguments.
@@ -608,7 +666,7 @@ namespace BOL
                         paddingCharForInts );
   }
 
-  inline std::string const&
+  inline std::string
   StringParser::doubleToString( double inputDouble ) const
   // this calls the static doubleToString with the StringParser instance's
   // arguments.
@@ -629,47 +687,6 @@ namespace BOL
     stringParsingStream.clear();
     stringParsingStream.str( stringToParse );
     return stringParsingStream;
-  }
-
-  inline void
-  StringParser::fillNumberOfDigitsAndTenTo( int const positiveInt )
-  // this finds out how many digits, in base 10, positiveInt has, putting the
-  // result in numberOfDigits, getting tenToNumberOfDigits in the process.
-  {
-    numberOfDigits = 1;
-    tenToNumberOfDigits = 10;
-    while( positiveInt >= tenToNumberOfDigits )
-    {
-      tenToNumberOfDigits *= 10;
-      ++numberOfDigits;
-    }
-  }
-
-  inline void
-  StringParser::positiveIntToCharBuffer( int positiveInt )
-  // this puts the digits of positiveInt into charBuffer in the order of
-  // digit for highest power of 10 1st.
-  {
-    fillNumberOfDigitsAndTenTo( positiveInt );
-    charBuffer.clear();
-    int digitInt;
-    while( 0 < positiveInt )
-    {
-      tenToNumberOfDigits = ( tenToNumberOfDigits / 10 );
-      digitInt = 0;
-      while( tenToNumberOfDigits <= positiveInt )
-      {
-        positiveInt -= tenToNumberOfDigits;
-        ++digitInt;
-      }
-      charBuffer.push_back( charForSingleDigit( digitInt ) );
-    }
-    for( int zeroesToPushBack( numberOfDigits - charBuffer.size() );
-         0 < zeroesToPushBack;
-         --zeroesToPushBack )
-    {
-      charBuffer.push_back( '0' );
-    }
   }
 
 }

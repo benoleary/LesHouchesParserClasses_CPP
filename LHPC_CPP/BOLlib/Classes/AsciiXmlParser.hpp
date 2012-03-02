@@ -84,7 +84,7 @@ namespace BOL
     // member functions.
     std::string const&
     getCurrentElementContent() const;
-    std::string const&
+    std::string
     getCurrentElementContentTrimmedOfWhitespace() const;
     std::string const&
     getCurrentOpeningTagAsFound() const;
@@ -309,7 +309,7 @@ namespace BOL
     return fullElementContentAsFound;
   }
 
-  inline std::string const&
+  inline std::string
   AsciiXmlParser::getCurrentElementContentTrimmedOfWhitespace() const
   {
     return StringParser::trimFromFrontAndBack( fullElementContentAsFound,

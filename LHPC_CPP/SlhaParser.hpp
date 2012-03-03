@@ -31,26 +31,22 @@ namespace LHPC
     SlhaParser( bool const isVerbose = true );
     ~SlhaParser();
 
-    SlhaParser&
+    void
     registerSpectrum( MassSpectrum& spectrumToUpdate );
-    /* this sets this->spectrumToUpdate to point to the given spectrum so that
-     * its data get updated during each readFile(). it overwrites the old
-     * pointer with the new if given another spectrum.
-     */
-    SlhaParser&
+    // this adds a pointer to spectrumToUpdate to spectraToUpdate so that its
+    // data get updated during each readFile().
+    void
     registerBlock( SLHA::SlhaBlock& blockToUpdate );
-    /* this adds a pointer to blockToUpdate to blockMap, so that its data get
-     * updated during each readFile(). it throws an exception if given a 2nd
-     * block of the same name.
-     */
-    SlhaParser&
-    registerBlock( SLHA::MassBlock& blockToUpdate );
-    // this is a special case to try to catch if a MASS block is given, so that
-    // the spectrum (if any) can read from it rather than needing its own.
-    SlhaParser&
+    // this registers blockToUpdate so that its data get updated every time a
+    // new block of the appropriate name is read.
+    void
     registerBlock( SLHA::FmassBlock& blockToUpdate );
     // this is a special case to try to catch if an FMASS block is given, so
     // that the spectrum (if any) can read from it rather than needing its own.
+    void
+    registerBlock( SLHA::MassBlock& blockToUpdate );
+    // this is a special case to try to catch if a MASS block is given, so that
+    // the spectrum (if any) can read from it rather than needing its own.
     bool
     readFile( std::string const& slhaFileName );
     /* this opens the file with name given by slhaFileName, parses its data
@@ -69,13 +65,12 @@ namespace LHPC
     typedef std::map< int,
                       ExtendedMass > IntToExtendedMassMap;
 
-    static StringAndBlockPair mapInserter;
-
     bool const isVerbose;
     BOL::CommentedTextParser fileParser;
     MassSpectrum* spectrumToUpdate;
     StringToBlockMap blockMap;
     StringToBlockMap::iterator blockMapIterator;
+    StringAndBlockPair mapInserter;
     SLHA::MassBlock* massBlockPointer;
     bool ownsMassBlock;
     SLHA::FmassBlock* fmassBlockPointer;
@@ -138,40 +133,22 @@ namespace LHPC
 
   inline SlhaParser&
   SlhaParser::registerSpectrum( MassSpectrum& spectrumToUpdate )
-  /* this sets this->spectrumToUpdate to point to the given spectrum so that
-   * its data get updated during each readFile(). it overwrites the old
-   * pointer with the new if given another spectrum.
-   */
+  // this adds a pointer to spectrumToUpdate to spectraToUpdate so that its
+  // data get updated during each readFile().
   {
     this->spectrumToUpdate = &spectrumToUpdate;
     return *this;
   }
 
-  inline SlhaParser&
+  inline void
   SlhaParser::registerBlock( SLHA::SlhaBlock& blockToUpdate )
-  /* this adds a pointer to blockToUpdate to blockMap, so that its data get
-   * updated during each readFile(). it throws an exception if given a 2nd
-   * block of the same name.
-   */
+  // this registers blockToUpdate so that its data get updated every time a
+  // new block of the appropriate name is read.
   {
     addBlockToMap( &blockToUpdate );
-    return *this;
   }
 
-  inline SlhaParser&
-  SlhaParser::registerBlock( SLHA::MassBlock& blockToUpdate )
-  // this is a special case to try to catch if a MASS block is given, so that
-  // the spectrum (if any) can read from it rather than needing its own.
-  {
-    addBlockToMap( &blockToUpdate );
-    if( blockToUpdate.nameMatches( "MASS" ) )
-    {
-      massBlockPointer = &blockToUpdate;
-    }
-    return *this;
-  }
-
-  inline SlhaParser&
+  inline void
   SlhaParser::registerBlock( SLHA::FmassBlock& blockToUpdate )
   // this is a special case to try to catch if an FMASS block is given, so
   // that the spectrum (if any) can read from it rather than needing its own.
@@ -181,7 +158,18 @@ namespace LHPC
     {
       fmassBlockPointer = &blockToUpdate;
     }
-    return *this;
+  }
+
+  inline void
+  SlhaParser::registerBlock( SLHA::MassBlock& blockToUpdate )
+  // this is a special case to try to catch if a MASS block is given, so that
+  // the spectrum (if any) can read from it rather than needing its own.
+  {
+    addBlockToMap( &blockToUpdate );
+    if( blockToUpdate.nameMatches( "MASS" ) )
+    {
+      massBlockPointer = &blockToUpdate;
+    }
   }
 
   inline void

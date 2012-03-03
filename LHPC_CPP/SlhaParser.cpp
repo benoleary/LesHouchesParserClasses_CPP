@@ -15,9 +15,6 @@
 
 namespace LHPC
 {
-  SlhaParser::StringAndBlockPair SlhaParser::mapInserter( "",
-                                                          NULL );
-
   SlhaParser::SlhaParser( bool const isVerbose ) :
       isVerbose( isVerbose ),
       fileParser( "#",
@@ -25,6 +22,8 @@ namespace LHPC
       spectrumToUpdate( NULL ),
       blockMap(),
       blockMapIterator(),
+      mapInserter( "",
+                   NULL ),
       massBlockPointer( NULL ),
       ownsMassBlock( false ),
       fmassBlockPointer( NULL ),

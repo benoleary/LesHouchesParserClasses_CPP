@@ -19,16 +19,15 @@ namespace LHPC
   {
     namespace SpectrumPlotting
     {
-      std::string LineData::remainderString( "" );
-      BOL::StringParser LineData::overlargeMassPrinter( 1,
-                                                        '0',
-                                                        3,
-                                                        1,
-                                                        "",
-                                                        "-",
-                                                        "",
-                                                        "-",
-                                                        "e" );
+      BOL::StringParser const LineData::overlargeMassPrinter( 1,
+                                                              '0',
+                                                              3,
+                                                              1,
+                                                              "",
+                                                              "-",
+                                                              "",
+                                                              "-",
+                                                              "e" );
 
       LineData::LineData() :
           columnIndex( 0 ),
@@ -36,7 +35,8 @@ namespace LHPC
           massValue( massValue ),
           labelPosition( -1.0 ),
           labelString( "error" ),
-          colorString( "black" )
+          colorString( "black" ),
+          remainderString( "" )
       {
         // just an initialization list (with default unset values).
       }
@@ -47,7 +47,8 @@ namespace LHPC
           massValue( copySource.massValue ),
           labelPosition( copySource.labelPosition ),
           labelString( copySource.labelString ),
-          colorString( copySource.colorString )
+          colorString( copySource.colorString ),
+          remainderString( "" )
       {
         // just an initialization list.
       }

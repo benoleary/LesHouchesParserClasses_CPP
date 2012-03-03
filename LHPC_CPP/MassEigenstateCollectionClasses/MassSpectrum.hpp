@@ -32,7 +32,7 @@ namespace LHPC
       sizeOfEnum = 3
     };
     MassSpectrum( bool const& isVerbose,
-                  std::vector< bool >* defaultFlags = NULL );
+                  std::vector< bool > const* defaultFlags = NULL );
     virtual
     ~MassSpectrum();
 
@@ -57,10 +57,10 @@ namespace LHPC
 
 
   protected:
-    static std::vector< bool > defaultBoolVector;
-    static std::vector< bool > defaultEscapesDetectorBoolVector;
-    static std::vector< bool > defaultIsJetBoolVector;
-    static std::vector< bool > defaultIsLightLeptonBoolVector;
+    static std::vector< bool > const defaultBoolVector;
+    static std::vector< bool > const defaultEscapesDetectorBoolVector;
+    static std::vector< bool > const defaultIsJetBoolVector;
+    static std::vector< bool > const defaultIsLightLeptonBoolVector;
 
     static MassEigenstate&
     findMassEigenstateReference( int const pdgCode,

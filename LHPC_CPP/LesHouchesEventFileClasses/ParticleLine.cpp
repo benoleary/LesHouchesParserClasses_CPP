@@ -17,8 +17,6 @@ namespace LHPC
 {
   namespace LHEF
   {
-    BOL::VectorlikeArray< std::string > ParticleLine::lineParser;
-
     ParticleLine::ParticleLine() :
         particleCode( (int)BOL::UsefulStuff::notANumber ),
         initialOrIntermediateOrFinalState( (int)BOL::UsefulStuff::notANumber ),
@@ -36,7 +34,8 @@ namespace LHPC
         ownLineNumber( (int)BOL::UsefulStuff::notANumber ),
         primaryMotherLinePointer( NULL ),
         secondaryMotherLinePointer( NULL ),
-        daughterLines()
+        daughterLines(),
+        lineParser()
     {
       // just an initialization list.
     }
@@ -59,7 +58,8 @@ namespace LHPC
         ownLineNumber( (int)BOL::UsefulStuff::notANumber ),
         primaryMotherLinePointer( NULL ),
         secondaryMotherLinePointer( NULL ),
-        daughterLines()
+        daughterLines(),
+        lineParser()
     {
       /* just an initialization list. unfortunately there's no easy way to copy
        * the mother & daughter pointers. however, that should be taken care of

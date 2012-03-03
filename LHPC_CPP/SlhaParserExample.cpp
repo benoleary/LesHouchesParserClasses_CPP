@@ -70,7 +70,7 @@ int main( int argumentCount,
 
     // one can also register a spectrum of particles, which automatically
     // groups masses & decays together for each mass eigenstate:
-    LHPC::MassSpectrumClass::Mssm testSpectrum( isVerbose );
+    LHPC::MassSpectrumClass::MSSM testSpectrum( isVerbose );
 
     // the spectrum has to be registered with the parser:
     testParser.registerSpectrum( testSpectrum );

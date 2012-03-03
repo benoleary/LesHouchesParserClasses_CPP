@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    Nmssm::NextToMinimalSupersymmetricStandardModel( bool const& isVerbose,
+    NMSSM::NextToMinimalSupersymmetricStandardModel( bool const& isVerbose,
                                                bool const neutrinosAreMajorana,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
@@ -33,7 +33,7 @@ namespace LHPC
       // just an initialization list.
     }
 
-    Nmssm::~NextToMinimalSupersymmetricStandardModel()
+    NMSSM::~NextToMinimalSupersymmetricStandardModel()
     {
       // does nothing.
     }

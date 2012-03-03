@@ -289,7 +289,7 @@ namespace BOL
     {
       if( ( 'A' <= stringToTransform[ charCounter ] )
           &&
-          ( 'Z' <= stringToTransform[ charCounter ] ) )
+          ( 'Z' >= stringToTransform[ charCounter ] ) )
       // if it's an uppercase character, replace it with its lowercase:
       {
         stringToTransform[ charCounter ] += lowercaseMinusUppercase;
@@ -308,7 +308,7 @@ namespace BOL
     {
       if( ( 'a' <= stringToTransform[ charCounter ] )
           &&
-          ( 'z' <= stringToTransform[ charCounter ] ) )
+          ( 'z' >= stringToTransform[ charCounter ] ) )
         // if it's a lowercase character, replace it with its uppercase:
       {
         stringToTransform[ charCounter ] -= lowercaseMinusUppercase;

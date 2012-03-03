@@ -24,7 +24,7 @@ namespace LHPC
   {
     class NextToMinimalSupersymmetricStandardModel :
                                                    public virtual MassSpectrum,
-                                                     public Mssm,
+                                                     public MSSM,
                                          public NmssmExtraEwsbSpinZeroBosonSet,
                                                     public NeutralinosOneToFive
     {
@@ -35,10 +35,10 @@ namespace LHPC
       virtual
       ~NextToMinimalSupersymmetricStandardModel();
     };
-    typedef NextToMinimalSupersymmetricStandardModel Nmssm;
+    typedef NextToMinimalSupersymmetricStandardModel NMSSM;
 
   }
-  typedef MassSpectrumClass::Nmssm NmssmSpectrum;
+  typedef MassSpectrumClass::NMSSM NmssmSpectrum;
 
 }
 

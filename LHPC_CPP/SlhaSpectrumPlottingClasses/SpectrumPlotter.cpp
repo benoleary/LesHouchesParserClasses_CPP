@@ -27,7 +27,6 @@ namespace LHPC
     int const SpectrumPlotter::ps2epsIndex( 24 );
     int const SpectrumPlotter::rmIndex( 25 );
     int const SpectrumPlotter::mvIndex( 26 );
-    std::string SpectrumPlotter::unitString( "GeV" );
     std::string const SpectrumPlotter::gnuplotDataFileName(
                                           "LHPC_SpectrumPlotter_gnuplot.dat" );
     std::string const SpectrumPlotter::gnuplotCommandFileName(
@@ -53,6 +52,7 @@ namespace LHPC
         linePlottingBlock( linePlottingBlock ),
         fmassPointer( fmassPointer ),
         massPointer( massPointer ),
+        unitString( "GeV" ),
         unitFactor( 1.0 ),
         scaleMaximum( -1.0 ),
         largestMass( 0.0 ),

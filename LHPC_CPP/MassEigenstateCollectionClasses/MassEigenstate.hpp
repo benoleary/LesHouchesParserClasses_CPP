@@ -197,13 +197,12 @@ namespace LHPC
 
 
   protected:
-    static std::pair< int,
-                      MassEigenstate* > mapFiller;
-
     MassEigenstate* chargeConjugate;
     bool isSelfConjugateFlag;
     std::vector< int > identifyingPdgCodes;
     MassEigenstateCodeMap& pdgCodeMap;
+    std::pair< int,
+               MassEigenstate* > mapFiller;
     bool massRecorded;
     double signedDefaultMass;
     // this defaults to the pole mass, if available.

@@ -16,21 +16,21 @@
 
 namespace LHPC
 {
-  std::vector< bool >
+  std::vector< bool > const
   MassSpectrum::defaultBoolVector( (unsigned int)(MassSpectrum::sizeOfEnum),
                                    false );
-  std::vector< bool >
+  std::vector< bool > const
   MassSpectrum::defaultEscapesDetectorBoolVector(
                   BOL::StdVectorFiller< bool >( true )( false ).end( false ) );
-  std::vector< bool >
+  std::vector< bool > const
   MassSpectrum::defaultIsJetBoolVector(
                   BOL::StdVectorFiller< bool >( false )( true ).end( false ) );
-  std::vector< bool >
+  std::vector< bool > const
   MassSpectrum::defaultIsLightLeptonBoolVector(
                   BOL::StdVectorFiller< bool >( false )( false ).end( true ) );
 
   MassSpectrum::MassSpectrum( bool const& isVerbose,
-                              std::vector< bool >* defaultFlags ) :
+                              std::vector< bool > const* defaultFlags ) :
       allMassEigenstates(),
       unknownMassEigenstates(),
       pdgCodeMap(),

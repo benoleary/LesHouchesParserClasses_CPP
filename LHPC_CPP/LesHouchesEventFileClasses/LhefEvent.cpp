@@ -18,8 +18,6 @@ namespace LHPC
   namespace LHEF
   {
     std::string const LhefEvent::trimmingChars( " \t\r\n" );
-    BOL::VectorlikeArray< std::string > LhefEvent::eventAsLines( 2 );
-    BOL::VectorlikeArray< std::string > LhefEvent::lineAsNumbersAsStrings( 6 );
     bool const LhefEvent::trueForVerbosity( true );
 
     LhefEvent::LhefEvent( bool const& isVerbose ) :
@@ -31,6 +29,8 @@ namespace LHPC
         alphaQcd( BOL::UsefulStuff::notANumber ),
         particleLines(),
         eventNumberInFile( 1 ),
+        eventAsLines( 5 ),
+        lineAsNumbersAsStrings( 6 ),
         recordingSucceeded( false ),
         headerLine( "" ),
         isVerbose( isVerbose ),
@@ -49,6 +49,8 @@ namespace LHPC
         particleLines( copySource.particleLines,
                        &ParticleLine::copyParticleLine ),
         eventNumberInFile( copySource.eventNumberInFile ),
+        eventAsLines( 5 ),
+        lineAsNumbersAsStrings( 6 ),
         recordingSucceeded( copySource.recordingSucceeded ),
         headerLine( "" ),
         isVerbose( trueForVerbosity ),
@@ -58,6 +60,7 @@ namespace LHPC
        * daughter pointers by themselves, so this constructor has to sort them
        * out:
        */
+      setUpPointersBetweenParticleLines();
     }
 
     LhefEvent::~LhefEvent()

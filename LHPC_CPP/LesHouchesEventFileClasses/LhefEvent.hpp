@@ -80,9 +80,6 @@ namespace LHPC
 
     protected:
       static std::string const trimmingChars;
-      static BOL::VectorlikeArray< std::string > eventAsLines;
-      static BOL::VectorlikeArray< std::string > lineAsNumbersAsStrings;
-      // these are for parsing the data lines.
       static bool const trueForVerbosity;
 
       // in the order in which they appear in LHE format:
@@ -109,6 +106,8 @@ namespace LHPC
       // useful.
 
       // stuff for setting up the LhefEvent:
+      BOL::VectorlikeArray< std::string > eventAsLines;
+      BOL::VectorlikeArray< std::string > lineAsNumbersAsStrings;
       bool recordingSucceeded;
       std::string headerLine;
       int motherLineNumber;

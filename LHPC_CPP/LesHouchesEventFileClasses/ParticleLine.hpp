@@ -131,9 +131,6 @@ namespace LHPC
 
 
     protected:
-      static BOL::VectorlikeArray< std::string > lineParser;
-      // this is for parsing the data line.
-
       // the LHEF data in the order in which they appear in LHE format:
       int particleCode;
       // IDUP, the particle's PDG code.
@@ -187,6 +184,9 @@ namespace LHPC
       std::vector< ParticleLine* > daughterLines;
       // these are the ParticleLines which refer this ParticleLine with their
       // primaryMotherLineNumbers & secondaryMotherLineNumbers.
+
+      // this is for parsing the data line:
+      BOL::VectorlikeArray< std::string > lineParser;
     };
 
 

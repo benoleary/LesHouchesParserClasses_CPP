@@ -69,8 +69,7 @@ namespace LHPC
 
 
       protected:
-        static std::string remainderString;
-        static BOL::StringParser overlargeMassPrinter;
+        static BOL::StringParser const overlargeMassPrinter;
 
         int columnIndex;
         JustificationStyle whichJustification;
@@ -78,6 +77,7 @@ namespace LHPC
         double labelPosition;
         std::string labelString;
         std::string colorString;
+        std::string remainderString;
       };
 
 

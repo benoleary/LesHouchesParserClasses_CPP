@@ -380,7 +380,7 @@ namespace LHPC
       std::vector< MassEigenstate* > upQuarkPointers;
       std::vector< MassEigenstate* > upAntiquarkPointers;
     };
-    typedef StandardModel Sm;
+    typedef StandardModel SM;
 
 
 

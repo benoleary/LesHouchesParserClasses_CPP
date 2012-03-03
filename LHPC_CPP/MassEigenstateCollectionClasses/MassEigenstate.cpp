@@ -15,10 +15,6 @@
 
 namespace LHPC
 {
-  std::pair< int,
-             MassEigenstate* > MassEigenstate::mapFiller( 0,
-                                                          NULL );
-
   MassEigenstate*
   MassEigenstate::findPointerWithCode( int pdgCode,
                                        MassEigenstateCodeMap const& codeMap )
@@ -189,6 +185,8 @@ namespace LHPC
       identifyingPdgCodes( copySource.identifyingPdgCodes.size(),
                            -(copySource.getCode()) ),
       pdgCodeMap( copySource.pdgCodeMap ),
+      mapFiller( 0,
+                 NULL ),
       massRecorded( false ),
       signedDefaultMass( BOL::UsefulStuff::notANumber ),
       absoluteDefaultMass( BOL::UsefulStuff::notANumber ),

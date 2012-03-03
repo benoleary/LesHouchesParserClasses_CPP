@@ -44,7 +44,7 @@ namespace LHPC
       virtual
       ~MinimalSupersymmetricStandardModel();
     };
-    typedef MinimalSupersymmetricStandardModel Mssm;
+    typedef MinimalSupersymmetricStandardModel MSSM;
 
   }
   typedef MassSpectrumClass::MinimalSupersymmetricStandardModel MssmSpectrum;

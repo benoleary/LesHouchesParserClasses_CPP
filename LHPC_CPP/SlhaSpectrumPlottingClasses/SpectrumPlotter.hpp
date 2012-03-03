@@ -61,7 +61,6 @@ namespace LHPC
       static int const ps2epsIndex;
       static int const rmIndex;
       static int const mvIndex;
-      static std::string unitString;
       static std::string const gnuplotDataFileName;
       static std::string const gnuplotCommandFileName;
       static std::string const gnuplotTexBaseName;
@@ -78,6 +77,7 @@ namespace LHPC
       StringBlock const& linePlottingBlock;
       FmassBlock const* const fmassPointer;
       MassBlock const* const massPointer;
+      std::string unitString;
       double unitFactor;
       double scaleMaximum;
       double largestMass;

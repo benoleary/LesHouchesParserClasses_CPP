@@ -31,7 +31,6 @@ namespace LHPC
       fillFromLine( CLHEP::HepLorentzVector const& vectorToFill,
                     ParticleLine const& lineToConvert );
     };
-
     typedef InterfaceToClhepLorentzVector LineToVec;
 
 

@@ -9,13 +9,10 @@
 
 namespace LHPC
 {
-
   namespace SLHA
   {
-
     namespace BlockClass
     {
-
       BaseBlockAsStrings::BaseBlockAsStrings()
       {
         // TODO Auto-generated constructor stub

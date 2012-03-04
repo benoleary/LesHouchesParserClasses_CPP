@@ -88,7 +88,7 @@ namespace BOL
     getCurrentElementContentTrimmedOfWhitespace() const;
     std::string const&
     getCurrentOpeningTagAsFound() const;
-    StringPairArray const&
+    VectorlikeArray< std::pair< std::string, std::string > > const&
     getCurrentElementAttributes();
 
 
@@ -105,7 +105,8 @@ namespace BOL
     std::string fullOpeningTagAsFound;
     // this includes any attributes; this does not include '<' or '>'.
     bool attributesNotYetParsed;
-    StringPairArray attributesAsParsed;
+    VectorlikeArray< std::pair< std::string, std::string > >
+    attributesAsParsed;
     VectorlikeArray< std::string > tagParsingArray;
     std::string attributeParsingString;
     std::string defaultTag;

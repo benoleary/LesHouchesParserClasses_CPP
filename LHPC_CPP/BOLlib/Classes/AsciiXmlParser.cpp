@@ -51,7 +51,7 @@ namespace BOL
   }
 
 
-  AsciiXmlParser::StringPairArray const&
+  VectorlikeArray< std::pair< std::string, std::string > > const&
   AsciiXmlParser::getCurrentElementAttributes()
   {
     if( attributesNotYetParsed )

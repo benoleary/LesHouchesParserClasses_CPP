@@ -28,8 +28,6 @@ namespace BOL
   class CommentedTextParser
   {
   public:
-    typedef std::pair< std::string,
-                       std::string > StringPair;
     CommentedTextParser( std::string const& commentMarker,
                          bool const& isVerbose );
     CommentedTextParser(
@@ -38,7 +36,7 @@ namespace BOL
     virtual
     ~CommentedTextParser();
 
-    VectorlikeArray< StringPair > const&
+    VectorlikeArray< std::pair< std::string, std::string > > const&
     parseString( std::string const& textToParse );
     /* this breaks up textToParse into lines based on '\n' & '\r', then breaks
      * up each line based on commentMarker, stores everything in parsedText &
@@ -83,8 +81,8 @@ namespace BOL
 
     bool const& isVerbose;
     VectorlikeArray< std::string > commentMarkerSet;
-    VectorlikeArray< StringPair > parsedText;
-    StringPair parsedLine;
+    VectorlikeArray< std::pair< std::string, std::string > > parsedText;
+    std::pair< std::string, std::string > parsedLine;
     VectorlikeArray< std::string > textAsLines;
     std::string lineBeingRead;
     bool linesOfFileRemain;
@@ -109,7 +107,7 @@ namespace BOL
 
 
 
-  inline VectorlikeArray< CommentedTextParser::StringPair > const&
+  inline VectorlikeArray< std::pair< std::string, std::string > > const&
   CommentedTextParser::parseString( std::string const& textToParse )
   /* this breaks up textToParse into lines based on '\n' & '\r', then breaks
    * up each line based on commentMarker, stores everything in parsedText &

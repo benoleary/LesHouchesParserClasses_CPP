@@ -35,6 +35,7 @@ namespace BOL
   public:
     static std::string const whitespaceChars;
     static std::string const newlineChars;
+    static std::string const whitespaceAndNewlineChars;
 
     static int
     numberOfDigitsInInt( int inputInt );

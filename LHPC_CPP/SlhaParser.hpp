@@ -19,6 +19,7 @@
 #include "BOLlib/Classes/CommentedTextParser.hpp"
 #include "BOLlib/Classes/VectorlikeArray.hpp"
 #include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
+#include "SusyLesHouchesAccordClasses/BlockClasses/JustSingleValue.hpp"
 #include "SusyLesHouchesAccordClasses/BlockTypes.hpp"
 
 namespace LHPC
@@ -57,9 +58,9 @@ namespace LHPC
 
   protected:
     typedef std::map< std::string,
-                      SLHA::SlhaBlock* > StringToBlockMap;
+                      SLHA::SameNameBlockSet* > StringToBlockMap;
     typedef std::pair< std::string,
-                       SLHA::SlhaBlock* > StringAndBlockPair;
+                       SLHA::SameNameBlockSet* > StringAndBlockPair;
     typedef std::map< int,
                       double > IntToDoubleMap;
     typedef std::map< int,
@@ -67,26 +68,28 @@ namespace LHPC
 
     bool const isVerbose;
     BOL::CommentedTextParser fileParser;
-    MassSpectrum* spectrumToUpdate;
+    std::vector< MassSpectrum* > spectraToUpdate;
     StringToBlockMap blockMap;
     StringToBlockMap::iterator blockMapIterator;
     StringAndBlockPair mapInserter;
-    SLHA::MassBlock* massBlockPointer;
-    bool ownsMassBlock;
     SLHA::FmassBlock* fmassBlockPointer;
     bool ownsFmassBlock;
+    SLHA::MassBlock* massBlockPointer;
+    bool ownsMassBlock;
     SLHA::SlhaBlock* currentBlockPointer;
-    MassEigenstate* currentMassEigenstate;
+    std::vector< MassEigenstate* > currentMassEigenstates;
+    MassEigenstate* massEigenstateFiller;
     std::string dataString;
     std::string commentString;
     std::string firstWordOfLine;
     BOL::VectorlikeArray< std::string > wordsOfLine;
+    std::vector< int > decayProductCodes;
     MassEigenstate::MassEigenstatesPairedWithBr decayRecorder;
     double recordedDecayWidth;
-    IntToDoubleMap const* massMap;
-    IntToDoubleMap::const_iterator massMapIterator;
     IntToExtendedMassMap const* fmassMap;
     IntToExtendedMassMap::const_iterator fmassMapIterator;
+    IntToDoubleMap const* massMap;
+    IntToDoubleMap::const_iterator massMapIterator;
 
     void
     addBlockToMap( SLHA::SlhaBlock* const blockToUpdate );
@@ -112,11 +115,11 @@ namespace LHPC
     recordDecayLine();
     // this interprets the current line as a decay for the spectrum.
     void
-    ensureSpectrumRecordsMasses();
-    // this reads the masses from the MASS & FMASS blocks into the spectrum,
-    // if necessary.
+    ensureSpectraRecordMasses();
+    // this reads the masses from the FMASS & MASS blocks into the spectrum, if
+    // necessary.
     void
-    ensureSpectrumRecordsChargeConjugateDecays();
+    ensureSpectraRecordChargeConjugateDecays();
     /* this checks each particle in spectrumToUpdate for whether it is
      * self-conjugate, & if not, this checks to see if the charge-conjugate's
      * decays were already recorded, & if not, this gives the charge-conjugate
@@ -131,13 +134,12 @@ namespace LHPC
 
 
 
-  inline SlhaParser&
+  inline void
   SlhaParser::registerSpectrum( MassSpectrum& spectrumToUpdate )
   // this adds a pointer to spectrumToUpdate to spectraToUpdate so that its
   // data get updated during each readFile().
   {
-    this->spectrumToUpdate = &spectrumToUpdate;
-    return *this;
+    spectraToUpdate.push_back( &spectrumToUpdate );
   }
 
   inline void
@@ -200,9 +202,11 @@ namespace LHPC
   // member functions.
   {
     blockMapIterator = blockMap.begin();
-    if( NULL != spectrumToUpdate )
+    for( int whichSpectrum( spectraToUpdate.size() - 1 );
+         0 <= whichSpectrum;
+         --whichSpectrum )
     {
-      spectrumToUpdate->clearMassesAndDecays();
+      spectraToUpdate[ whichSpectrum ]->clearMassesAndDecays();
     }
     while( blockMap.end() != blockMapIterator )
     {
@@ -212,114 +216,17 @@ namespace LHPC
   }
 
   inline void
-  SlhaParser::checkForMassBlocksForSpectrum()
-  // this ensures that if there is a spectrum to update, there are both
-  // blocks for MASS & FMASS.
-  {
-    if( NULL != spectrumToUpdate )
-    {
-      if( NULL == massBlockPointer )
-        // if there is a spectrum to update, but no mass block...
-      {
-        ownsMassBlock = true;
-        massBlockPointer = new SLHA::MassBlock( "MASS",
-                                                BOL::UsefulStuff::notANumber,
-                                                9 );
-        addBlockToMap( massBlockPointer );
-      }
-      if( NULL == fmassBlockPointer )
-        // if there is a spectrum to update, but no fmass block...
-      {
-        ownsFmassBlock = true;
-        fmassBlockPointer = new SLHA::FmassBlock( "FMASS",
-                                                  ExtendedMass(),
-                                                  9 );
-        addBlockToMap( fmassBlockPointer );
-      }
-      // mass & fmass blocks for the spectrum/spectra should be made,
-      // remembering to delete them in the destructor.
-    }
-  }
-
-  inline void
-  SlhaParser::prepareToReadNewBlock()
-  // this parses the block header line & sets currentBlockPointer
-  // appropriately, & calls checkForBlockScaleOrDecayWidth().
-  {
-    prepareForEitherBlockOrDecay();
-    if( 2 <= wordsOfLine.getSize() )
-      // if the line at least has a string for the block name...
-    {
-      BOL::StringParser::transformToUppercase( wordsOfLine[ 1 ] );
-      blockMapIterator = blockMap.find( wordsOfLine[ 1 ] );
-      if( blockMap.end() != blockMapIterator )
-        // if the name corresponds to a block that should be recorded...
-      {
-        currentBlockPointer = blockMapIterator->second;
-        if( 3 <= wordsOfLine.getSize() )
-        {
-          currentBlockPointer->recordScale(
-                  BOL::StringParser::stringToDouble( wordsOfLine.getBack() ) );
-        }
-        else
-        {
-          currentBlockPointer->recordScale( 0.0 );
-        }
-      }
-    }
-  }
-
-  inline void
-  SlhaParser::prepareToReadNewDecay()
-  // this parses the block header line & sets currentMassEigenstate
-  // appropriately, & records its decay width.
-  {
-    prepareForEitherBlockOrDecay();
-    if( ( NULL != spectrumToUpdate )
-        &&
-        ( 3 == wordsOfLine.getSize() ) )
-      // if there is a spectrum for recording decays, & if the line has the
-      // right number of entries ("DECAY", particle code, decay width)...
-    {
-      currentMassEigenstate = spectrumToUpdate->getMassEigenstate(
-                          BOL::StringParser::stringToInt( wordsOfLine[ 1 ] ) );
-      currentMassEigenstate->setDecayWidth(
-                       BOL::StringParser::stringToDouble( wordsOfLine[ 2 ] ) );
-    }
-  }
-
-  inline void
-  SlhaParser::recordDecayLine()
-  // this interprets the current line as a decay for the spectrum.
-  {
-    wordsOfLine.clearEntries();
-    BOL::StringParser::parseByChar( dataString,
-                                    wordsOfLine,
-                                    BOL::StringParser::whitespaceChars );
-    if( !(wordsOfLine.isEmpty()) )
-    {
-      decayRecorder.clearPointers();
-      for( int whichWord( wordsOfLine.getLastIndex() );
-           1 < whichWord;
-           --whichWord )
-      {
-        decayRecorder.addPointer( spectrumToUpdate->getMassEigenstate(
-                BOL::StringParser::stringToInt( wordsOfLine[ whichWord ] ) ) );
-      }
-      decayRecorder.setPairedValueAndSortPointers(
-                       BOL::StringParser::stringToDouble( wordsOfLine[ 0 ] ) );
-      currentMassEigenstate->recordDecay( decayRecorder );
-      // decays are only parsed properly to go into MassEigenstate instances.
-    }
-  }
-
-  inline void
   SlhaParser::prepareForEitherBlockOrDecay()
   // this sets up the common parsing of the line being read.
   {
+    if( NULL != currentBlockPointer )
+    {
+      currentBlockPointer->finishRecordingLines();
+    }
     currentBlockPointer = NULL;
-    currentMassEigenstate = NULL;
-    // first it is assumed that the block is not one that is looked for.
+    currentMassEigenstates.clear();
+    // first it is assumed that the block is not one that is looked for, or
+    // that none of the spectra need to record this decay.
     wordsOfLine.clearEntries();
     BOL::StringParser::parseByChar( dataString,
                                     wordsOfLine,

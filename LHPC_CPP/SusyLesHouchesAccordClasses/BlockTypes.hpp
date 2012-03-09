@@ -9,6 +9,7 @@
 #define BLOCKTYPES_HPP_
 
 #include "../MassEigenstateCollectionClasses/ExtendedMass.hpp"
+#include "BlockClasses/SameNameBlockSet.hpp"
 #include "SlhaBlock.hpp"
 #include "BlockClasses/JustSingleValue.hpp"
 #include "BlockClasses/SparseSinglyIndexed.hpp"

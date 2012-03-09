@@ -8,6 +8,7 @@
 #ifndef BASEBLOCKASSTRINGS_HPP_
 #define BASEBLOCKASSTRINGS_HPP_
 
+#include "../../BOLlib/Classes/BasicObserved.hpp"
 #include "SingleScaleBlockInterpretter.hpp"
 
 namespace LHPC
@@ -20,7 +21,7 @@ namespace LHPC
        * comment). it also holds the relevant pointers for those
        * SingleScaleBlockInterpretters which are interpretting it.
        */
-      class BaseBlockAsStrings
+      class BaseBlockAsStrings : public BOL::BasicObserved
       {
       public:
         BaseBlockAsStrings();
@@ -29,7 +30,7 @@ namespace LHPC
         void
         clearEntries();
         // this clears all the data that this block has recorded.
-        void
+        BaseBlockAsStrings*
         recordHeader( std::string const& headerString,
                       std::string const& commentString );
         void
@@ -63,8 +64,6 @@ namespace LHPC
          * std::pair< std::string, std::string >s are the data lines paired
          * with their comments as recorded.
          */
-        BOL::VectorlikeArray< SingleScaleBlockInterpretter >
-        registeredInterpretters;
       };
 
     }

@@ -29,7 +29,8 @@ namespace LHPC
   class SlhaParser
   {
   public:
-    SlhaParser( bool const isVerbose = true );
+    SlhaParser( bool const shouldRecordBlocksNotRegistered = true,
+                bool const isVerbose = true);
     ~SlhaParser();
 
     void
@@ -66,6 +67,7 @@ namespace LHPC
     typedef std::map< int,
                       ExtendedMass > IntToExtendedMassMap;
 
+    bool const shouldRecordBlocksNotRegistered;
     bool const isVerbose;
     BOL::CommentedTextParser fileParser;
     std::vector< MassSpectrum* > spectraToUpdate;
@@ -175,24 +177,21 @@ namespace LHPC
   }
 
   inline void
-  SlhaParser::addBlockToMap( SLHA::SlhaBlock* const blockToUpdate )
+  SlhaParser::addBlockToMap( SLHA::SlhaBlock& blockToUpdate )
   // this adds blockToUpdate to blockMap, so that its data get updated during
   // each readFile().
   {
-    blockMapIterator = blockMap.find( blockToUpdate->getName() );
+    blockMapIterator = blockMap.find( blockToUpdate.getName() );
     if( blockMap.end() == blockMapIterator )
     {
-      mapInserter.first.assign( blockToUpdate->getName() );
-      mapInserter.second = blockToUpdate;
+      mapInserter.first.assign( blockToUpdate.getName() );
+      mapInserter.second = new SLHA::SameNameBlockSet( mapInserter.first );
+      mapInserter.second->registerBlock( blockToUpdate );
       blockMap.insert( mapInserter );
     }
     else
     {
-      std::string errorMessage( "LHPC::SlhaParser::error! \"BLOCK " );
-      errorMessage.append( blockToUpdate->getName() );
-      errorMessage.append(
-                   "\" is already registered with this SlhaParser instance." );
-      throw std::range_error( errorMessage );
+      blockMapIterator->second->registerBlock( blockToUpdate );
     }
   }
 

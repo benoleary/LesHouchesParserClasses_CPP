@@ -56,6 +56,12 @@ namespace LHPC
     {
       delete fmassBlockPointer;
     }
+    blockMapIterator = blockMap.begin();
+    while( blockMap.end() != blockMapIterator )
+    {
+      delete blockMapIterator->second;
+      ++blockMapIterator;
+    }
   }
 
 
@@ -161,9 +167,21 @@ namespace LHPC
       BOL::StringParser::transformToUppercase( wordsOfLine[ 1 ] );
       blockMapIterator = blockMap.find( wordsOfLine[ 1 ] );
       if( blockMap.end() != blockMapIterator )
-        // if the name corresponds to a block that should be recorded...
+        // if the name corresponds to a block that already exists in the map...
       {
         currentBlockPointer = blockMapIterator->second;
+      }
+      else if( shouldRecordBlocksNotRegistered )
+        // otherwise, if it should be recorded anyway...
+      {
+        mapInserter.first.assign( wordsOfLine[ 1 ] );
+        currentBlockPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+        // a new block is required.
+        mapInserter.second = currentBlockPointer;
+        blockMap.insert( mapInserter );
+      }
+      if( NULL != currentBlockPointer )
+      {
         if( 3 <= wordsOfLine.getSize() )
         {
           currentBlockPointer->recordScale(

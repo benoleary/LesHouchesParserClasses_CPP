@@ -17,7 +17,8 @@ namespace LHPC
       scaleWithIndexList(),
       stringBlocks(),
       currentIndex( -1 ),
-      lowestScaleIndex( -1 )
+      lowestScaleIndex( -1 ),
+      currentStringBlock( NULL )
     {
       BOL::StringParser::transformToUppercase( blockNameInUppercase );
     }
@@ -38,7 +39,7 @@ namespace LHPC
      * if there are no recorded copies of this block, none of the references
      * given are changed & false is returned.
      * if there is only one copy of the block, both indexForLowerScale &
-     * indexForUpperScale are set to 1, fractionFromLowerScale is set to 0.0,
+     * indexForUpperScale are set to 1, fractionFromLowerScale is set to NaN,
      * & true is returned.
      * if there are 2 or more copies of the block, indexForLowerScale &
      * indexForUpperScale are set as described below, fractionFromLowerScale
@@ -78,49 +79,52 @@ namespace LHPC
         {
           indexForLowerScale = 1;
           indexForUpperScale = 1;
-          fractionFromLowerScale = 0.0;
+          fractionFromLowerScale = BOL::UsefulStuff::notANumber;
         }
         else
           // otherwise, there are 2 or more copies.
         {
           std::list< std::pair< double, int > >::iterator
-          lowerScale( scaleWithIndexList.begin() );
-          std::list< std::pair< double, int > >::iterator
-          upperScale( scaleWithIndexList.end() );
-          bool notYetFinished( true );
-          while( notYetFinished )
+          scaleIterator( scaleWithIndexList.begin() );
+          indexForLowerScale = scaleIterator->second;
+          // indexForLowerScale starts at the lowest scale.
+          double lowerScale( scaleIterator->first );
+          indexForUpperScale = (++scaleIterator)->second;
+          // indexForUpperScale starts at the next lowest scale.
+          double upperScale( scaleIterator->first );
+          while( ( scaleWithIndexList.end() != scaleIterator )
+                 &&
+                 ( soughtScale >= scaleIterator->first ) )
+            // until scaleIterator goes past soughtScale or hits the end of the
+            // list...
           {
-            doSomething();
+            indexForLowerScale = indexForUpperScale;
+            indexForUpperScale = (++scaleIterator)->second;
+            // both indices are moved up one copy.
+            lowerScale = upperScale;
+            upperScale = scaleIterator->first;
+          }
+          /* now if soughtScale was lower than the lowest scale, both indices
+           * are still at the lowest pair of scales; if soughtScale was higher
+           * than the highest scale, scaleIterator got to the end of the list &
+           * the indices now are at the highest pair of scales; otherwise
+           * indexForLowerScale is at the highest scale lower than soughtScale
+           * & indexForUpperScale is at the lowest scale higher than
+           * soughtScale.
+           */
+          if( 0.0 == ( upperScale - lowerScale ) )
+          {
+            fractionFromLowerScale = BOL::UsefulStuff::notANumber;
+          }
+          else
+          {
+            fractionFromLowerScale
+            = ( ( soughtScale - lowerScale ) / ( upperScale - lowerScale ) );
           }
         }
         return true;
       }
     }
-
-    BlockClass::BaseBlockAsStrings &
-    SameNameBlockSet::operator[]( int const whichLine );
-    // the BaseBlockAsStrings are indexed in the order in which they were
-    // read. the index starts at 1 rather than 0, as well.
-    BlockClass::BaseBlockAsStrings const&
-    SameNameBlockSet::operator[]( int const whichLine ) const;
-    // const version of above.
-    void
-    SameNameBlockSet::clearEntries();
-    // this clears all the data that this block set has recorded.
-    void
-    SameNameBlockSet::recordHeader( std::string const& headerString,
-                  std::string const& commentString );
-    // this prepares a new BaseBlockAsString for the impending block being
-    // read as strings.
-    void
-    SameNameBlockSet::recordBodyLine( std::string const& dataString,
-                    std::string const& commentString );
-    // this sends the lines to the last BaseBlockAsString prepared by
-    // recordHeader( ... ).
-    void
-    SameNameBlockSet::finishRecordingLines();
-    // this tells the entry in stringBlocks that was being recorded to get
-    // its interpretters to interpret the newly-recorded block.
 
   }
 

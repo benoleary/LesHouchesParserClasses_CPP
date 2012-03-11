@@ -15,7 +15,7 @@
 #define STANDARDBLOCKTEMPLATE_HPP_
 
 #include "../../BOLlib/Classes/UsefulStuff.hpp"
-#include "../SlhaBlock.hpp"
+#include "../BlockInterpretter.hpp"
 #include "../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
 
 namespace LHPC
@@ -27,7 +27,7 @@ namespace LHPC
       // this template class derives from SlhaBlock to provide a base class for
       // blocks with values which are indexed in various ways.
       template< typename ValueType >
-      class StandardBlockTemplate : public SlhaBlock
+      class StandardBlockTemplate : public BlockInterpretter
       {
       public:
         StandardBlockTemplate( std::string const& blockName,

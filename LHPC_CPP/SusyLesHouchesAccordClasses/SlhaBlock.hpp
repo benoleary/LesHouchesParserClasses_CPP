@@ -24,6 +24,9 @@
 #include "../BOLlib/Classes/StringParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "BlockInterpretter.hpp"
+#include "BlockClasses/BlockInterpretterFactory.hpp"
+#include "BlockClasses/SameNameBlockSet.hpp"
+#include "../SlhaParser.hpp"
 
 namespace LHPC
 {
@@ -47,6 +50,9 @@ namespace LHPC
      *                      the general filters.
      */
 
+
+    typedef typename BlockClass::BlockInterpretterFactory InterpretterFactory;
+
     /* this is a class to hold a block from a file in the SLHA format, only
      * interpretting it at the basic level: as set of strings. if multiple
      * blocks with the same name but different scales are recorded, the copy
@@ -55,7 +61,7 @@ namespace LHPC
      * classes which interpret the strings further derive from this class.
      */
     template< class InterpretterClass >
-    class SlhaBlock
+    class SlhaBlock : public InterpretterFactory< InterpretterClass >
     {
     public:
       SlhaBlock( std::string const& blockName,
@@ -63,6 +69,10 @@ namespace LHPC
       virtual
       ~SlhaBlock();
 
+      virtual void
+      registerWith( SlhaParser& registeringParser );
+      // this registers this SlhaBlock with registeringParser so that the data
+      // of this block update when registeringParser reads a file.
       std::string const&
       getName() const;
       // this returns the name in uppercase.
@@ -71,10 +81,10 @@ namespace LHPC
       // this returns true if nameToCompare matches the block name ignoring
       // case.
       bool
-      forScale( double const soughtScale,
-                int& indexForLowerScale,
-                int& indexForUpperScale,
-                double& fractionFromLowerScale );
+      hasRecordedScale( double const soughtScale,
+                        int& indexForLowerScale,
+                        int& indexForUpperScale,
+                        double& fractionFromLowerScale );
       /* this looks for the pair of blocks with energy scales closest to
        * soughtScale.
        * if there are no recorded copies of this block, none of the references
@@ -137,52 +147,72 @@ namespace LHPC
 
 
     protected:
-      typedef std::pair< double,
-                         int > DoublePairedWithInt;
-
       std::string const blockName;
       bool const& isVerbose;
-      std::list< DoublePairedWithInt > scaleWithIndexList;
-      BOL::VectorlikeArray< std::string > blocksAsSingleStrings;
-      BOL::VectorlikeArray< BOL::VectorlikeArray< std::string > >
-      blocksAsStringArrays;
-      int lowestScaleIndex;
-      int currentIndex;
-      std::string blockNameInOriginalCase;
-      std::string blockNameInUppercase;
-      std::string blockHeaderComment;
-      std::string blockAsStringWithHeader;
-
-      virtual void
-      clearExtraStuff();
-      // derived classes should clear their extra data here.
-      virtual void
-      prepareExtraStuffForNewScale();
-      // derived classes should prepare their extra data structure for
-      // recording a new scale here.
-      virtual void
-      interpretBodyLine();
-      // derived classes should interpret comparisonString at this point, since
-      // it is a non-empty data line.
-      int
-      findScaleIndex( double const blockScale ) const;
-      // this returns the appropriate index for looking up values based on
-      // blockScale.
-      double
-      findNearestScale( double const blockScale ) const;
-      // this finds the recorded scale nearest blockScale.
+      SameNameBlockSet* observedStringBlock;
     };
 
 
 
 
 
+    template< class InterpretterClass >
+    inline
+    SlhaBlock< InterpretterClass >::SlhaBlock( std::string const& blockName,
+                                               bool const& isVerbose ) :
+        InterpretterFactory< InterpretterClass >(),
+        blockName( blockName ),
+        isVerbose( isVerbose ),
+        observedStringBlock( NULL )
+    {
+      BOL::StringParser::transformToUppercase( blockName );
+    }
+
+    template< class InterpretterClass >
+    inline
+    SlhaBlock< InterpretterClass >::~SlhaBlock()
+    {
+      // does nothing.
+    }
+
+
+    template< class InterpretterClass >
+    inline void
+    SlhaBlock< InterpretterClass >::registerWith(
+                                                SlhaParser& registeringParser )
+    // this registers this SlhaBlock with registeringParser so that the data
+    // of this block update when registeringParser reads a file.
+    {
+      observedStringBlock->
+      observedStringBlock = registeringParser.registerBlock( *this );
+    }
+
+    template< class InterpretterClass >
     inline std::string const&
-    SlhaBlock::getName() const
+    SlhaBlock< InterpretterClass >::getName() const
     // this returns the name in uppercase.
     {
-      return blockNameInUppercase;
+      return blockName;
     }
+
+    template< class InterpretterClass >
+    inline bool
+    SlhaBlock< InterpretterClass >::nameMatches(
+                                       std::string const& nameToCompare ) const
+    // this returns true if nameToCompare matches the block name ignoring
+    // case.
+    {
+      return BOL::StringParser::stringsMatchIgnoringCase( nameToCompare,
+                                                          blockName );
+    }
+
+    template< class InterpretterClass >
+    inline bool
+    SlhaBlock< InterpretterClass >:: hasRecordedScale(
+                                                      double const soughtScale,
+                                                       int& indexForLowerScale,
+                                                       int& indexForUpperScale,
+                                              double& fractionFromLowerScale );
 
     inline BlockClass::BlockInterpretter &
     SlhaBlock::operator[]( int whichScaleIndex )
@@ -349,8 +379,6 @@ namespace LHPC
     {
       // the default version doesn't interpret anything.
     }
-
-
 
   }
 

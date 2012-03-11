@@ -14,16 +14,13 @@
 #ifndef LHEFPARSER_HPP_
 #define LHEFPARSER_HPP_
 
-#include "BOLlib/Classes/AsciiXmlParser.hpp"
-#include "BOLlib/Classes/VectorlikeArray.hpp"
-#include "LesHouchesEventFileClasses/LhefEvent.hpp"
-#include "LesHouchesEventFileClasses/AutomaticEventFilter.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/InitialOrIntermediateOrFinalState.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/ParticleCode.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/PseudorapidityCut.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/TransverseMomentumCut.hpp"
-#include "ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp"
-#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
+#include "../BOLlib/Classes/AsciiXmlParser.hpp"
+#include "../BOLlib/Classes/VectorlikeArray.hpp"
+#include "LhefEvent.hpp"
+#include "AutomaticEventFilter.hpp"
+#include "DefaultFilterRules.hpp"
+#include "../ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp"
+#include "../ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 namespace LHPC
 {

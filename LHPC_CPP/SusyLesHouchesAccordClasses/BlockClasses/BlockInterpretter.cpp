@@ -26,15 +26,16 @@ namespace LHPC
                                                             1,
                                                             "" );
 
-    BlockInterpretter::BlockInterpretter()
+    BlockInterpretter::BlockInterpretter() :
+        BOL::BasicObserver(),
+        stringsToObserve( NULL )
     {
-      // TODO Auto-generated constructor stub
-
+      // just an initialization list.
     }
 
     BlockInterpretter::~BlockInterpretter()
     {
-      // TODO Auto-generated destructor stub
+      stringsToObserve->removeObserver( this );
     }
 
   }

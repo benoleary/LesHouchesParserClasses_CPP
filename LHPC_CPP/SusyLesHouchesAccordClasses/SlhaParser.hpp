@@ -16,11 +16,10 @@
 
 #include <string>
 #include <map>
-#include "BOLlib/Classes/CommentedTextParser.hpp"
-#include "BOLlib/Classes/VectorlikeArray.hpp"
-#include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
-#include "SusyLesHouchesAccordClasses/BlockClasses/JustSingleValue.hpp"
-#include "SusyLesHouchesAccordClasses/BlockTypes.hpp"
+#include "../BOLlib/Classes/CommentedTextParser.hpp"
+#include "../BOLlib/Classes/VectorlikeArray.hpp"
+#include "../MassEigenstateCollectionClasses/MassSpectrum.hpp"
+#include "BlockTypes.hpp"
 
 namespace LHPC
 {
@@ -38,7 +37,7 @@ namespace LHPC
     // this adds a pointer to spectrumToUpdate to spectraToUpdate so that its
     // data get updated during each readFile().
     void
-    registerBlock( SLHA::SlhaBlock& blockToUpdate );
+    registerBlock( SLHA::BlockInterpretterFactory& blockToUpdate );
     // this registers blockToUpdate so that its data get updated every time a
     // new block of the appropriate name is read.
     void
@@ -101,7 +100,7 @@ namespace LHPC
     IntToDoubleMap::const_iterator massMapIterator;
 
     void
-    addBlockToMap( SLHA::SlhaBlock* const blockToUpdate );
+    addBlockToMap( SLHA::BlockInterpretterFactory& blockToUpdate );
     // this adds blockToUpdate to blockMap, so that its data get updated during
     // each readFile().
     void
@@ -152,11 +151,11 @@ namespace LHPC
   }
 
   inline void
-  SlhaParser::registerBlock( SLHA::SlhaBlock& blockToUpdate )
+  SlhaParser::registerBlock( SLHA::BlockInterpretterFactory& blockToUpdate )
   // this registers blockToUpdate so that its data get updated every time a
   // new block of the appropriate name is read.
   {
-    addBlockToMap( &blockToUpdate );
+    addBlockToMap( blockToUpdate );
   }
 
   inline void
@@ -164,7 +163,7 @@ namespace LHPC
   // this is a special case to try to catch if an FMASS block is given, so
   // that the spectrum (if any) can read from it rather than needing its own.
   {
-    addBlockToMap( &blockToUpdate );
+    addBlockToMap( blockToUpdate );
     if( blockToUpdate.nameMatches( "FMASS" ) )
     {
       fmassBlockPointer = &blockToUpdate;
@@ -176,7 +175,7 @@ namespace LHPC
   // this is a special case to try to catch if a MASS block is given, so that
   // the spectrum (if any) can read from it rather than needing its own.
   {
-    addBlockToMap( &blockToUpdate );
+    addBlockToMap( blockToUpdate );
     if( blockToUpdate.nameMatches( "MASS" ) )
     {
       massBlockPointer = &blockToUpdate;
@@ -214,7 +213,7 @@ namespace LHPC
   }
 
   inline void
-  SlhaParser::addBlockToMap( SLHA::SlhaBlock& blockToUpdate )
+  SlhaParser::addBlockToMap( SLHA::BlockInterpretterFactory& blockToUpdate )
   // this adds blockToUpdate to blockMap, so that its data get updated during
   // each readFile().
   {

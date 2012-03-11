@@ -30,10 +30,10 @@ namespace LHPC
 
 
     bool
-    SameNameBlockSet::forScale( double const soughtScale,
-                                int& indexForLowerScale,
-                                int& indexForUpperScale,
-                                double& fractionFromLowerScale )
+    SameNameBlockSet::hasRecordedScale( double const soughtScale,
+                                        int& indexForLowerScale,
+                                        int& indexForUpperScale,
+                                        double& fractionFromLowerScale )
     /* this looks for the pair of blocks with energy scales closest to
      * soughtScale.
      * if there are no recorded copies of this block, none of the references

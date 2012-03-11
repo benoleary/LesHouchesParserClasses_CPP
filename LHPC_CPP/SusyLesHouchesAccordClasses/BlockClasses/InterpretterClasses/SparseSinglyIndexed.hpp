@@ -14,7 +14,7 @@
 #ifndef SPARSESINGLYINDEXED_HPP_
 #define SPARSESINGLYINDEXED_HPP_
 
-#include "StandardBlockTemplate.hpp"
+#include "../BlockInterpretter.hpp"
 
 namespace LHPC
 {

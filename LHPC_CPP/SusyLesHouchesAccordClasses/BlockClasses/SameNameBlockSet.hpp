@@ -36,10 +36,10 @@ namespace LHPC
       // this returns true if nameToCompare matches blockNameInUppercase
       // ignoring case.
       bool
-      forScale( double const soughtScale,
-                int& indexForLowerScale,
-                int& indexForUpperScale,
-                double& fractionFromLowerScale );
+      hasRecordedScale( double const soughtScale,
+                        int& indexForLowerScale,
+                        int& indexForUpperScale,
+                        double& fractionFromLowerScale );
       /* this looks for the pair of blocks with energy scales closest to
        * soughtScale.
        * if there are no recorded copies of this block, none of the references
@@ -85,8 +85,8 @@ namespace LHPC
       clearEntries();
       // this clears all the data that this block set has recorded.
       void
-      registerBlock( SLHA::BlockInterpretterFactory* const blockToUpdate );
-      /* this adds blockToUpdate to interpretterSources, & gets
+      registerBlock( SLHA::BlockInterpretterFactory& blockToUpdate );
+      /* this adds a pointer to blockToUpdate to interpretterSources, & gets
        * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
        * them to interpret.
        */
@@ -169,13 +169,13 @@ namespace LHPC
 
     inline void
     SameNameBlockSet::registerBlock(
-                          SLHA::BlockInterpretterFactory* const blockToUpdate )
+                                SLHA::BlockInterpretterFactory& blockToUpdate )
     /* this adds blockToUpdate to interpretterSources, & gets
      * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
      * them to interpret.
      */
     {
-      interpretterSources.push_back( blockToUpdate );
+      interpretterSources.push_back( &blockToUpdate );
       for( int scaleIndex( stringBlocks.getLastIndex() );
            0 <= scaleIndex;
            --scaleIndex )

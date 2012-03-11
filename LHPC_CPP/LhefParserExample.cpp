@@ -11,10 +11,7 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#include "LhefParser.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/InitialOrIntermediateOrFinalState.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/ParticleCode.hpp"
-#include "LesHouchesEventFileClasses/FilterRuleClasses/TransverseMomentumCut.hpp"
+#include "LHEF.hpp"
 #include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 class exampleRule : public LHPC::LHEF::FilterRule

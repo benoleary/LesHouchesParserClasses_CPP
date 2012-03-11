@@ -10,6 +10,7 @@
 
 #include "../../BOLlib/Classes/VectorlikeArray.hpp"
 #include "BaseBlockAsStrings.hpp"
+#include "../BlockInterpretterFactory.hpp"
 
 namespace LHPC
 {
@@ -18,7 +19,7 @@ namespace LHPC
     /* instances of this class hold together all copies of a block which have
      * the same name (if there are 2 or more copies, it is assumed that they
      * have different energy scale values). it also holds the relevant
-     * SlhaBlock pointers for the BaseBlockAsString instances.
+     * BlockInterpretterFactory pointers for the BaseBlockAsString instances.
      */
     class SameNameBlockSet
     {
@@ -74,24 +75,25 @@ namespace LHPC
        * which is still higher than soughtScale.
        */
       BlockClass::BaseBlockAsStrings &
-      operator[]( int const whichLine );
+      operator[]( int whichLine );
       // the BaseBlockAsStrings are indexed in the order in which they were
       // read. the index starts at 1 rather than 0, as well.
       BlockClass::BaseBlockAsStrings const&
-      operator[]( int const whichLine ) const;
+      operator[]( int whichLine ) const;
       // const version of above.
       void
       clearEntries();
       // this clears all the data that this block set has recorded.
       void
-      registerBlock( SLHA::SlhaBlock* const blockToUpdate );
+      registerBlock( SLHA::BlockInterpretterFactory* const blockToUpdate );
       /* this adds blockToUpdate to interpretterSources, & gets
        * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
        * them to interpret.
        */
       void
       recordHeader( std::string const& headerString,
-                    std::string const& commentString );
+                    std::string const& commentString,
+                    double const blockScale );
       // this prepares a new BaseBlockAsString for the impending block being
       // read as strings.
       void
@@ -107,10 +109,10 @@ namespace LHPC
 
     protected:
       std::string blockNameInUppercase;
-      std::list< std::pair< double, int > > scaleWithIndexList;
       BOL::VectorlikeArray< BlockClass::BaseBlockAsStrings > stringBlocks;
-      std::vector< SLHA::SlhaBlock* > interpretterSources;
-      int currentIndex;
+      std::list< std::pair< int, double > > scaleOrderedIndices;
+      std::list< std::pair< int, double > >::iterator scaleIndexIterator;
+      std::vector< SLHA::BlockInterpretterFactory* > interpretterSources;
       int lowestScaleIndex;
       BlockClass::BaseBlockAsStrings* currentStringBlock;
     };
@@ -144,7 +146,7 @@ namespace LHPC
     }
 
     inline BlockClass::BaseBlockAsStrings const&
-    SameNameBlockSet::operator[]( int const whichLine ) const
+    SameNameBlockSet::operator[]( int whichLine ) const
     // const version of above.
     {
       return stringBlocks[ (--whichLine) ];
@@ -161,13 +163,13 @@ namespace LHPC
         interpretterSources[ whichSource ]->clearEntries();
       }
       stringBlocks.clearEntries();
-      scaleWithIndexList.clear();
-      currentIndex = -1;
+      scaleOrderedIndices.clear();
       lowestScaleIndex = -1;
     }
 
     inline void
-    SameNameBlockSet::registerBlock( SLHA::SlhaBlock* const blockToUpdate )
+    SameNameBlockSet::registerBlock(
+                          SLHA::BlockInterpretterFactory* const blockToUpdate )
     /* this adds blockToUpdate to interpretterSources, & gets
      * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
      * them to interpret.
@@ -180,23 +182,6 @@ namespace LHPC
       {
         blockToUpdate.addAndUpdateInterpretter( stringBlocks.getPointer(
                                                                 scaleIndex ) );
-      }
-    }
-
-    inline void
-    SameNameBlockSet::recordHeader( std::string const& headerString,
-                                    std::string const& commentString )
-    // this prepares a new BaseBlockAsString for the impending block being
-    // read as strings.
-    {
-      currentStringBlock = stringBlocks.newEnd().recordHeader( headerString,
-                                                               commentString );
-      for( int whichSource( interpretterSources.size() - 1 );
-           0 <= whichSource;
-           --whichSource )
-      {
-        interpretterSources[ whichSource ]->addInterpretter(
-                                                          currentStringBlock );
       }
     }
 

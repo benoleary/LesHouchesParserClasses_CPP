@@ -18,20 +18,6 @@ namespace LHPC
   namespace SLHA
   {
     std::string SlhaBlock::returnString( "" );
-    BOL::StringParser SlhaBlock::slhaDoubleMaker( 9,
-                                                  ' ',
-                                                  9,
-                                                  3 );
-    BOL::StringParser SlhaBlock::slhaIntHelper( 1,
-                                                ' ',
-                                                1,
-                                                1,
-                                                "" );
-    BOL::StringParser SlhaBlock::particleCodeMaker( 9,
-                                                    ' ',
-                                                    1,
-                                                    1,
-                                                    "" );
     std::string SlhaBlock::comparisonString( "" );
     SlhaBlock::DoublePairedWithInt SlhaBlock::pairMaker( 0.0,
                                                          0 );

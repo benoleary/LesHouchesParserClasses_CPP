@@ -13,15 +13,17 @@ namespace LHPC
   {
     namespace BlockClass
     {
-      BaseBlockAsStrings::BaseBlockAsStrings()
+      BaseBlockAsStrings::BaseBlockAsStrings() :
+          BasicObserved(),
+          blockAsStringWithHeader( "" ),
+          blocksAsStringArrays()
       {
-        // TODO Auto-generated constructor stub
-
+        // just an initialization list.
       }
 
       BaseBlockAsStrings::~BaseBlockAsStrings()
       {
-        // TODO Auto-generated destructor stub
+        // does nothing.
       }
 
     }

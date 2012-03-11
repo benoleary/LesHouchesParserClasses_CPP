@@ -23,6 +23,7 @@
 #include <map>
 #include "../BOLlib/Classes/StringParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
+#include "BlockInterpretter.hpp"
 
 namespace LHPC
 {
@@ -53,78 +54,93 @@ namespace LHPC
      * information.
      * classes which interpret the strings further derive from this class.
      */
+    template< class InterpretterClass >
     class SlhaBlock
     {
     public:
       SlhaBlock( std::string const& blockName,
-                 bool const& isVerbose,
-                 std::string const blockHeaderComment = "" );
+                 bool const& isVerbose );
       virtual
       ~SlhaBlock();
 
       std::string const&
       getName() const;
       // this returns the name in uppercase.
+      bool
+      nameMatches( std::string const& nameToCompare ) const;
+      // this returns true if nameToCompare matches the block name ignoring
+      // case.
+      bool
+      forScale( double const soughtScale,
+                int& indexForLowerScale,
+                int& indexForUpperScale,
+                double& fractionFromLowerScale );
+      /* this looks for the pair of blocks with energy scales closest to
+       * soughtScale.
+       * if there are no recorded copies of this block, none of the references
+       * given are changed & false is returned.
+       * if there is only one copy of the block, both indexForLowerScale &
+       * indexForUpperScale are set to 1, fractionFromLowerScale is set to NaN,
+       * & true is returned.
+       * if there are 2 or more copies of the block, indexForLowerScale &
+       * indexForUpperScale are set as described below, fractionFromLowerScale
+       * is set to be
+       * ( ( soughtScale - [ scale of copy with lower scale ] )
+       *   / [ difference of copy scales ] ), & true is returned.
+       * fractionFromLowerScale will thus be between 0.0 & 1.0 if there are
+       * copies with scales above & below soughtScale, but may be negative if
+       * soughtScale is lower than the lowest scale of the copies, or greater
+       * than 1.0 if soughtScale is higher than the highest scale of the
+       * copies.
+       * since the copies of the block with different scales are not
+       * necessarily recorded in order of scale, indexForLowerScale will not
+       * necessarily be smaller in value than indexForUpperScale.
+       * indexForLowerScale & indexForUpperScale are set as follows:
+       * if soughtScale is lower than the lowest scale of the copies,
+       * indexForLowerScale is set to the index of the copy with lowest scale,
+       * & indexForUpperScale is set to the index of the copy with the next
+       * lowest scale.
+       * if soughtScale is higher than the highest scale of the copies,
+       * indexForUpperScale is set to the index of the copy with highest scale,
+       * & indexForLowerScale is set to the index of the copy with the next
+       * highest scale.
+       * otherwise, indexForLowerScale is set to the index of the copy with
+       * highest scale which is still lower than soughtScale, &
+       * indexForUpperScale is set to the index of the copy with lowest scale
+       * which is still higher than soughtScale.
+       */
+      InterpretterClass&
+      operator[]( int whichScaleIndex = 0 );
+      /* the interpretters are indexed in the order in which they were
+       * read (or created). the index starts at 1 rather than 0, as well. if 0
+       * is given as the argument, the index corresponding to the copy with the
+       * lowest scale is used.
+       */
+      InterpretterClass const&
+      operator[]( int whichScaleIndex = 0 ) const;
+      // const version of above.
       void
       clearEntries();
-      // this clears all the data that this block has recorded.
-      void
-      recordScale( double const energyScale );
-      void
-      recordBodyLine( std::string const& dataString,
-                      std::string const& commentString );
-      /* this records dataString & commentString in blocksAsStringArrays & then
-       * copies dataString into comparisonString, trims it of whitespace, &
-       * calls interpretBodyLine() if comparisonString is not then empty.
-       */
+      // this clears all the data that this block has interpretted or had
+      // assigned.
       virtual std::string const&
-      interpretAsString( double const blockScale = 0.0 );
+      interpretAsString( bool onlyShowScalesGreaterThanZero = true );
       /* derived classes should override this to form their strings directly
        * from their data (because the block may be being used as a way of
        * writing an input file in the SLHA format, or maybe because the
        * original formatting was incorrect, as it is in most spectrum
-       * generators...). the block with scale closest to blockScale should be
-       * returned. by default it just joins together the strings from
-       * blocksAsSingleStrings.
+       * generators...). by default it just joins together the strings from
+       * blocksAsSingleStrings. each different-scale copy is concatenated. if
+       * onlyShowScalesGreaterThanZero is true, blocks with scales of 0.0 or
+       * less just do not have the "Q=" etc. printed.
        */
-      std::string const&
-      getAsStringIncludingHeader( double const blockScale = 0.0 );
-      // this returns the header as a string appended with the return value of
-      // getAsString( blockScale ).
-      BOL::VectorlikeArray< std::string >&
-      getLines( double const blockScale = 0.0 );
-      /* this returns the lines without comments. if there is important
-       * information encoded in the comments, the whole block in its original
-       * form can be requested, & decoded by someone else's code, because
-       * putting important information in comments is an entirely unacceptably
-       * stupid idea, in my humble opinion.
-       */
-      bool
-      nameMatches( std::string const& nameToCompare ) const;
-      // this returns true if nameToCompare transformed to uppercase matches
-      // blockNameInUppercase.
 
 
     protected:
       typedef std::pair< double,
                          int > DoublePairedWithInt;
 
-      static std::string returnString;
-      static BOL::StringParser slhaDoubleMaker;
-      static BOL::StringParser slhaIntHelper;
-      static BOL::StringParser particleCodeMaker;
-      static std::string comparisonString;
-      static DoublePairedWithInt pairMaker;
-      static std::string currentWord;
-      static std::string firstRemainder;
-      static std::string secondRemainder;
-      static std::string intString;
-
-      static bool
-      lowToHighScale( DoublePairedWithInt const& firstPair,
-                      DoublePairedWithInt const& secondPair );
-      // this returns true if firstPair's scale is lower than secondPair's.
-
+      std::string const blockName;
       bool const& isVerbose;
       std::list< DoublePairedWithInt > scaleWithIndexList;
       BOL::VectorlikeArray< std::string > blocksAsSingleStrings;
@@ -155,14 +171,6 @@ namespace LHPC
       double
       findNearestScale( double const blockScale ) const;
       // this finds the recorded scale nearest blockScale.
-      std::string const&
-      spacePaddedSlhaInt( int const intToConvert,
-                          int const returnStringLength );
-      /* this returns a string for intToConvert that is at least
-       * returnStringLength chars long, with no prefix for positive numbers &
-       * '-' prefixing negative numbers, padded out with spaces before the
-       * prefix.
-       */
     };
 
 
@@ -174,6 +182,21 @@ namespace LHPC
     // this returns the name in uppercase.
     {
       return blockNameInUppercase;
+    }
+
+    inline BlockClass::BlockInterpretter &
+    SlhaBlock::operator[]( int whichScaleIndex )
+    // the BlockInterpretters are indexed in the order in which they were
+    // read (or created). the index starts at 1 rather than 0, as well.
+    {
+      return ;
+    }
+
+    inline BlockClass::BlockInterpretter const&
+    SlhaBlock::operator[]( int whichScaleIndex ) const
+    // const version of above.
+    {
+
     }
 
     inline void
@@ -327,24 +350,7 @@ namespace LHPC
       // the default version doesn't interpret anything.
     }
 
-    inline std::string const&
-    SlhaBlock::spacePaddedSlhaInt( int const intToConvert,
-                                   int const returnStringLength )
-    /* this returns a string for intToConvert that is at least
-     * returnStringLength chars long, with no prefix for positive numbers &
-     * '-' prefixing negative numbers, padded out with spaces before the
-     * prefix.
-     */
-    {
-      intString.assign( slhaIntHelper.intToString( intToConvert ) );
-      if( (size_t)returnStringLength > intString.size() )
-      {
-        intString.insert( 0,
-                          ( returnStringLength - intString.size() ),
-                          ' ' );
-      }
-      return intString;
-    }
+
 
   }
 

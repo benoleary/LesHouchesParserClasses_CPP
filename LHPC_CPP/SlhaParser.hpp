@@ -55,6 +55,10 @@ namespace LHPC
      * into strings, & passes each registered SlhaBlock & each BaseSlhaDecay
      * its appropriate string to interpret.
      */
+    SLHA::SameNameBlockSet*
+    getBlockAsStrings( std::string blockName );
+    SLHA::SameNameBlockSet const*
+    getBlockAsStrings( std::string blockName ) const;
 
 
   protected:
@@ -67,6 +71,9 @@ namespace LHPC
     typedef std::map< int,
                       ExtendedMass > IntToExtendedMassMap;
 
+    static std::string const blockIdentifierString;
+    static std::string const decayIdentifierString;
+
     bool const shouldRecordBlocksNotRegistered;
     bool const isVerbose;
     BOL::CommentedTextParser fileParser;
@@ -78,7 +85,7 @@ namespace LHPC
     bool ownsFmassBlock;
     SLHA::MassBlock* massBlockPointer;
     bool ownsMassBlock;
-    SLHA::SlhaBlock* currentBlockPointer;
+    SLHA::SameNameBlockSet* currentBlockPointer;
     std::vector< MassEigenstate* > currentMassEigenstates;
     MassEigenstate* massEigenstateFiller;
     std::string dataString;
@@ -176,6 +183,36 @@ namespace LHPC
     }
   }
 
+  inline SLHA::SameNameBlockSet*
+  SlhaParser::getBlockAsStrings( std::string blockName )
+  {
+    blockMapIterator
+    = blockMap.find( BOL::StringParser::transformToUppercase( blockName ) );
+    if( blockMap.end() == blockMapIterator )
+    {
+      return NULL;
+    }
+    else
+    {
+      return blockMapIterator->second;
+    }
+  }
+
+  SLHA::SameNameBlockSet const*
+  SlhaParser::getBlockAsStrings( std::string blockName ) const
+  {
+    StringToBlockMap::const_iterator constBlockMapIterator
+    = blockMap.find( BOL::StringParser::transformToUppercase( blockName ) );
+    if( blockMap.end() == constBlockMapIterator )
+    {
+      return NULL;
+    }
+    else
+    {
+      return constBlockMapIterator->second;
+    }
+  }
+
   inline void
   SlhaParser::addBlockToMap( SLHA::SlhaBlock& blockToUpdate )
   // this adds blockToUpdate to blockMap, so that its data get updated during
@@ -200,13 +237,13 @@ namespace LHPC
   // this goes through all the blocks in blockMap & calls their clearEntries()
   // member functions.
   {
-    blockMapIterator = blockMap.begin();
     for( int whichSpectrum( spectraToUpdate.size() - 1 );
          0 <= whichSpectrum;
          --whichSpectrum )
     {
       spectraToUpdate[ whichSpectrum ]->clearMassesAndDecays();
     }
+    blockMapIterator = blockMap.begin();
     while( blockMap.end() != blockMapIterator )
     {
       blockMapIterator->second->clearEntries();

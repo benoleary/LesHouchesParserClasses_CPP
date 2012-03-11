@@ -15,6 +15,9 @@
 
 namespace LHPC
 {
+  std::string const SlhaParser::blockIdentifierString( "BLOCK" );
+  std::string const SlhaParser::decayIdentifierString( "DECAY" );
+
   SlhaParser::SlhaParser( bool const isVerbose ) :
       isVerbose( isVerbose ),
       fileParser( "#",
@@ -82,20 +85,16 @@ namespace LHPC
     while( fileParser.parseNextLineOfFile( dataString,
                                            commentString ) )
     {
-      firstWordOfLine.assign( BOL::StringParser::substringToFirst(
-                                           BOL::StringParser::substringToFirst(
-                                              BOL::StringParser::trimFromFront(
-                                                                    dataString,
-                                          BOL::StringParser::whitespaceChars ),
-                                                                         " " ),
-                                                                      "\t" ) );
+      firstWordOfLine.assign( BOL::StringParser::firstWordOf( dataString ) );
       // some perverts use tabs in their SLHA files.
       BOL::StringParser::transformToLowercase( firstWordOfLine );
-      if( 0 == firstWordOfLine.compare( "block" ) )
+      if( BOL::StringParser::stringsMatchIgnoringCase( blockIdentifierString,
+                                                       firstWordOfLine ) )
       {
         prepareToReadNewBlock();
       }
-      else if( 0 == firstWordOfLine.compare( "decay" ) )
+      else if( BOL::StringParser::stringsMatchIgnoringCase( firstWordOfLine,
+                                                      decayIdentifierString ) )
       {
         prepareToReadNewDecay();
       }
@@ -182,15 +181,17 @@ namespace LHPC
       }
       if( NULL != currentBlockPointer )
       {
+        double currentBlockScale( 0.0 );
+        // if no scale is given by "Q=", the block is assigned the default
+        // scale of 0.0 GeV.
         if( 3 <= wordsOfLine.getSize() )
         {
-          currentBlockPointer->recordScale(
-                  BOL::StringParser::stringToDouble( wordsOfLine.getBack() ) );
+          currentBlockScale =
+          BOL::StringParser::stringToDouble( wordsOfLine.getBack() );
         }
-        else
-        {
-          currentBlockPointer->recordScale( 0.0 );
-        }
+        currentBlockPointer->recordHeader( dataString,
+                                           commentString,
+                                           currentBlockScale );
       }
     }
   }

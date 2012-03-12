@@ -14,7 +14,7 @@
 #ifndef SLHAONE_HPP_
 #define SLHAONE_HPP_
 
-#include "../SlhaParser.hpp"
+#include "BlockTypes.hpp"
 
 namespace LHPC
 {
@@ -30,27 +30,27 @@ namespace LHPC
     virtual
     ~SlhaOne();
 
-    SLHA::BlockClass::SparseSinglyIndexed< double > MODSEL;
-    SLHA::BlockClass::SparseSinglyIndexed< double > SMINPUTS;
-    SLHA::BlockClass::SparseSinglyIndexed< double > MINPAR;
-    SLHA::BlockClass::SparseSinglyIndexed< double > EXTPAR;
-    SLHA::BlockClass::SparseSinglyIndexed< double > MASS;
-    SLHA::BlockClass::DenseDoublyIndexed< double > NMIX;
-    SLHA::BlockClass::DenseDoublyIndexed< double > UMIX;
-    SLHA::BlockClass::DenseDoublyIndexed< double > VMIX;
-    SLHA::BlockClass::DenseDoublyIndexed< double > STOPMIX;
-    SLHA::BlockClass::DenseDoublyIndexed< double > SBOTMIX;
-    SLHA::BlockClass::DenseDoublyIndexed< double > STAUMIX;
-    SLHA::BlockClass::JustSingleValue< double > ALPHA;
-    SLHA::BlockClass::SparseSinglyIndexed< double > HMIX;
-    SLHA::BlockClass::DenseSinglyIndexed< double > GAUGE;
-    SLHA::BlockClass::SparseSinglyIndexed< double > MSOFT;
-    SLHA::BlockClass::DenseDoublyIndexed< double > AU;
-    SLHA::BlockClass::DenseDoublyIndexed< double > AD;
-    SLHA::BlockClass::DenseDoublyIndexed< double > AE;
-    SLHA::BlockClass::DenseDoublyIndexed< double > YU;
-    SLHA::BlockClass::DenseDoublyIndexed< double > YD;
-    SLHA::BlockClass::DenseDoublyIndexed< double > YE;
+    SLHA::SparseSinglyIndexedBlock< double > MODSEL;
+    SLHA::SparseSinglyIndexedBlock< double > SMINPUTS;
+    SLHA::SparseSinglyIndexedBlock< double > MINPAR;
+    SLHA::SparseSinglyIndexedBlock< double > EXTPAR;
+    SLHA::SparseSinglyIndexedBlock< double > MASS;
+    SLHA::DenseDoublyIndexedBlock< double > NMIX;
+    SLHA::DenseDoublyIndexedBlock< double > UMIX;
+    SLHA::DenseDoublyIndexedBlock< double > VMIX;
+    SLHA::DenseDoublyIndexedBlock< double > STOPMIX;
+    SLHA::DenseDoublyIndexedBlock< double > SBOTMIX;
+    SLHA::DenseDoublyIndexedBlock< double > STAUMIX;
+    SLHA::JustSingleValueBlock< double > ALPHA;
+    SLHA::SparseSinglyIndexedBlock< double > HMIX;
+    SLHA::DenseSinglyIndexedBlock< double > GAUGE;
+    SLHA::SparseSinglyIndexedBlock< double > MSOFT;
+    SLHA::DenseDoublyIndexedBlock< double > AU;
+    SLHA::DenseDoublyIndexedBlock< double > AD;
+    SLHA::DenseDoublyIndexedBlock< double > AE;
+    SLHA::DenseDoublyIndexedBlock< double > YU;
+    SLHA::DenseDoublyIndexedBlock< double > YD;
+    SLHA::DenseDoublyIndexedBlock< double > YE;
     SLHA::SlhaBlock SPINFO;
 
 

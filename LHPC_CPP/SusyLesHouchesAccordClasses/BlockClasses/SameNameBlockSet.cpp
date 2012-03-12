@@ -127,6 +127,33 @@ namespace LHPC
     }
 
     void
+    SameNameBlockSet::clearEntries()
+    // this clears all the data that this block set has recorded.
+    {
+      for( int whichBlock( stringBlocks.getLastIndex() );
+           0 <= whichBlock;
+           --whichBlock )
+      {
+        stringBlocks[ whichBlock ].recordHeader( "",
+                                                 "",
+                                                BOL::UsefulStuff::notANumber );
+        // this empties the BaseBlockAsStrings so that the following should
+        // wipe the data held in any interpretter observing it.
+        stringBlocks[ whichBlock ].updateObservers();
+        stringBlocks[ whichBlock ].removeAllObservers();
+      }
+      for( int whichSource( interpretterSources.size() - 1 );
+           0 <= whichSource;
+           --whichSource )
+      {
+        interpretterSources[ whichSource ]->clearEntries();
+      }
+      stringBlocks.clearEntries();
+      scaleOrderedIndices.clear();
+      lowestScaleIndex = -1;
+    }
+
+    void
     SameNameBlockSet::recordHeader( std::string const& headerString,
                                     std::string const& commentString,
                                     double const blockScale )

@@ -9,8 +9,9 @@
 #define SAMENAMEBLOCKSET_HPP_
 
 #include "../../BOLlib/Classes/VectorlikeArray.hpp"
+#include "../../BOLlib/Classes/StringParser.hpp"
 #include "BaseBlockAsStrings.hpp"
-#include "../BlockInterpretterFactory.hpp"
+#include "InterpretterClasses/BlockInterpretterFactory.hpp"
 
 namespace LHPC
 {
@@ -81,11 +82,16 @@ namespace LHPC
       BlockClass::BaseBlockAsStrings const&
       operator[]( int whichLine ) const;
       // const version of above.
+      int
+      getNumberOfCopies() const;
+      int
+      getLowestScaleIndex() const;
       void
       clearEntries();
       // this clears all the data that this block set has recorded.
       void
-      registerBlock( SLHA::BlockInterpretterFactory& blockToUpdate );
+      registerBlock(
+                  InterpretterClass::BlockInterpretterFactory& blockToUpdate );
       /* this adds a pointer to blockToUpdate to interpretterSources, & gets
        * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
        * them to interpret.
@@ -112,7 +118,8 @@ namespace LHPC
       BOL::VectorlikeArray< BlockClass::BaseBlockAsStrings > stringBlocks;
       std::list< std::pair< int, double > > scaleOrderedIndices;
       std::list< std::pair< int, double > >::iterator scaleIndexIterator;
-      std::vector< SLHA::BlockInterpretterFactory* > interpretterSources;
+      std::vector< InterpretterClass::BlockInterpretterFactory* >
+      interpretterSources;
       int lowestScaleIndex;
       BlockClass::BaseBlockAsStrings* currentStringBlock;
     };
@@ -152,24 +159,21 @@ namespace LHPC
       return stringBlocks[ (--whichLine) ];
     }
 
-    inline void
-    SameNameBlockSet::clearEntries()
-    // this clears all the data that this block set has recorded.
+    inline int
+    SameNameBlockSet::getNumberOfCopies() const
     {
-      for( int whichSource( interpretterSources.size() - 1 );
-           0 <= whichSource;
-           --whichSource )
-      {
-        interpretterSources[ whichSource ]->clearEntries();
-      }
-      stringBlocks.clearEntries();
-      scaleOrderedIndices.clear();
-      lowestScaleIndex = -1;
+      return stringBlocks.getSize();
+    }
+
+    inline int
+    SameNameBlockSet::getLowestScaleIndex() const
+    {
+      return lowestScaleIndex;
     }
 
     inline void
     SameNameBlockSet::registerBlock(
-                                SLHA::BlockInterpretterFactory& blockToUpdate )
+                   InterpretterClass::BlockInterpretterFactory& blockToUpdate )
     /* this adds blockToUpdate to interpretterSources, & gets
      * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
      * them to interpret.

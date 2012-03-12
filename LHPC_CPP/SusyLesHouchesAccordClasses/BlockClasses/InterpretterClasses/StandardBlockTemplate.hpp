@@ -14,39 +14,34 @@
 #ifndef STANDARDBLOCKTEMPLATE_HPP_
 #define STANDARDBLOCKTEMPLATE_HPP_
 
-#include "../../BOLlib/Classes/UsefulStuff.hpp"
-#include "../BlockInterpretter.hpp"
-#include "../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
+#include "../../../BOLlib/Classes/UsefulStuff.hpp"
+#include "BlockInterpretter.hpp"
+#include "../../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    namespace BlockClass
+    namespace InterpretterClass
     {
       // this template class derives from SlhaBlock to provide a base class for
       // blocks with values which are indexed in various ways.
-      template< typename ValueType >
+      template< class ValueType >
       class StandardBlockTemplate : public BlockInterpretter
       {
       public:
-        StandardBlockTemplate( std::string const& blockName,
-                               ValueType const& defaultUnsetValue,
-                               bool const& isVerbose,
-                               int const indexDigits,
-                               std::string const blockHeaderComment );
+        StandardBlockTemplate( ValueType const& defaultUnsetValue,
+                               bool const& isVerbose );
         virtual
         ~StandardBlockTemplate();
 
 
       protected:
+        bool const& isVerbose;
         ValueType const defaultUnsetValue;
         ValueType valueFromString;
         std::string stringFromValue;
-        int const indexDigits;
-        // this is the number of characters to print before the value,
-        // including the characters used to print the index.
-        std::string const blockHeaderComment;
+        std::string valuePrintingString;
 
         ValueType const&
         stringToValue( std::string const& stringToConvert );
@@ -56,77 +51,39 @@ namespace LHPC
         valueToString( ValueType const& valueToConvert );
         // this sets stringFromValue according to the interpretation of
         // valueToConvert.
-        void
-        putIndexIntoReturnString( int indexToPrint );
-        // this puts a single space then indexToStream with indexDigits into
-        // returnString.
-        void
-        putValueIntoReturnString( ValueType const& valueToPrint );
-        /* this puts 3 spaces into returnString, then
-         * valueToString( valueToPrint ), then either way afterwards three more
-         * spaces then "# no comment\n" is appended.
-         */
+        std::string const&
+        valueToPrintingString( ValueType const& valueToPrint );
+        // this puts 3 spaces into valuePrintingString, then
+        // valueToString( valueToPrint ).
       };
 
 
 
 
-      template< typename ValueType >
+
+      template< class ValueType >
       inline
       StandardBlockTemplate< ValueType >::StandardBlockTemplate(
-                                                  std::string const& blockName,
                                             ValueType const& defaultUnsetValue,
-                                                         bool const& isVerbose,
-                                                         int const indexDigits,
-                                       std::string const blockHeaderComment ) :
-          SlhaBlock( blockName,
-                     isVerbose,
-                     blockHeaderComment ),
+                                                      bool const& isVerbose ) :
+          BlockInterpretter(),
           defaultUnsetValue( defaultUnsetValue ),
+          isVerbose( isVerbose ),
           valueFromString( defaultUnsetValue ),
           stringFromValue( "no_string_interpretation_given" ),
-          indexDigits( indexDigits ),
-          blockHeaderComment( blockHeaderComment )
+          valuePrintingString( "   no_string_interpretation_given" )
       {
         // just an initialization list.
       }
 
-      template< typename ValueType >
+      template< class ValueType >
       inline
       StandardBlockTemplate< ValueType >::~StandardBlockTemplate()
       {
         // does nothing.
       }
 
-
-      template< typename ValueType >
-      inline void
-      StandardBlockTemplate< ValueType >::putIndexIntoReturnString(
-                                                             int indexToPrint )
-      // this puts a single space then indexToStream with indexDigits into
-      // stringParsingStream.
-      {
-        returnString.append( " " );
-        returnString.append( spacePaddedSlhaInt( indexToPrint,
-                                                 indexDigits ) );
-      }
-
-      template< typename ValueType >
-      inline void
-      StandardBlockTemplate< ValueType >::putValueIntoReturnString(
-                                               ValueType const& valueToPrint )
-      /* this puts 3 spaces into returnString, then
-       * valueToString( valueToPrint ), then either way afterwards three more
-       * spaces then "# no comment\n" is appended.
-       */
-      {
-        returnString.append( "   " );
-        this->valueToString( valueToPrint );
-        returnString.append( stringFromValue );
-        returnString.append( "   # no comment\n" );
-      }
-
-      template< typename ValueType >
+      template< class ValueType >
       inline ValueType const&
       StandardBlockTemplate< ValueType >::stringToValue(
                                            std::string const& stringToConvert )
@@ -194,7 +151,7 @@ namespace LHPC
         return valueFromString;
       }
 
-      template< typename ValueType >
+      template< class ValueType >
       inline std::string const&
       StandardBlockTemplate< ValueType >::valueToString(
                                               ValueType const& valueToConvert )
@@ -263,6 +220,20 @@ namespace LHPC
         stringFromValue.append( slhaDoubleMaker.doubleToString(
                                                  valueToConvert.getScale() ) );
         return stringFromValue;
+      }
+
+      template< class ValueType >
+      inline std::string const&
+      StandardBlockTemplate< ValueType >::valueToPrintingString(
+                                               ValueType const& valueToPrint )
+      /* this puts 3 spaces into returnString, then
+       * valueToString( valueToPrint ), then either way afterwards three more
+       * spaces then "# no comment\n" is appended.
+       */
+      {
+        valuePrintingString.assign( "   " );
+        valuePrintingString.append( this->valueToString( valueToPrint ) );
+        return valuePrintingString;
       }
 
     }

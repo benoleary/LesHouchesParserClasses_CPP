@@ -9,22 +9,18 @@
 
 namespace LHPC
 {
-
   namespace SLHA
   {
-
-    namespace BlockClass
+    namespace InterpretterClass
     {
-
       BlockInterpretterFactory::BlockInterpretterFactory()
       {
-        // TODO Auto-generated constructor stub
-
+        // does nothing.
       }
 
       BlockInterpretterFactory::~BlockInterpretterFactory()
       {
-        // TODO Auto-generated destructor stub
+        // does nothing.
       }
 
     }

@@ -40,6 +40,8 @@ namespace LHPC
          * whitespace, & calls interpretBodyLine() if comparisonString is not
          * then empty.
          */
+        int
+        getNumberOfLines() const;
         std::pair< std::string, std::string >&
         operator[]( int const whichLine );
         /* the std::pair< std::string, std::string > at index 0 is the block
@@ -81,6 +83,7 @@ namespace LHPC
         blocksAsStringArrays.getFront().first.assign( headerString );
         blocksAsStringArrays.getFront().second.assign( commentString );
         this->blockScale = blockScale;
+        return this;
       }
 
       inline void
@@ -112,6 +115,12 @@ namespace LHPC
       // const version of above.
       {
         return blocksAsStringArrays[ whichLine ];
+      }
+
+      inline int
+      BaseBlockAsStrings::getNumberOfLines() const
+      {
+        return blocksAsStringArrays.getSize();
       }
 
       inline double

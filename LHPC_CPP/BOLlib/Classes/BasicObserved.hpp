@@ -28,6 +28,8 @@ namespace BOL
     registerObserver( BasicObserver* const joiningObserver );
     virtual void
     removeObserver( BasicObserver* const leavingObserver );
+    virtual void
+    removeAllObservers();
 
 
   protected:
@@ -60,6 +62,12 @@ namespace BOL
   BasicObserved::removeObserver( BasicObserver* const leavingObserver )
   {
     observerList.remove( leavingObserver );
+  }
+
+  inline void
+  BasicObserved::removeAllObservers()
+  {
+    observerList.clear();
   }
 
 }

@@ -28,7 +28,8 @@ namespace LHPC
 
     BlockInterpretter::BlockInterpretter() :
         BOL::BasicObserver(),
-        stringsToObserve( NULL )
+        stringsToObserve( NULL ),
+        stringInterpretation( "" )
     {
       // just an initialization list.
     }

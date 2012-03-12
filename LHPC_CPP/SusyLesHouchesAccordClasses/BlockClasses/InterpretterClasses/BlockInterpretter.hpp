@@ -8,9 +8,8 @@
 #ifndef BLOCKINTERPRETTER_HPP_
 #define BLOCKINTERPRETTER_HPP_
 
-#include "../../BOLlib/Classes/BasicObserver.hpp"
-#include "../../BOLlib/Classes/StringParser.hpp"
-#include "BaseBlockAsStrings.hpp"
+#include "../../../BOLlib/Classes/BasicObserver.hpp"
+#include "../BaseBlockAsStrings.hpp"
 
 namespace LHPC
 {
@@ -21,6 +20,10 @@ namespace LHPC
     class BlockInterpretter : public BOL::BasicObserver
     {
     public:
+      static BOL::StringParser const slhaDoubleMaker;
+      static BOL::StringParser const slhaIntHelper;
+      static BOL::StringParser const particleCodeMaker;
+
       BlockInterpretter();
       virtual
       ~BlockInterpretter();
@@ -35,23 +38,15 @@ namespace LHPC
        * putting important information in comments is an entirely unacceptably
        * stupid idea, in my humble opinion.
        */
+      virtual std::string const&
+      interpretAsString() = 0;
+      // derived classes should return their block as a single string of
+      // re-formatted interpretted values.
 
 
     protected:
-      static BOL::StringParser const slhaDoubleMaker;
-      static BOL::StringParser const slhaIntHelper;
-      static BOL::StringParser const particleCodeMaker;
-
-      static std::string
-      spacePaddedSlhaInt( int const intToConvert,
-                          int const returnStringLength );
-      /* this returns a string for intToConvert that is at least
-       * returnStringLength chars long, with no prefix for positive numbers &
-       * '-' prefixing negative numbers, padded out with spaces before the
-       * prefix.
-       */
-
       BlockClass::BaseBlockAsStrings* stringsToObserve;
+      std::string stringInterpretation;
     };
 
 
@@ -63,9 +58,13 @@ namespace LHPC
                        BlockClass::BaseBlockAsStrings* const stringsToObserve )
     {
       // stop observing the old stringsToObserve, & start observing the new:
-      this->stringsToObserve->removeObserver( this );
+      if( NULL != this->stringsToObserve )
+      {
+        this->stringsToObserve->removeObserver( this );
+      }
       this->stringsToObserve = stringsToObserve;
       stringsToObserve->registerObserver( this );
+      updateSelf();
     }
 
     inline std::string const&
@@ -84,25 +83,6 @@ namespace LHPC
       std::string returnString( (*stringsToObserve)[ whichLine ].first );
       returnString.append( (*stringsToObserve)[ whichLine ].second );
       return returnString;
-    }
-
-    inline std::string
-    BlockInterpretter::spacePaddedSlhaInt( int const intToConvert,
-                                           int const returnStringLength )
-    /* this returns a string for intToConvert that is at least
-     * returnStringLength chars long, with no prefix for positive numbers &
-     * '-' prefixing negative numbers, padded out with spaces before the
-     * prefix.
-     */
-    {
-      std::string intString( slhaIntHelper.intToString( intToConvert ) );
-      if( (size_t)returnStringLength > intString.size() )
-      {
-        intString.insert( 0,
-                          ( returnStringLength - intString.size() ),
-                          ' ' );
-      }
-      return intString;
     }
 
   }

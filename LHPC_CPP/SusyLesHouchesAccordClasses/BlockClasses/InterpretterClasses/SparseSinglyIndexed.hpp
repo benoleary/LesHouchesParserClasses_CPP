@@ -14,204 +14,116 @@
 #ifndef SPARSESINGLYINDEXED_HPP_
 #define SPARSESINGLYINDEXED_HPP_
 
-#include "../BlockInterpretter.hpp"
+#include "IndexedBlockTemplate.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    namespace BlockClass
+    namespace InterpretterClass
     {
-      // this template class derives from SlhaBlock to interpret SLHA
-      // blocks that have a single int index with a single ValueType value.
-      template< typename ValueType >
-      class SparseSinglyIndexed : public StandardBlockTemplate< ValueType >
+      // this template class interprets SLHA blocks that have a single int
+      // index with a single ValueClass value.
+      template< class ValueClass >
+      class SparseSinglyIndexed : public IndexedBlockTemplate< ValueClass >
       {
       public:
-        typedef typename std::map< int,
-                                   ValueType > IntToValueMap;
-
-        SparseSinglyIndexed( std::string const& blockName,
-                             ValueType const& defaultUnsetValue,
+        SparseSinglyIndexed( ValueClass const& defaultUnsetValue,
                              bool const& isVerbose,
-                             int const indexDigits = 5,
-                             std::string const blockHeaderComment = "" );
+                             int const indexDigits = 5 );
         virtual
         ~SparseSinglyIndexed();
 
-        ValueType&
-        operator()( int const soughtIndex,
-                    double const blockScale );
-        /* this returns the ValueType mapped to by soughtIndex for the data
-         * with energy scale nearest blockScale. if there is no element at
-         * soughtIndex, a new one is made & copied from defaultUnsetValue.
-         */
-        ValueType const&
-        operator()( int const soughtIndex,
-                    double const blockScale ) const;
-        /* const version of above, though it returns defaultUnsetValue rather
-         * than copying in a new element at soughtIndex if there isn't an entry
-         * there already.
-         */
-        ValueType&
+        ValueClass&
         operator()( int const soughtIndex );
-        /* this returns the ValueType mapped to by soughtIndex for the data
-         * with lowest energy scale. if there is no element at soughtIndex, a
-         * new one is made & copied from defaultUnsetValue.
+        /* this returns the ValueClass mapped to by soughtIndex. if there is no
+         * element at soughtIndex, a new one is made & copied from
+         * defaultUnsetValue.
          */
-        ValueType const&
+        ValueClass const&
         operator()( int const soughtIndex ) const;
         /* const version of above, though it returns defaultUnsetValue rather
          * than copying in a new element at soughtIndex if there isn't an entry
          * there already.
          */
-        ValueType&
+        ValueClass&
         operator[]( int const soughtIndex ) { return (*this)( soughtIndex ); }
-        ValueType const&
+        ValueClass const&
         operator[]( int const soughtIndex ) const { return (*this)(
                                                                soughtIndex ); }
         virtual std::string const&
-        interpretAsString( double const blockScale = 0.0 );
+        interpretAsString();
         // see base version's description.
-        virtual IntToValueMap const*
-        getMap( double const blockScale = 0.0 ) const;
-        // this returns a pointer to the scale-appropriate std::map.
+        virtual std::map< int, ValueClass > const&
+        getValueMap() const;
         bool
-        hasEntry( int const soughtIndex,
-                  double const blockScale = 0.0 ) const;
-        // this returns true if there is an entry at soughtIndex for the block
-        // with scale nearest blockScale.
+        hasEntry( int const soughtIndex ) const;
+        // this returns true if there is an entry at soughtIndex.
+        virtual void
+        updateSelf();
 
 
       protected:
-        typedef typename std::map< int,
-                                   ValueType >::iterator IntToValueMapIterator;
-        typedef typename
-        std::map< int,
-                  ValueType >::const_iterator IntToValueMapConstIterator;
-
-        BOL::VectorlikeArray< IntToValueMap > valueMapArray;
-        IntToValueMapIterator valueFinder;
-        std::pair< int,
-                   ValueType > valueRecorder;
-
-        virtual void
-        clearExtraStuff();
-        // derived classes should clear their extra data here.
-        virtual void
-        prepareExtraStuffForNewScale();
-        // derived classes should prepare their extra data structure for
-        // recording a new scale here.
-        virtual void
-        interpretBodyLine();
-        // derived classes should interpret comparisonString at this point,
-        // since it is a non-empty data line.
+        std::map< int, ValueClass > valueMap;
+        std::pair< int, ValueClass > valueRecorder;
       };
 
 
 
 
 
-      template< typename ValueType >
+      template< class ValueClass >
       inline
-      SparseSinglyIndexed< ValueType >::SparseSinglyIndexed(
-                                                  std::string const& blockName,
-                                            ValueType const& defaultUnsetValue,
+      SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed(
+                                           ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
-                                                         int const indexDigits,
-                                       std::string const blockHeaderComment ) :
-          StandardBlockTemplate< ValueType >( blockName,
-                                              defaultUnsetValue,
+                                                      int const indexDigits ) :
+          IndexedBlockTemplate< ValueClass >( defaultUnsetValue,
                                               isVerbose,
-                                              indexDigits,
-                                              blockHeaderComment ),
-          valueMapArray(),
-          valueFinder(),
+                                              indexDigits ),
+          valueMap(),
           valueRecorder()
       {
         // just an initialization list.
       }
 
-      template< typename ValueType >
+      template< class ValueClass >
       inline
-      SparseSinglyIndexed< ValueType >::~SparseSinglyIndexed()
+      SparseSinglyIndexed< ValueClass >::~SparseSinglyIndexed()
       {
         // does nothing.
       }
 
 
-      template< typename ValueType >
-      inline ValueType&
-      SparseSinglyIndexed< ValueType >::operator()( int const soughtIndex,
-                                                    double const blockScale )
-      /* this returns the ValueType mapped to by soughtIndex for the data
-       * with energy scale nearest blockScale. if there is no element at
-       * soughtIndex, a new one is made & copied from defaultUnsetValue.
-       */
-      {
-        this->currentIndex = this->findScaleIndex( blockScale );
-        if( 0 >= valueMapArray[ this->currentIndex ].count( soughtIndex ) )
-        {
-          valueMapArray[ this->currentIndex ][ soughtIndex ]
-          = this->defaultUnsetValue;
-        }
-        return
-        valueMapArray[ this->currentIndex ][ soughtIndex ];
-      }
-
-      template< typename ValueType >
-      inline ValueType const&
-      SparseSinglyIndexed< ValueType >::operator()( int const soughtIndex,
-                                                double const blockScale ) const
-      /* const version of above, though it returns defaultUnsetValue rather
-       * than copying in a new element at soughtIndex if there isn't an entry
-       * there already.
-       */
-      {
-        IntToValueMapConstIterator
-        valueSeeker( valueMapArray[ this->findScaleIndex( blockScale ) ].find(
-                                                               soughtIndex ) );
-        if( valueMapArray.end() != valueSeeker )
-        {
-          return valueSeeker->second;
-        }
-        else
-        {
-          return this->defaultUnsetValue;
-        }
-      }
-
-      template< typename ValueType >
-      inline ValueType&
-      SparseSinglyIndexed< ValueType >::operator()( int const soughtIndex )
-      /* this returns the ValueType mapped to by soughtIndex for the data
+      template< class ValueClass >
+      inline ValueClass&
+      SparseSinglyIndexed< ValueClass >::operator()( int const soughtIndex )
+      /* this returns the ValueClass mapped to by soughtIndex for the data
        * with lowest energy scale. if there is no element at soughtIndex, a new
        * one is made & copied from defaultUnsetValue.
        */
       {
-        if( 0 >= valueMapArray[ this->lowestScaleIndex ].count( soughtIndex ) )
+        if( 0 >= valueMap.count( soughtIndex ) )
         {
-          valueMapArray[ this->currentIndex ][ soughtIndex ]
-          = this->defaultUnsetValue;
+          valueMap[ soughtIndex ] = this->defaultUnsetValue;
         }
-        return valueMapArray[ this->lowestScaleIndex ][ soughtIndex ];
+        return valueMap[ soughtIndex ];
       }
 
-      template< typename ValueType >
-      inline ValueType const&
-      SparseSinglyIndexed< ValueType >::operator()(
+      template< class ValueClass >
+      inline ValueClass const&
+      SparseSinglyIndexed< ValueClass >::operator()(
                                                   int const soughtIndex ) const
       /* const version of above, though it returns defaultUnsetValue rather
        * than copying in a new element at soughtIndex if there isn't an entry
        * there already.
        */
       {
-        IntToValueMapConstIterator
-        valueSeeker( valueMapArray[ this->lowestScaleIndex ].find(
-                                                               soughtIndex ) );
-        if( valueMapArray[ this->lowestScaleIndex ].end() != valueSeeker )
+        std::map< int, ValueClass >::const_iterator
+        valueFinder( valueMap.find( soughtIndex ) );
+        if( valueMap.end() != valueFinder )
         {
-          return valueSeeker->second;
+          return valueFinder->second;
         }
         else
         {
@@ -219,19 +131,20 @@ namespace LHPC
         }
       }
 
-      template< typename ValueType >
+      template< class ValueClass >
       inline std::string const&
-      SparseSinglyIndexed< ValueType >::interpretAsString(
-                                                      double const blockScale )
+      SparseSinglyIndexed< ValueClass >::interpretAsString()
       // see base version's description.
       {
-        this->currentIndex = this->findScaleIndex( blockScale );
-        SlhaBlock::returnString.clear();
-        valueFinder = valueMapArray[ this->currentIndex ].begin();
-        while( valueFinder != valueMapArray[ this->currentIndex ].end() )
+        this->stringInterpretation.clear();
+        std::map< int, ValueClass >::const_iterator
+        valueFinder( valueMap.begin() );
+        while( valueFinder != valueMap.end() )
         {
-          this->putIndexIntoReturnString( valueFinder->first );
-          this->putValueIntoReturnString( valueFinder->second );
+          this->stringInterpretation.append( this->indexToPrintingString(
+                                                        valueFinder->first ) );
+          this->stringInterpretation.append( this->valueToPrintingString(
+                                                       valueFinder->second ) );
           /* negative particle codes can be avoided in any block, I think.
            * well, the exact format is only specified for the MASS block, &
            * in that case, negative particle codes can be avoided, since the
@@ -240,86 +153,57 @@ namespace LHPC
            * separate codes. if negative codes end up here, it's not my
            * fault...
            */
+          this->stringInterpretation.append( "\n" );
           ++valueFinder;
         }
-        return SlhaBlock::returnString;
+        return this->stringInterpretation;
       }
 
-      template< typename ValueType >
-      inline void
-      SparseSinglyIndexed< ValueType >::clearExtraStuff()
-      // derived classes should clear their extra data here.
+      template< class ValueClass >
+      inline std::map< int, ValueClass > const&
+      SparseSinglyIndexed< ValueClass >::getValueMap() const
       {
-        valueMapArray.clearEntries();
+        return valueMap;
       }
 
-      template< typename ValueType >
-      inline void
-      SparseSinglyIndexed< ValueType >::prepareExtraStuffForNewScale()
-      {
-        valueMapArray.newEnd().clear();
-        // this ensures that valueMapArray[ currentIndex ] is now an empty map.
-      }
-
-      template< typename ValueType >
-      inline void
-      SparseSinglyIndexed< ValueType >::interpretBodyLine()
-      // derived classes should interpret comparisonString at this point, since
-      // it is a non-empty data line.
-      {
-        SlhaBlock::currentWord.assign( BOL::StringParser::firstWordOf(
-                                                   SlhaBlock::comparisonString,
-                                                  &(SlhaBlock::firstRemainder),
-                                                                 " \t\r\n" ) );
-        if( !(SlhaBlock::currentWord.empty()) )
-        {
-          valueRecorder.first
-          = BOL::StringParser::stringToInt( SlhaBlock::currentWord );
-          valueRecorder.second
-          = this->stringToValue( BOL::StringParser::trimFromFrontAndBack(
-                                                     SlhaBlock::firstRemainder,
-                                                                 " \t\r\n" ) );
-          valueMapArray[ this->currentIndex ].insert( valueRecorder );
-        }
-      }
-
-      template< typename ValueType >
-      inline std::map< int,
-                       ValueType > const*
-      SparseSinglyIndexed< ValueType >::getMap( double const blockScale ) const
-      // this returns a pointer to the scale-appropriate std::map.
-      {
-        if( valueMapArray.isEmpty() )
-        {
-          return NULL;
-        }
-        else
-        {
-          return
-          valueMapArray.getPointer( this->findScaleIndex( blockScale ) );
-        }
-      }
-
-      template< typename ValueType >
+      template< class ValueClass >
       inline bool
-      SparseSinglyIndexed< ValueType >::hasEntry( int const soughtIndex,
-                                                double const blockScale ) const
+      SparseSinglyIndexed< ValueClass >::hasEntry(
+                                                  int const soughtIndex ) const
       // this returns true if there is an entry at soughtIndex.
       {
-        if( valueMapArray.isEmpty()
-            ||
-            ( 0 >= valueMapArray[ this->findScaleIndex( blockScale ) ].count(
-                                                              soughtIndex ) ) )
+        return ( 0 >= valueMap.count( soughtIndex ) );
+      }
+
+      template< class ValueClass >
+      inline void
+      SparseSinglyIndexed< ValueClass >::updateSelf()
+      {
+        valueMap.clear();
+        for( int whichLine( this->stringsToObserve->getNumberOfLines() );
+             0 < whichLine;
+             --whichLine )
         {
-          return false;
-        }
-        else
-        {
-          return true;
+          this->currentWord.assign( BOL::StringParser::firstWordOf(
+                                (*(this->stringsToObserve))[ whichLine ].first,
+                                                       &(this->lineRemainderA),
+                              BOL::StringParser::whitespaceAndNewlineChars ) );
+          if( !(this->currentWord.empty()) )
+          {
+            valueRecorder.first
+            = BOL::StringParser::stringToInt( this->currentWord );
+            valueRecorder.second
+            = this->stringToValue( BOL::StringParser::trimFromFrontAndBack(
+                                                          this->lineRemainderA,
+                              BOL::StringParser::whitespaceAndNewlineChars ) );
+            valueMap.insert( valueRecorder );
+          }
         }
       }
 
     }
+    typedef typename
+    InterpretterClass::SparseSinglyIndexed SparseSinglyIndexedBlockData;
 
   }
 

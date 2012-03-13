@@ -38,6 +38,12 @@ namespace LHPC
 
   SlhaParser::~SlhaParser()
   {
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "seg fault here?";
+    std::cout << std::endl;/**/
+
     if( ownsMassBlock )
     {
       delete massBlockPointer;
@@ -52,6 +58,12 @@ namespace LHPC
       delete blockMapIterator->second;
       ++blockMapIterator;
     }
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "seg fault not here?";
+    std::cout << std::endl;/**/
   }
 
 
@@ -65,9 +77,7 @@ namespace LHPC
     bool successfullyRead( false );
     clearBlocks();
     // new data should overwrite the old data, not append to it.
-
     checkForMassBlocksForSpectrum();
-
     successfullyRead = fileParser.openFile( slhaFileName );
     while( fileParser.parseNextLineOfFile( dataString,
                                            commentString ) )
@@ -103,7 +113,6 @@ namespace LHPC
     {
       currentBlockPointer->finishRecordingLines();
     }
-
     // after reading in the file, any recorded masses are passed to
     // spectrumToUpdate if it is not NULL:
     ensureSpectraRecordMasses();
@@ -127,7 +136,7 @@ namespace LHPC
                                                               ExtendedMass(),
                                                               isVerbose,
                                                               9 );
-        registerBlock( *fmassBlockPointer );
+        givePointerToRegisteringBlock( *fmassBlockPointer );
       }
       if( NULL == massBlockPointer )
         // if there is at least 1 spectrum to update, but no mass block...
@@ -138,7 +147,7 @@ namespace LHPC
                                                   BOL::UsefulStuff::notANumber,
                                                         isVerbose,
                                                         9 );
-        registerBlock( *massBlockPointer );
+        givePointerToRegisteringBlock( *massBlockPointer );
       }
       // mass & fmass blocks for the spectrum/spectra should be made,
       // remembering to delete them in the destructor.

@@ -48,6 +48,10 @@ namespace LHPC
     protected:
       int const indexDigits;
 
+      virtual std::string
+      getThisScaleAsString( int const scaleIndex );
+      // derived classes over-ride this to interpret their data as a
+      // std::string.
       virtual void
       setExtraValuesForNewInterpreter();
     };
@@ -86,11 +90,20 @@ namespace LHPC
     DenseSinglyIndexedBlock< ValueClass >::operator()( int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "DenseSinglyIndexedBlock< ValueClass >::operator( " << soughtIndex
+      << " ) called. this->DataBlocks.getSize() = "
+      << this->DataBlocks.getSize() << ", this->defaultDataBlockIndex() = "
+      << this->defaultDataBlockIndex();
+      std::cout << std::endl;/**/
+
       if( this->DataBlocks.isEmpty() )
       {
         this->DataBlocks.setSize( 1 );
       }
-      return this->DataBlocks[ this->lowestScaleIndex() ]( soughtIndex );
+      return this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -105,8 +118,19 @@ namespace LHPC
       }
       else
       {
-        return this->DataBlocks[ this->lowestScaleIndex() ]( soughtIndex );
+        return
+        this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
       }
+    }
+
+    template< class ValueClass >
+    inline std::string
+    DenseSinglyIndexedBlock< ValueClass >::getThisScaleAsString(
+                                                         int const scaleIndex )
+    // derived classes over-ride this to interpret their data as a
+    // std::string.
+    {
+      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
     }
 
     template< class ValueClass >

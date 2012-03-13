@@ -49,7 +49,9 @@ namespace LHPC
          * then empty.
          */
         int
-        getNumberOfLines() const;
+        getNumberOfBodyLines() const;
+        // this returns the number of body lines, so the size of
+        // blocksAsStringArrays minus 1.
         std::pair< std::string, std::string >&
         operator[]( int const whichLine );
         /* the std::pair< std::string, std::string > at index 0 is the block
@@ -126,9 +128,11 @@ namespace LHPC
       }
 
       inline int
-      BaseBlockAsStrings::getNumberOfLines() const
+      BaseBlockAsStrings::getNumberOfBodyLines() const
+      // this returns the number of body lines, so the size of
+      // blocksAsStringArrays minus 1.
       {
-        return blocksAsStringArrays.getSize();
+        return blocksAsStringArrays.getLastIndex();
       }
 
       inline double

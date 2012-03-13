@@ -188,7 +188,7 @@ namespace LHPC
       DenseDoublyIndexed< ValueClass >::updateSelf()
       {
         valueMatrix.clearEntries();
-        for( int whichLine( this->stringsToObserve->getNumberOfLines() );
+        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {

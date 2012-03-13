@@ -163,7 +163,7 @@ namespace LHPC
       DenseSinglyIndexed< ValueClass >::updateSelf()
       {
         valueVector.clear();
-        for( int whichLine( this->stringsToObserve->getNumberOfLines() );
+        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {
@@ -200,7 +200,8 @@ namespace LHPC
 
       template< class ValueClass >
       inline ValueClass&
-      DenseSinglyIndexed< ValueClass >::findOrMakeEntry( int soughtIndex )
+      DenseSinglyIndexed< ValueClass >::findOrMakeEntry(
+                                                        int const soughtIndex )
       // this ensures that the entry at soughtIndex exists, filling out with
       // copies of defaultUnsetValue, & returns it.
       {
@@ -209,7 +210,7 @@ namespace LHPC
           valueVector.resize( soughtIndex,
                               this->defaultUnsetValue );
         }
-        return valueVector[ (--soughtIndex) ];
+        return valueVector[ soughtIndex - 1 ];
       }
 
     }

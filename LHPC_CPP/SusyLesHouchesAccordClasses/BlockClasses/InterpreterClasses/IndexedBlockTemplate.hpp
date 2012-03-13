@@ -94,8 +94,8 @@ namespace LHPC
         indexPadding = ( indexDigits - indexHoldingString.size() + 1 );
         if( 0 < indexPadding )
         {
-          indexPrintingString.assign( ' ',
-                                      indexPadding );
+          indexPrintingString.assign( indexPadding,
+                                      ' ' );
         }
         else
         {

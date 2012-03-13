@@ -65,7 +65,7 @@ namespace LHPC
       {
         this->stringInterpretation.clear();
         for( int whichLine( 1 );
-             this->stringsToObserve->getNumberOfLines() >= whichLine;
+             this->stringsToObserve->getNumberOfBodyLines() >= whichLine;
              ++whichLine )
         {
           this->stringInterpretation.append(

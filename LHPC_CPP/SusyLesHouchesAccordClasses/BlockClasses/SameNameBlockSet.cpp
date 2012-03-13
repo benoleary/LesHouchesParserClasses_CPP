@@ -175,8 +175,8 @@ namespace LHPC
         lowestScaleIndex = 0;
       }
       else if( blockScale < stringBlocks[ lowestScaleIndex ].getScale() )
-        /* otherwise, lowestScaleIndex is a valid index for stringBlocks, so
-         * the comparison is valid, & if true, lowestScaleIndex is set
+        /* otherwise, defaultDataBlockIndex is a valid index for stringBlocks,
+         * so the comparison is valid, & if true, defaultDataBlockIndex is set
          * correctly.
          */
       {

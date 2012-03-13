@@ -175,7 +175,7 @@ namespace LHPC
       SparseSinglyIndexed< ValueClass >::updateSelf()
       {
         valueMap.clear();
-        for( int whichLine( this->stringsToObserve->getNumberOfLines() );
+        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {

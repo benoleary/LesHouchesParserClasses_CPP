@@ -135,6 +135,9 @@ namespace LHPC
       // assigned.
       virtual void
       addInterpreter( BlockClass::BaseBlockAsStrings* observedStrings );
+      void
+      setObservedStringBlock(
+                         BlockClass::BaseBlockAsStrings* observedStringBlock );
 
 
     protected:
@@ -149,7 +152,9 @@ namespace LHPC
       // derived classes over-ride this to interpret their data as a
       // std::string.
       int
-      lowestScaleIndex() const;
+      defaultDataBlockIndex() const;
+      // this returns the index of the lowest-scale block, adapted to
+      // starts-from-0, as that is how DataBlocks has its index.
       virtual void
       setExtraValuesForNewInterpreter();
     };
@@ -192,7 +197,7 @@ namespace LHPC
     {
       if( 0 == whichScaleIndex )
       {
-        return DataBlocks[ this->lowestScaleIndex() ];
+        return DataBlocks[ this->defaultDataBlockIndex() ];
       }
       else
       {
@@ -207,7 +212,7 @@ namespace LHPC
     {
       if( 0 == whichScaleIndex )
       {
-        return DataBlocks[ this->lowestScaleIndex() ];
+        return DataBlocks[ this->defaultDataBlockIndex() ];
       }
       else
       {
@@ -230,7 +235,8 @@ namespace LHPC
     // this registers this SlhaBlock with registeringParser so that the data
     // of this block update when registeringParser reads a file.
     {
-      observedStringBlock = registeringParser.registerBlock( *this );
+      observedStringBlock
+      = registeringParser.givePointerToRegisteringBlock( *this );
     }
 
     template< class ValueClass, class BlockData >
@@ -302,28 +308,29 @@ namespace LHPC
      * less just do not have the "Q=" etc. printed.
      */
     {
-      stringInterpretation.clear();
-      for( int scaleIndex( 0 );
-           observedStringBlock->getNumberOfCopies() > scaleIndex;
+      this->stringInterpretation.clear();
+      for( int scaleIndex( 1 );
+           observedStringBlock->getNumberOfCopies() >= scaleIndex;
            ++scaleIndex )
       {
-        stringInterpretation.append( BasicParser::blockIdentifierString );
-        stringInterpretation.append( " " );
-        stringInterpretation.append( blockName );
+        this->stringInterpretation.append(
+                                          BasicParser::blockIdentifierString );
+        this->stringInterpretation.append( " " );
+        this->stringInterpretation.append( blockName );
         if( onlyShowScalesGreaterThanZero
             ||
             ( 0.0 > (*observedStringBlock)[ scaleIndex ].getScale() ) )
         {
-          stringInterpretation.append( " Q= " );
-          stringInterpretation.append(
+          this->stringInterpretation.append( " Q= " );
+          this->stringInterpretation.append(
                              BlockInterpreter::slhaDoubleMaker.doubleToString(
                            (*observedStringBlock)[ scaleIndex ].getScale() ) );
         }
-        stringInterpretation.append( "\n" );
-        stringInterpretation.append(
+        this->stringInterpretation.append( "\n" );
+        this->stringInterpretation.append(
                                     this->getThisScaleAsString( scaleIndex ) );
       }
-      return stringInterpretation;
+      return this->stringInterpretation;
     }
 
     template< class ValueClass, class BlockData >
@@ -347,6 +354,14 @@ namespace LHPC
     }
 
     template< class ValueClass, class BlockData >
+    inline void
+    SlhaBlock< ValueClass, BlockData >::setObservedStringBlock(
+                          BlockClass::BaseBlockAsStrings* observedStringBlock )
+    {
+      this->observedStringBlock = observedStringBlock;
+    }
+
+    template< class ValueClass, class BlockData >
     inline std::string
     SlhaBlock< ValueClass, BlockData >::getThisScaleAsString(
                                                          int const scaleIndex )
@@ -354,8 +369,9 @@ namespace LHPC
     // std::string.
     {
       std::string returnString( "" );
-      for( int whichLine( 0 );
-           (*observedStringBlock)[ scaleIndex ].getNumberOfLines() > whichLine;
+      for( int whichLine( 1 );
+           (*observedStringBlock)[ scaleIndex ].getNumberOfBodyLines()
+           >= whichLine;
            ++whichLine )
       {
         returnString.append(
@@ -367,9 +383,18 @@ namespace LHPC
 
     template< class ValueClass, class BlockData >
     inline int
-    SlhaBlock< ValueClass, BlockData >::lowestScaleIndex() const
+    SlhaBlock< ValueClass, BlockData >::defaultDataBlockIndex() const
+    // this returns the index of the lowest-scale block, adapted to
+    // starts-from-0, as that is how DataBlocks has its index.
     {
-      return this->observedStringBlock->getLowestScaleIndex();
+      if( NULL != observedStringBlock )
+      {
+        return this->observedStringBlock->getLowestScaleIndex();
+      }
+      else
+      {
+        return 0;
+      }
     }
 
     template< class ValueClass, class BlockData >

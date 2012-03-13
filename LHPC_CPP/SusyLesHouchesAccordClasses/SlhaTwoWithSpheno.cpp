@@ -30,10 +30,10 @@ namespace LHPC
                        BOL::UsefulStuff::notANumber,
                        isVerbose )
   {
-    fileParser.registerBlock( SPHENOINFO );
-    fileParser.registerBlock( SPHENOINPUT );
-    fileParser.registerBlock( SPHENOCROSSSECTIONS );
-    fileParser.registerBlock( SPHENOLOWENERGY );
+    SPHENOINFO.registerWith( fileParser );
+    SPHENOINPUT.registerWith( fileParser );
+    SPHENOCROSSSECTIONS.registerWith( fileParser );
+    SPHENOLOWENERGY.registerWith( fileParser );
   }
 
   SlhaTwoWithSpheno::~SlhaTwoWithSpheno()

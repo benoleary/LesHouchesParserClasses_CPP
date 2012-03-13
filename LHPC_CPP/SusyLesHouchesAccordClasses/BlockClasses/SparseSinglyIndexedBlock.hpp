@@ -57,6 +57,10 @@ namespace LHPC
     protected:
       int const indexDigits;
 
+      virtual std::string
+      getThisScaleAsString( int const scaleIndex );
+      // derived classes over-ride this to interpret their data as a
+      // std::string.
       virtual void
       setExtraValuesForNewInterpreter();
     };
@@ -99,7 +103,7 @@ namespace LHPC
       {
         this->DataBlocks.setSize( 1 );
       }
-      return this->DataBlocks[ this->lowestScaleIndex() ]( soughtIndex );
+      return this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -114,7 +118,8 @@ namespace LHPC
       }
       else
       {
-        return this->DataBlocks[ this->lowestScaleIndex() ]( soughtIndex );
+        return
+        this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
       }
     }
 
@@ -133,7 +138,8 @@ namespace LHPC
           &&
           nameMatches( "FMASS" ) )
       {
-        return &(this->DataBlocks[ this->lowestScaleIndex() ].getValueMap());
+        return
+        &(this->DataBlocks[ this->defaultDataBlockIndex() ].getValueMap());
       }
       else
       {
@@ -156,12 +162,25 @@ namespace LHPC
           &&
           nameMatches( "MASS" ) )
       {
-        return &(this->DataBlocks[ this->lowestScaleIndex() ].getValueMap());
+        return
+        &(this->DataBlocks[ this->defaultDataBlockIndex() ].getValueMap());
+        // DataBlocks is in silly starts-from-0, while SameNameBlockSet
+        // deals in indices that start from 1.
       }
       else
       {
         return NULL;
       }
+    }
+
+    template< class ValueClass >
+    inline std::string
+    SparseSinglyIndexedBlock< ValueClass >::getThisScaleAsString(
+                                                         int const scaleIndex )
+    // derived classes over-ride this to interpret their data as a
+    // std::string.
+    {
+      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
     }
 
     template< class ValueClass >

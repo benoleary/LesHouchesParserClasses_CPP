@@ -119,7 +119,8 @@ namespace LHPC
         for( int whichLine( 1 );
              ( !entryRecorded
                &&
-               ( this->stringsToObserve->getNumberOfLines() > whichLine ) );
+               ( this->stringsToObserve->getNumberOfBodyLines()
+                 > whichLine ) );
              ++whichLine )
           // each line after the header (if any) is looked at.
         {

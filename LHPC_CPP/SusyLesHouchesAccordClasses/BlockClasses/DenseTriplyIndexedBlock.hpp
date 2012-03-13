@@ -34,7 +34,7 @@ namespace LHPC
       DenseTriplyIndexedBlock( std::string const& blockName,
                                ValueClass const& defaultUnsetValue,
                                bool const& isVerbose,
-                               int const indexDigits = 5 );
+                               int const indexDigits = 2 );
       virtual
       ~DenseTriplyIndexedBlock();
 
@@ -53,6 +53,10 @@ namespace LHPC
     protected:
       int const indexDigits;
 
+      virtual std::string
+      getThisScaleAsString( int const scaleIndex );
+      // derived classes over-ride this to interpret their data as a
+      // std::string.
       virtual void
       setExtraValuesForNewInterpreter();
     };
@@ -97,9 +101,9 @@ namespace LHPC
       {
         this->DataBlocks.setSize( 1 );
       }
-      return this->DataBlocks[ this->lowestScaleIndex() ]( firstIndex,
-                                                           secondIndex,
-                                                           thirdIndex );
+      return this->DataBlocks[ this->defaultDataBlockIndex() ]( firstIndex,
+                                                                secondIndex,
+                                                                thirdIndex );
     }
 
     template< class ValueClass >
@@ -115,10 +119,20 @@ namespace LHPC
       }
       else
       {
-        return this->DataBlocks[ this->lowestScaleIndex() ]( firstIndex,
-                                                             secondIndex,
-                                                             thirdIndex );
+        return this->DataBlocks[ this->defaultDataBlockIndex() ]( firstIndex,
+                                                                  secondIndex,
+                                                                  thirdIndex );
       }
+    }
+
+    template< class ValueClass >
+    inline std::string
+    DenseTriplyIndexedBlock< ValueClass >::getThisScaleAsString(
+                                                         int const scaleIndex )
+    // derived classes over-ride this to interpret their data as a
+    // std::string.
+    {
+      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
     }
 
     template< class ValueClass >

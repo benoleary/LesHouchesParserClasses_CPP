@@ -39,7 +39,7 @@ namespace LHPC
       ~BasicParser();
 
       virtual SameNameBlockSet*
-      registerBlock(
+      givePointerToRegisteringBlock(
               InterpreterClass::BlockInterpreterFactory& blockToUpdate ) = 0;
       // this registers blockToUpdate so that its data get updated every time a
       // new block of the appropriate name is read.

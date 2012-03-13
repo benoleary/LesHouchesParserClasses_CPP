@@ -53,16 +53,74 @@ int main( int argumentCount,
     LHPC::SLHA::DenseDoublyIndexedBlock< double > nmixBlock( "NMIX",
                                                              0.0,
                                                              isVerbose );
+    LHPC::SLHA::DenseDoublyIndexedBlock< double >*
+    hmixBlock( new LHPC::SLHA::DenseDoublyIndexedBlock< double >( "HMIX",
+                                                                  0.0,
+                                                                 isVerbose ) );
+
+
+    LHPC::MassSpectrumClass::MSSM*
+    testSpectrumPointer( new LHPC::MassSpectrumClass::MSSM( isVerbose ) );
+    LHPC::SlhaParser* testParserPointer( new LHPC::SlhaParser( isVerbose ) );
+    hmixBlock->registerWith( *testParserPointer );
+    testParserPointer->registerSpectrum( *testSpectrumPointer );
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "about to delete testSpectrumPointer!";
+    std::cout << std::endl;/**/
+
+
+    delete testSpectrumPointer;
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "deleted testSpectrumPointer!";
+    std::cout << std::endl;/**/
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "about to delete hmixBlock!";
+    std::cout << std::endl;/**/
+
+
+    delete hmixBlock;
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "deleted hmixBlock!";
+    std::cout << std::endl;/**/
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "about to delete hmixBlock!";
+    std::cout << std::endl;/**/
+
+
+    delete hmixBlock;
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "deleted hmixBlock!";
+    std::cout << std::endl;/**/
+
+
 
     // a parser is also needed, to do the actual reading of the file & passing
     // of strings to the blocks:
     LHPC::SlhaParser testParser( isVerbose );
     // true as the argument so that warnings are printed.
 
-    // the blocks have to be registered with the parser:
-    testParser.registerBlock( modselBlock );
-    testParser.registerBlock( minparBlock );
-    testParser.registerBlock( nmixBlock );
+    // the blocks have to register with the parser:
+    modselBlock.registerWith( testParser );
+    minparBlock.registerWith( testParser );
+    nmixBlock.registerWith( testParser );
 
     // one can also register a spectrum of particles, which automatically
     // groups masses & decays together for each mass eigenstate:
@@ -122,6 +180,12 @@ int main( int argumentCount,
     std::cout
     << std::endl
     << "NMIX( 1, 3 ) = " << nmixBlock( 1, 3 );
+    std::cout
+    << std::endl
+    << "NMIX( 4, 4 ) = " << nmixBlock( 4, 4 );
+    std::cout
+    << std::endl
+    << "NMIX( 4, 5 ) = " << nmixBlock( 4, 5 );
     std::cout
     << std::endl
     << "NMIX between dashed lines: " << std::endl
@@ -772,7 +836,6 @@ int main( int argumentCount,
         }
       }
     }
-
 
     // now a demonstration where one uses a set of pre-bundled blocks:
 

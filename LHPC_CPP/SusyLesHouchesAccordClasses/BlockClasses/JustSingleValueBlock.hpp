@@ -40,6 +40,13 @@ namespace LHPC
       ValueClass const&
       operator()() const;
       // const version of above.
+
+
+    protected:
+      virtual std::string
+      getThisScaleAsString( int const scaleIndex );
+      // derived classes over-ride this to interpret their data as a
+      // std::string.
     };
 
 
@@ -78,7 +85,7 @@ namespace LHPC
       {
         this->DataBlocks.setSize( 1 );
       }
-      return this->DataBlocks[ this->lowestScaleIndex() ]();
+      return this->DataBlocks[ this->defaultDataBlockIndex() ]();
     }
 
     template< class ValueClass >
@@ -92,8 +99,18 @@ namespace LHPC
       }
       else
       {
-        return this->DataBlocks[ this->lowestScaleIndex() ]();
+        return this->DataBlocks[ this->defaultDataBlockIndex() ]();
       }
+    }
+
+    template< class ValueClass >
+    inline std::string
+    JustSingleValueBlock< ValueClass >::getThisScaleAsString(
+                                                         int const scaleIndex )
+    // derived classes over-ride this to interpret their data as a
+    // std::string.
+    {
+      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
     }
 
   }  // end of SLHA namespace

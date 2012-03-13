@@ -36,7 +36,7 @@ namespace LHPC
     ~SlhaParser();
 
     virtual SLHA::SameNameBlockSet*
-    registerBlock(
+    givePointerToRegisteringBlock(
           SLHA::InterpreterClass::BlockInterpreterFactory& blockToUpdate );
     // this registers blockToUpdate so that its data get updated every time a
     // new block of the appropriate name is read.
@@ -120,8 +120,8 @@ namespace LHPC
   }
 
   inline SLHA::SameNameBlockSet*
-  SlhaParser::registerBlock(
-             SLHA::InterpreterClass::BlockInterpreterFactory& blockToUpdate )
+  SlhaParser::givePointerToRegisteringBlock(
+               SLHA::InterpreterClass::BlockInterpreterFactory& blockToUpdate )
   // this registers blockToUpdate so that its data get updated every time a
   // new block of the appropriate name is read.
   {

@@ -20,7 +20,7 @@ namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       // this template class interprets SLHA blocks that have a single int
       // index with a single ValueClass value.
@@ -28,9 +28,7 @@ namespace LHPC
       class DenseSinglyIndexed : public IndexedBlockTemplate< ValueClass >
       {
       public:
-        DenseSinglyIndexed( ValueClass const& defaultUnsetValue,
-                            bool const& isVerbose,
-                            int const indexDigits = 5 );
+        DenseSinglyIndexed();
         virtual
         ~DenseSinglyIndexed();
 
@@ -52,7 +50,7 @@ namespace LHPC
         operator[]( int const soughtIndex ) const { return (*this)(
                                                                soughtIndex ); }
         virtual std::string const&
-        interpretAsString( double const blockScale = 0.0 );
+        interpretAsString();
         // see base version's description.
         bool
         hasEntry( int const soughtIndex ) const;
@@ -77,13 +75,8 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      DenseSinglyIndexed< ValueClass >::DenseSinglyIndexed(
-                                           ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
-                                                      int const indexDigits ) :
-          IndexedBlockTemplate< ValueClass >( defaultUnsetValue,
-                                              isVerbose,
-                                              indexDigits ),
+      DenseSinglyIndexed< ValueClass >::DenseSinglyIndexed() :
+          IndexedBlockTemplate< ValueClass >(),
           valueVector(),
           recordingIndex( 0 )
       {
@@ -220,8 +213,6 @@ namespace LHPC
       }
 
     }
-    typedef typename
-    InterpretterClass::DenseSinglyIndexed DenseSinglyIndexedBlockData;
 
   }
 

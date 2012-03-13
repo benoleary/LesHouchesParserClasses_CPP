@@ -11,11 +11,7 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#include "SlhaParser.hpp"
-#include "SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp"
-#include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
-#include "MassEigenstateCollectionClasses/DefaultSpectra.hpp"
-#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
+#include "SLHA.hpp"
 
 int main( int argumentCount,
           char* argumentCharArray[] )
@@ -37,26 +33,26 @@ int main( int argumentCount,
      * & NMIX were chosen. the user has to know what format they are, so that
      * the parser knows how to interpret the data. MODSEL is a set of doubles
      * ordered with a single index, & all indices from 1 to [maximum index]
-     * must be present, so SparseSinglyIndexed< double > would be appropriate,
-     * except most of the time the values are integers (& nobody ever seems to
-     * use MODSEL 12, which specifies the largest Q scale, which itself almost
-     * always is just the value for the EWSB scale. hence,
-     * SparseSinglyIndexed< int > is chosen for demonstration. MINPAR is a set
-     * of doubles ordered with a single index, & all indices from 1 to
-     * [maximum index] must be present, so DenseSinglyIndexed< double > is
+     * must be present, so SparseSinglyIndexedBlock< double > would be
+     * appropriate, except most of the time the values are integers (& nobody
+     * ever seems to use MODSEL 12, which specifies the largest Q scale, which
+     * itself almost always is just the value for the EWSB scale. hence,
+     * SparseSinglyIndexedBlock< int > is chosen for demonstration. MINPAR is a
+     * set of doubles ordered with a single index, & all indices from 1 to
+     * [maximum index] must be present, so DenseSinglyIndexedBlock< double > is
      * appropriate. likewise, NMIX is a set of doubles ordered by 2 indices, &
-     * no indices should be skipped so DenseDoublyIndexed< double > is
+     * no indices should be skipped so DenseDoublyIndexedBlock< double > is
      * appropriate.
      */
-    LHPC::SLHA::BlockClass::SparseSinglyIndexed< int > modselBlock( "MODSEL",
-                                                                    -1,
-                                                                   isVerbose );
-    LHPC::SLHA::BlockClass::DenseSinglyIndexed< double > minparBlock( "MINPAR",
-                                                                      0.0,
-                                                                   isVerbose );
-    LHPC::SLHA::BlockClass::DenseDoublyIndexed< double > nmixBlock( "NMIX",
-                                                                    0.0,
-                                                                   isVerbose );
+    LHPC::SLHA::SparseSinglyIndexedBlock< int > modselBlock( "MODSEL",
+                                                             -1,
+                                                             isVerbose );
+    LHPC::SLHA::DenseSinglyIndexedBlock< double > minparBlock( "MINPAR",
+                                                               0.0,
+                                                               isVerbose );
+    LHPC::SLHA::DenseDoublyIndexedBlock< double > nmixBlock( "NMIX",
+                                                             0.0,
+                                                             isVerbose );
 
     // a parser is also needed, to do the actual reading of the file & passing
     // of strings to the blocks:
@@ -89,11 +85,16 @@ int main( int argumentCount,
     std::cout
     << std::endl
     << "MODSEL( 1 ) = " << modselBlock( 1 );
+    // operator() takes the lowest-scale copy of the block & finds the index
+    // there.
     std::cout
     << std::endl
-    << "MODSEL[ 2 ] = " << modselBlock[ 2 ];
-    // both operator[] & operator() do the same thing for SparseSinglyIndexed
-    // blocks.
+    << "MODSEL[ 0 ][ 2 ] = " << modselBlock[ 0 ][ 2 ];
+    /* block operator[ whichCopy ] returns the whichCopy-th copy of the block
+     * with the same name but different scale value, then
+     * operator[ soughtIndex ] on the returned block interpreter finds the
+     * value for index soughtIndex.
+     */
     std::cout
     << std::endl
     << "MODSEL( 100 ) = " << modselBlock( 100 );
@@ -105,20 +106,18 @@ int main( int argumentCount,
     << "MINPAR( 1 ) = " << minparBlock( 1 );
     std::cout
     << std::endl
-    << "MINPAR[ 2 ] = " << minparBlock[ 2 ];
-    // both operator[] & operator() do the same thing for DenseSinglyIndexed
-    // blocks.
+    << "MINPAR[ 0 ][ 2 ] = " << minparBlock[ 0 ][ 2 ];
     std::cout
     << std::endl
     << "MODSEL between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << modselBlock.getAsStringIncludingHeader() << std::endl
+    << modselBlock.interpretAsString( true ) << std::endl
     << "-------------------------" << std::endl;
     std::cout
     << std::endl
     << "MINPAR between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << minparBlock.getAsStringIncludingHeader() << std::endl
+    << minparBlock.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout
     << std::endl
@@ -127,7 +126,7 @@ int main( int argumentCount,
     << std::endl
     << "NMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << nmixBlock.getAsStringIncludingHeader() << std::endl
+    << nmixBlock.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
 
     LHPC::MassEigenstate&
@@ -449,9 +448,7 @@ int main( int argumentCount,
     << "MODSEL( 1 ) = " << modselBlock( 1 );
     std::cout
     << std::endl
-    << "MODSEL[ 2 ] = " << modselBlock[ 2 ];
-    // both operator[] & operator() do the same thing for SparseSinglyIndexed
-    // blocks.
+    << "MODSEL[ 1 ][ 2 ] = " << modselBlock[ 1 ][ 2 ];
     std::cout
     << std::endl
     << "MODSEL( 100 ) = " << modselBlock( 100 );
@@ -463,20 +460,20 @@ int main( int argumentCount,
     << "MINPAR( 1 ) = " << minparBlock( 1 );
     std::cout
     << std::endl
-    << "MINPAR[ 2 ] = " << minparBlock[ 2 ];
+    << "MINPAR[ 1 ][ 2 ] = " << minparBlock[ 1 ][ 2 ];
     // both operator[] & operator() do the same thing for DenseSinglyIndexed
     // blocks.
     std::cout
     << std::endl
     << "MODSEL between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << modselBlock.getAsStringIncludingHeader() << std::endl
+    << modselBlock.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout
     << std::endl
     << "MINPAR between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << minparBlock.getAsStringIncludingHeader() << std::endl
+    << minparBlock.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout
     << std::endl
@@ -485,7 +482,7 @@ int main( int argumentCount,
     << std::endl
     << "NMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << nmixBlock.getAsStringIncludingHeader() << std::endl
+    << nmixBlock.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
 
     std::cout
@@ -792,12 +789,12 @@ int main( int argumentCount,
 
     // this is for showing that the const versions of the block member
     // functions work:
-    LHPC::SLHA::BlockClass::DenseDoublyIndexed< double > const&
+    LHPC::SLHA::DenseDoublyIndexedBlock< double > const&
     constNmix( testBlockSet.NMIX );
 
     std::cout
     << std::endl
-    << "SMINPUTS[ 2 ] = " << testBlockSet.SMINPUTS[ 2 ];
+    << "SMINPUTS( 2 ) = " << testBlockSet.SMINPUTS( 2 );
     std::cout << std::endl;
     std::cout
     << std::endl
@@ -814,42 +811,42 @@ int main( int argumentCount,
     << std::endl
     << "NMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.NMIX.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.NMIX.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "AU between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.AU.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.AU.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "ALPHA between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.ALPHA.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.ALPHA.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "STOPMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.STOPMIX.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.STOPMIX.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "HMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.HMIX.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.HMIX.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "MSOFT between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.MSOFT.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.MSOFT.interpretAsString() << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
 
@@ -864,7 +861,7 @@ int main( int argumentCount,
 
     std::cout
     << std::endl
-    << "SMINPUTS[ 2 ] = " << testBlockSet.SMINPUTS[ 2 ];
+    << "SMINPUTS( 2 ) = " << testBlockSet.SMINPUTS( 2 );
     std::cout << std::endl;
     std::cout
     << std::endl
@@ -881,42 +878,42 @@ int main( int argumentCount,
     << std::endl
     << "NMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.NMIX.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.NMIX.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "AU between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.AU.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.AU.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "ALPHA between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.ALPHA.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.ALPHA.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "STOPMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.STOPMIX.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.STOPMIX.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "HMIX between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.HMIX.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.HMIX.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
     std::cout
     << std::endl
     << "MSOFT between dashed lines: " << std::endl
     << "-------------------------" << std::endl
-    << testBlockSet.MSOFT.getAsStringIncludingHeader() << std::endl
+    << testBlockSet.MSOFT.interpretAsString( false ) << std::endl
     << "-------------------------" << std::endl;
     std::cout << std::endl;
 

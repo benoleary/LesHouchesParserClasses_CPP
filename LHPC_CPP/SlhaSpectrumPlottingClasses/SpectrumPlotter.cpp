@@ -163,124 +163,116 @@ namespace LHPC
     void
     SpectrumPlotter::loadCommands( std::string const& plotFileName )
     {
-      if( plotControlBlock.hasEntry( unitIndex ) )
+      // 1st the defaults are loaded:
+      unitFactor = 1.0;
+      scaleMaximum = -1.0;
+      labelSeparation = 0.05;
+      labelRoomWidth = 30.0;
+      gnuplotCommand.assign( "/usr/bin/gnuplot" );
+      latexCommand.assign( "/usr/bin/latex" );
+      dvipsCommand.assign( "/usr/bin/dvips" );
+      ps2epsCommand.assign( "/usr/bin/ps2eps" );
+      mainCleanupCommand.assign( "/bin/rm" );
+      moveCommand.assign( "/bin/mv" );
+      // then, if there is a control block, it is used to overwrite defaults:
+      if( 0 < plotControlBlock.getNumberOfCopiesWithDifferentScale() )
       {
-        unitString.assign( plotControlBlock[ unitIndex ] );
-        BOL::StringParser::transformToUppercase( unitString );
-        if( 0 == unitString.compare( "GEV" ) )
+        if( plotControlBlock[ 0 ].hasEntry( unitIndex ) )
         {
-          unitFactor = 1.0;
+          unitString.assign( plotControlBlock( unitIndex ) );
+          BOL::StringParser::transformToUppercase( unitString );
+          if( 0 == unitString.compare( "GEV" ) )
+          {
+            unitFactor = 1.0;
+          }
+          else if( 0 == unitString.compare( "TEV" ) )
+          {
+            unitFactor = 0.001;
+          }
+          else if( 0 == unitString.compare( "MEV" ) )
+          {
+            unitFactor = 1000.0;
+          }
+          else if( 0 == unitString.compare( "KEV" ) )
+          {
+            unitFactor = 1000000.0;
+          }
+          else if( 0 == unitString.compare( "EV" ) )
+          {
+            unitFactor = 1000000000.0;
+          }
+          else
+          {
+            unitFactor = 1.0;
+            std::cout
+            << std::endl
+            << "LHPC::warning! SpectrumPlotter did not understand \""
+            << plotControlBlock( unitIndex ) << "\" as a unit (acceptable"
+            << " units are \"GeV\", \"TeV\", \"MeV\", \"keV\", and \"eV\"),"
+            << " and is defaulting to GeV.";
+            std::cout << std::endl;
+          }
         }
-        else if( 0 == unitString.compare( "TEV" ) )
+        if( plotControlBlock[ 0 ].hasEntry( scaleIndex ) )
         {
-          unitFactor = 0.001;
+          scaleMaximum = BOL::StringParser::stringToDouble(
+                                              plotControlBlock( scaleIndex ) );
         }
-        else if( 0 == unitString.compare( "MEV" ) )
+        if( plotControlBlock[ 0 ].hasEntry( labelYSizeIndex ) )
         {
-          unitFactor = 1000.0;
+          labelSeparation
+          = ( 0.01 * BOL::StringParser::stringToDouble( plotControlBlock(
+                                                         labelYSizeIndex ) ) );
+          // the label separation is given as a percentage of the scale range
+          // in the control block.
         }
-        else if( 0 == unitString.compare( "KEV" ) )
+        if( plotControlBlock[ 0 ].hasEntry( labelXSizeIndex ) )
         {
-          unitFactor = 1000000.0;
+          labelRoomWidth = BOL::StringParser::stringToDouble(
+                                         plotControlBlock( labelXSizeIndex ) );
+          // the label separation is given as a percentage of the plot line
+          // width in the control block.
         }
-        else if( 0 == unitString.compare( "EV" ) )
+        if( plotControlBlock[ 0 ].hasEntry( gnuplotIndex ) )
         {
-          unitFactor = 1000000000.0;
+          gnuplotCommand.assign( plotControlBlock( gnuplotIndex ) );
         }
-        else
+        if( plotControlBlock[ 0 ].hasEntry( latexIndex ) )
         {
-          unitFactor = 1.0;
-          std::cout
-          << std::endl
-          << "LHPC::warning! SpectrumPlotter did not understand \""
-          << plotControlBlock[ unitIndex ] << "\" as a unit (acceptable units"
-          << " are \"GeV\", \"TeV\", \"MeV\", \"keV\", and \"eV\"), and is"
-          << " defaulting to GeV.";
-          std::cout << std::endl;
+          latexCommand.assign( plotControlBlock( latexIndex ) );
+        }
+        if( plotControlBlock[ 0 ].hasEntry( dvipsIndex ) )
+        {
+          dvipsCommand.assign( plotControlBlock( dvipsIndex ) );
+        }
+        if( plotControlBlock[ 0 ].hasEntry( ps2epsIndex ) )
+        {
+          ps2epsCommand.assign( plotControlBlock( ps2epsIndex ) );
+        }
+        if( plotControlBlock[ 0 ].hasEntry( rmIndex ) )
+        {
+          mainCleanupCommand.assign( plotControlBlock( rmIndex ) );
+        }
+        if( plotControlBlock[ 0 ].hasEntry( mvIndex ) )
+        {
+          moveCommand.assign( plotControlBlock( mvIndex ) );
         }
       }
-      else
-      {
-        unitFactor = 1.0;
-      }
-      if( plotControlBlock.hasEntry( scaleIndex ) )
-      {
-        scaleMaximum
-        = BOL::StringParser::stringToDouble( plotControlBlock[ scaleIndex ] );
-      }
-      else
-      {
-        scaleMaximum = -1.0;
-      }
-      if( plotControlBlock.hasEntry( labelYSizeIndex ) )
-      {
-        labelSeparation
-        = ( 0.01 * BOL::StringParser::stringToDouble( plotControlBlock[
-                                                         labelYSizeIndex ] ) );
-        // the label separation is given as a percentage of the scale range in
-        // the control block.
-      }
-      else
-      {
-        labelSeparation = 0.05;
-      }
-      if( plotControlBlock.hasEntry( labelXSizeIndex ) )
-      {
-        labelRoomWidth = BOL::StringParser::stringToDouble( plotControlBlock[
-                                                           labelXSizeIndex ] );
-        // the label separation is given as a percentage of the plot line width
-        // in the control block.
-      }
-      else
-      {
-        labelRoomWidth = 30.0;
-      }
+      // finally, stuff derived from the control block or defaults is set:
       fullColumnWidth = ( labelRoomWidth + joinerWidth
                           + flatBitWidth + columnPairOffset
                           + joinerWidth + labelRoomWidth );
-      if( plotControlBlock.hasEntry( gnuplotIndex ) )
-      {
-        gnuplotCommand.assign( plotControlBlock[ gnuplotIndex ] );
-      }
-      else
-      {
-        gnuplotCommand.assign( "/usr/bin/gnuplot" );
-      }
       gnuplotCommand.append( " " );
       gnuplotCommand.append( gnuplotCommandFileName );
       // "gnuplot LHPC_SpectrumPlotter_gnuplot.input"
-      if( plotControlBlock.hasEntry( latexIndex ) )
-      {
-        latexCommand.assign( plotControlBlock[ latexIndex ] );
-      }
-      else
-      {
-        latexCommand.assign( "/usr/bin/latex" );
-      }
       latexCommand.append( " " );
       latexCommand.append( fullLatexBaseName );
       latexCommand.append( ".tex" );
       // "latex LHPC_SpectrumPlotter_LaTeX.tex"
-      if( plotControlBlock.hasEntry( dvipsIndex ) )
-      {
-        dvipsCommand.assign( plotControlBlock[ dvipsIndex ] );
-      }
-      else
-      {
-        dvipsCommand.assign( "/usr/bin/dvips" );
-      }
       dvipsCommand.append( " " );
       dvipsCommand.append( fullLatexBaseName );
       dvipsCommand.append( ".dvi" );
       // "dvips LHPC_SpectrumPlotter_LaTeX.dvi"
-      if( plotControlBlock.hasEntry( ps2epsIndex ) )
-      {
-        ps2epsCommand.assign( plotControlBlock[ ps2epsIndex ] );
-      }
-      else
-      {
-        ps2epsCommand.assign( "/usr/bin/ps2eps" );
-      }
       if( 0 == ps2epsCommand.compare( ( ps2epsCommand.size() - 7 ),
                                       7,
                                       "ps2epsi" ) )
@@ -291,14 +283,6 @@ namespace LHPC
       ps2epsCommand.append( fullLatexBaseName );
       ps2epsCommand.append( ".ps" );
       // "ps2eps LHPC_SpectrumPlotter_LaTeX.ps"
-      if( plotControlBlock.hasEntry( rmIndex ) )
-      {
-        mainCleanupCommand.assign( plotControlBlock[ rmIndex ] );
-      }
-      else
-      {
-        mainCleanupCommand.assign( "/bin/rm" );
-      }
       mainCleanupCommand.append( " " );
       mainCleanupCommand.append( gnuplotDataFileName );
       mainCleanupCommand.append( " " );
@@ -328,14 +312,6 @@ namespace LHPC
        * LHPC_SpectrumPlotter_LaTeX.ps \
        * LHPC_SpectrumPlotter_LaTeX.tex"
        */
-      if( plotControlBlock.hasEntry( mvIndex ) )
-      {
-        moveCommand.assign( plotControlBlock[ mvIndex ] );
-      }
-      else
-      {
-        moveCommand.assign( "/bin/mv" );
-      }
       moveCommand.append( " " );
       moveCommand.append( fullLatexBaseName );
       moveCommand.append( ".eps" );
@@ -351,46 +327,53 @@ namespace LHPC
     void
     SpectrumPlotter::loadLines()
     {
-      plotLineMap = linePlottingBlock.getMap();
-      lineIterator = plotLineMap->begin();
-      while( plotLineMap->end() != lineIterator )
-        // for each mass eigenstate specified to be plotted...
+      if( 0 < linePlottingBlock.getNumberOfCopiesWithDifferentScale() )
       {
-        whichMassEigenstate = lineIterator->first;
-        lastOperationSuccessful = false;
+        plotLineMap = &(linePlottingBlock[ 0 ].getValueMap());
+        lineIterator = plotLineMap->begin();
+        while( plotLineMap->end() != lineIterator )
+          // for each mass eigenstate specified to be plotted...
+        {
+          whichMassEigenstate = lineIterator->first;
+          lastOperationSuccessful = false;
 
-        // whether there is a mass for the line needs to be checked (FMASS is
-        // checked for before MASS):
-        if( ( NULL != fmassPointer )
-            &&
-            ( fmassPointer->hasEntry( whichMassEigenstate ) ) )
-        {
-          massValue = ( unitFactor
-                        * (*fmassPointer)[ whichMassEigenstate ].getMass() );
-          lastOperationSuccessful = true;
-        }
-        else if( ( NULL != massPointer )
-                 &&
-                 ( massPointer->hasEntry( whichMassEigenstate ) ) )
-        {
-          massValue = ( unitFactor * (*massPointer)[ whichMassEigenstate ] );
-          lastOperationSuccessful = true;
-        }
-
-        if( lastOperationSuccessful )
-          // if there was a mass recorded for this mass eigenstate...
-        {
-          lineAdder.setValues( lineIterator->second,
-                               massValue );
-          if( lineAdder.getColumn() >= columnSet.getSize() )
+          // whether there is a mass for the line needs to be checked (FMASS is
+          // checked for before MASS):
+          if( ( NULL != fmassPointer )
+              &&
+              ( 0 < fmassPointer->getNumberOfCopiesWithDifferentScale() )
+              &&
+              ( (*fmassPointer)[ 0 ].hasEntry( whichMassEigenstate ) ) )
           {
-            columnSet.setSize( lineAdder.getColumn() + 1 );
+            massValue = ( unitFactor
+                          * (*fmassPointer)( whichMassEigenstate ).getMass() );
+            lastOperationSuccessful = true;
           }
-          // now columnSet is large enough for the line to be put into its
-          // appropriate column:
-          columnSet[ lineAdder.getColumn() ].push_back( lineAdder );
+          else if( ( NULL != massPointer )
+                   &&
+                   ( 0 < massPointer->getNumberOfCopiesWithDifferentScale() )
+                   &&
+                   ( (*massPointer)[ 0 ].hasEntry( whichMassEigenstate ) ) )
+          {
+            massValue = ( unitFactor * (*massPointer)( whichMassEigenstate ) );
+            lastOperationSuccessful = true;
+          }
+
+          if( lastOperationSuccessful )
+            // if there was a mass recorded for this mass eigenstate...
+          {
+            lineAdder.setValues( lineIterator->second,
+                                 massValue );
+            if( lineAdder.getColumn() >= columnSet.getSize() )
+            {
+              columnSet.setSize( lineAdder.getColumn() + 1 );
+            }
+            // now columnSet is large enough for the line to be put into its
+            // appropriate column:
+            columnSet[ lineAdder.getColumn() ].push_back( lineAdder );
+          }
+          ++lineIterator;
         }
-        ++lineIterator;
       }
     }
 

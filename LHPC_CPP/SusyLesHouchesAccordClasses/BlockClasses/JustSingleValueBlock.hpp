@@ -3,23 +3,29 @@
  *
  *  Created on: Mar 12, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef JUSTSINGLEVALUEBLOCK_HPP_
 #define JUSTSINGLEVALUEBLOCK_HPP_
 
 #include "../SlhaBlock.hpp"
-#include "InterpretterClasses/JustSingleValue.hpp"
+#include "InterpreterClasses/JustSingleValue.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    typedef typename
-    InterpretterClass::JustSingleValue JustSingleValueBlockData;
+    // this template class interprets all the blocks with the same name, though
+    // differing scale values, which are interpreted as having a single value.
     template< class ValueClass >
     class JustSingleValueBlock : public SlhaBlock< ValueClass,
-                                       JustSingleValueBlockData< ValueClass > >
+                             InterpreterClass::JustSingleValue< ValueClass > >
     {
     public:
       JustSingleValueBlock( std::string const& blockName,
@@ -30,7 +36,7 @@ namespace LHPC
 
       ValueClass&
       operator()();
-      // this returns operator() of the lowest-scale interpretter.
+      // this returns operator() of the lowest-scale interpreter.
       ValueClass const&
       operator()() const;
       // const version of above.
@@ -46,7 +52,8 @@ namespace LHPC
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                       bool const& isVerbose ) :
-        SlhaBlock< ValueClass, JustSingleValueBlockData< ValueClass > >(
+        SlhaBlock< ValueClass,
+                   InterpreterClass::JustSingleValue< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                     isVerbose )
@@ -65,8 +72,12 @@ namespace LHPC
     template< class ValueClass >
     inline ValueClass&
     JustSingleValueBlock< ValueClass >::operator()()
-    // this returns operator() of the lowest-scale interpretter.
+    // this returns operator() of the lowest-scale interpreter.
     {
+      if( this->DataBlocks.isEmpty() )
+      {
+        this->DataBlocks.setSize( 1 );
+      }
       return this->DataBlocks[ this->lowestScaleIndex() ]();
     }
 
@@ -75,7 +86,14 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::operator()() const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex() ]();
+      if( this->DataBlocks.isEmpty() )
+      {
+        return this->defaultUnsetValue;
+      }
+      else
+      {
+        return this->DataBlocks[ this->lowestScaleIndex() ]();
+      }
     }
 
   }  // end of SLHA namespace

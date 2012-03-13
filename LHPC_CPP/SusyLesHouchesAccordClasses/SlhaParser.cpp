@@ -15,36 +15,23 @@
 
 namespace LHPC
 {
-  std::string const SlhaParser::blockIdentifierString( "BLOCK" );
-  std::string const SlhaParser::decayIdentifierString( "DECAY" );
-
-  SlhaParser::SlhaParser( bool const isVerbose ) :
-      isVerbose( isVerbose ),
-      fileParser( "#",
-                  this->isVerbose ),
-      spectraToUpdate(),
-      blockMap(),
-      blockMapIterator(),
-      mapInserter( "",
-                   NULL ),
+  SlhaParser::SlhaParser( bool const shouldRecordBlocksNotRegistered,
+                          bool const isVerbose ) :
+      SLHA::BasicParser( shouldRecordBlocksNotRegistered,
+                         isVerbose ),
       fmassBlockPointer( NULL ),
       ownsFmassBlock( false ),
-      massBlockPointer( NULL ),
-      ownsMassBlock( false ),
-      currentBlockPointer( NULL ),
-      currentMassEigenstates(),
-      massEigenstateFiller( NULL ),
-      dataString( "" ),
-      commentString( "" ),
-      firstWordOfLine( "" ),
-      wordsOfLine( 2 ),
-      decayProductCodes(),
-      decayRecorder(),
-      recordedDecayWidth( BOL::UsefulStuff::notANumber ),
       fmassMap(),
       fmassMapIterator(),
+      massBlockPointer( NULL ),
+      ownsMassBlock( false ),
       massMap(),
-      massMapIterator()
+      massMapIterator(),
+      currentMassEigenstates(),
+      massEigenstateFiller( NULL ),
+      decayProductCodes(),
+      decayRecorder(),
+      recordedDecayWidth( BOL::UsefulStuff::notANumber )
   {
     // just an initialization list.
   }
@@ -135,19 +122,23 @@ namespace LHPC
         // if there is at least 1 spectrum to update, but no fmass block...
       {
         ownsFmassBlock = true;
-        fmassBlockPointer = new SLHA::FmassBlock( "FMASS",
-                                                  ExtendedMass(),
-                                                  9 );
-        addBlockToMap( fmassBlockPointer );
+        fmassBlockPointer
+        = new SLHA::SparseSinglyIndexedBlock< ExtendedMass >( "FMASS",
+                                                              ExtendedMass(),
+                                                              isVerbose,
+                                                              9 );
+        registerBlock( *fmassBlockPointer );
       }
       if( NULL == massBlockPointer )
         // if there is at least 1 spectrum to update, but no mass block...
       {
         ownsMassBlock = true;
-        massBlockPointer = new SLHA::MassBlock( "MASS",
-                                                BOL::UsefulStuff::notANumber,
-                                                9 );
-        addBlockToMap( massBlockPointer );
+        massBlockPointer
+        = new SLHA::SparseSinglyIndexedBlock< double >( "MASS",
+                                                  BOL::UsefulStuff::notANumber,
+                                                        isVerbose,
+                                                        9 );
+        registerBlock( *massBlockPointer );
       }
       // mass & fmass blocks for the spectrum/spectra should be made,
       // remembering to delete them in the destructor.
@@ -243,7 +234,8 @@ namespace LHPC
            1 < whichWord;
            --whichWord )
       {
-        decayProductCodes.push_back( wordsOfLine[ whichWord ] );
+        decayProductCodes.push_back( BOL::StringParser::stringToInt(
+                                                  wordsOfLine[ whichWord ] ) );
       }
       // then for each MassEigenstate that needs to record this decay, prepare
       // decayRecorder & use it to record the decay:
@@ -276,7 +268,7 @@ namespace LHPC
   {
     if( !(spectraToUpdate.empty()) )
     {
-      massMap = massBlockPointer->getMap();
+      massMap = massBlockPointer->getMassMap();
       if( NULL != massMap )
       {
         massMapIterator = massMap->begin();
@@ -304,7 +296,7 @@ namespace LHPC
           ++massMapIterator;
         }
       }
-      fmassMap = fmassBlockPointer->getMap();
+      fmassMap = fmassBlockPointer->getFmassMap();
       if( NULL != fmassMap )
       {
         fmassMapIterator = fmassMap->begin();

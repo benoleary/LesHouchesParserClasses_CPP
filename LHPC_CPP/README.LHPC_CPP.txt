@@ -26,6 +26,10 @@
  *      the C++ files of LesHouchesParserClasses are:
  *      LHPC_CPP/BOLlib/Classes/AsciiXmlParser.hpp
  *      LHPC_CPP/BOLlib/Classes/AsciiXmlParser.cpp
+ *      LHPC_CPP/BOLlib/Classes/BasicObserved.hpp
+ *      LHPC_CPP/BOLlib/Classes/BasicObserved.cpp
+ *      LHPC_CPP/BOLlib/Classes/BasicObserver.hpp
+ *      LHPC_CPP/BOLlib/Classes/BasicObserver.cpp
  *      LHPC_CPP/BOLlib/Classes/CommentedTextParser.hpp
  *      LHPC_CPP/BOLlib/Classes/CommentedTextParser.hpp
  *      LHPC_CPP/BOLlib/Classes/StdVectorFiller.hpp
@@ -34,17 +38,20 @@
  *      LHPC_CPP/BOLlib/Classes/UsefulStuff.hpp
  *      LHPC_CPP/BOLlib/Classes/UsefulStuff.cpp
  *      LHPC_CPP/BOLlib/Classes/VectorlikeArray.hpp
- *      7 files in and a subdirectory in LHPC_CPP/LesHouchesEventFileClasses/:
+ *      12 files in and a subdirectory in LHPC_CPP/LesHouchesEventFileClasses/:
  *      - AutomaticEventFilter.hpp
  *      - AutomaticEventFilter.cpp
+ *      - DefaultFilterRules.hpp
  *      - FilterRule.hpp
  *      - FilterRule.cpp
+ *      - InterfaceToClhepLorentzVectorClass.hpp
  *      - LhefEvent.hpp
  *      - LhefEvent.cpp
+ *      - LhefParser.hpp
+ *      - LhefParser.cpp
  *      - ParticleLine.hpp
  *      - ParticleLine.cpp
- *      - InterfaceToClhepLorentzVectorClass.hpp
- *      - FilterRuleClasses/ with 6 files:
+ *      - FilterRuleClasses/ with 8 files:
  *        - InitialOrIntermediateOrFinalState.hpp
  *        - InitialOrIntermediateOrFinalState.cpp
  *        - ParticleCode.hpp
@@ -53,20 +60,20 @@
  *        - PseudorapidityCut.cpp
  *        - TransverseMomentumCut.hpp
  *        - TransverseMomentumCut.cpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/DefaultSpectra.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/ExtendedMass.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/ExtendedMass.cpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MapAndVectorAndBools.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MassEigenstate.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/MassEigenstate.cpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.cpp
- *      6 files and a subdirectory in
+ *      LHPC_CPP/MassEigenstateCollectionClasses/PointersPairedWithValue.hpp
+ *      7 files and a subdirectory in
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrumClasses/:
  *      - CodesAndDataForMassEigenstates.hpp
- *      - ParticleCode.hpp
- *      - ParticleCode.cpp
  *      - MinimalSupersymmetricStandardModel.hpp
  *      - MinimalSupersymmetricStandardModel.cpp
- *      - PseudorapidityCut.hpp
- *      - PseudorapidityCut.cpp
  *      - NextToMinimalSupersymmetricStandardModel.hpp
  *      - NextToMinimalSupersymmetricStandardModel.cpp
  *      - StandardModel.hpp
@@ -100,27 +107,50 @@
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.cpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/BasicParser.hpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/BasicParser.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.cpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.hpp
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
- *      6 files in LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
- *      - DenseDoublyIndexed.hpp
- *      - DenseSinglyIndexed.hpp
- *      - DenseTriplyIndexed.hpp
- *      - JustSingleValue.hpp
- *      - SparseSinglyIndexed.hpp
- *      - StandardBlockTemplate.hpp
- *      LHPC_CPP/LhefParser.hpp
- *      LHPC_CPP/LhefParser.cpp
+ *      11 files and a subdirectory in
+ *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
+ *      - BaseBlockAsStrings.hpp
+ *      - BaseBlockAsStrings.cpp
+ *      - DenseDoublyIndexedBlock.hpp
+ *      - DenseSinglyIndexedBlock.hpp
+ *      - DenseTriplyIndexedBlock.hpp
+ *      - JustSingleValueBlock.hpp
+ *      - LinesAsStringsBlock.hpp
+ *      - LinesAsStringsBlock.cpp
+ *      - SameNameBlockSet.hpp
+ *      - SameNameBlockSet.cpp
+ *      - SparseSinglyIndexedBlock.hpp
+ *      - InterpreterClasses/ with 13 files:
+ *        - BlockInterpreter.hpp
+ *        - BlockInterpreter.cpp
+ *        - BlockInterpreterFactory.hpp
+ *        - BlockInterpreterFactory.cpp
+ *        - DenseDoublyIndexed.hpp
+ *        - DenseSinglyIndexed.hpp
+ *        - DenseTriplyIndexed.hpp
+ *        - IndexedBlockTemplate.hpp
+ *        - JustSingleValue.hpp
+ *        - LinesAsStrings.hpp
+ *        - LinesAsStrings.cpp
+ *        - SparseSinglyIndexed.hpp
+ *        - StandardBlockTemplate.hpp
+ *      LHPC_CPP/LHEF.hpp
  *      LHPC_CPP/LhefParserExample.cpp
- *      LHPC_CPP/SlhaParser.hpp
- *      LHPC_CPP/SlhaParser.cpp
+ *      LHPC_CPP/LhpcSpectrumPlotter.cpp
+ *      LHPC_CPP/SLHA.hpp
  *      LHPC_CPP/SlhaParserExample.cpp
  *      LHPC_CPP/Makefile
  *      and README.LHPC_CPP.txt which describes the package (copied as
@@ -133,7 +163,7 @@
  * some beta testing, this version will be tweaked & released as 1.0.0)
  */
 
-/* LesHouchesParserClasses (LHPC) is a set of classes for interpretting Les
+/* LesHouchesParserClasses (LHPC) is a set of classes for interpreting Les
  * Houches Event File (LHEF) format files and SUSY Les Houches Accord (SLHA)
  * files. it also parses Flavor Les Houches Accord (FLHA) files, though with
  * less functionality. this LHPC_CPP set of files is the version written in
@@ -223,25 +253,32 @@
  * the intended use of SlhaParser is that an instance of the class is
  * constructed, & then instances of derived classes of the SlhaBlock class are
  * constructed & then registered with the parser with the
- * registerBlock( LHPC::SLHA::SlhaBlock const& ) function. there are bundles of
- * blocks that automatically register their blocks with the SlhaParser given
- * to the bundle's constructor, which cover the blocks described in SLHA1 &
- * SLHA2. an instance of LHPC::SlhaOne has all the blocks in SLHA1, & an
- * instance of SlhaTwo has all the blocks mentioned in SLHA1 & in SLHA2. the
- * entries in the blocks are then filled when readFile( std::string const& ) is
- * called. the entries are accessed with operator() (various derived classes
- * use different numbers of arguments for this), or the block as a set of lines
- * (each line held as a separate std::string) can be obtained by
- * getLines( double const ), which looks for the copy of the block with scale
- * ("Q") closest to the given argument, or as a single std::string with
- * interpretAsString( double const ). I had intended to provide flexible
- * searching of the blocks as strings to accommodate non-standard blocks, but
- * this is still on the to-do list.
+ * registerBlock(
+ *               LHPC::SLHA::InterpreterClass::BlockInterpreterFactory const& )
+ * function (but nobody should have to deal with the base
+ * BlockInterpreterFactory class directly). there are bundles of blocks that
+ * automatically register their blocks with the SlhaParser given to the
+ * bundle's constructor, which cover the blocks described in SLHA1 & SLHA2. an
+ * instance of LHPC::SlhaOne has all the blocks in SLHA1, & an instance of
+ * SlhaTwo has all the blocks mentioned in SLHA1 & in SLHA2. the entries in the
+ * blocks are then filled when readFile( std::string const& ) is called. the
+ * entries are accessed with operator() (various derived classes
+ * use different numbers of arguments for this) for the copy of their block
+ * with lowest scale value ("Q"), or the interpreter for a given copy can be
+ * accessed with operator[], which returns interpreters for the blocks in the
+ * order in which they were read, starting from 1. also, the block as a set of
+ * lines (each line held as a separate std::string) can be obtained by
+ * getLineWithoutComment( int const ) for each block.
+ * the function SlhaBlock::hasRecordedScale( double const, int&, int&,double& )
+ * is the best compromise that I could come up with for finding blocks for a
+ * given scale. see the comments of the function for how to use it.
+ * I had intended to provide flexible searching of the blocks as strings to
+ * accommodate non-standard blocks, but this is still on the to-do list.
  * decays are only recorded if a MassSpectrum instance has been registered with
  * the SlhaParser. a registered MassSpectrum instance has its MassEigenstate
  * data members filled with masses recorded from the MASS or FMASS blocks that
  * are read from the SLHA file, & with decays filled from the decays of the
- * file. the particle codes of the decays are interpretted so that accessing
+ * file. the particle codes of the decays are interpreted so that accessing
  * the decays gets references to other MassEigenstates, to simplify following
  * cascade decays.
  * I intend to include the functionality to be able to load in the central

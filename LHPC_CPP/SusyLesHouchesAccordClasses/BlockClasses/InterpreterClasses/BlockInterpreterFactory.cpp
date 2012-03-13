@@ -1,7 +1,7 @@
 /*
- * BaseBlockAsStrings.cpp
+ * BlockInterpreterFactory.cpp
  *
- *  Created on: Mar 3, 2012
+ *  Created on: Mar 11, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,23 +11,22 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#include "BaseBlockAsStrings.hpp"
+#include "BlockInterpreterFactory.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    namespace BlockClass
+    namespace InterpreterClass
     {
-      BaseBlockAsStrings::BaseBlockAsStrings() :
-          BasicObserved(),
-          blockAsStringWithHeader( "" ),
-          blocksAsStringArrays()
+      BlockInterpreterFactory::BlockInterpreterFactory(
+                                               std::string const& blockName ) :
+          blockName( blockName )
       {
-        // just an initialization list.
+        BOL::StringParser::transformToUppercase( this->blockName );
       }
 
-      BaseBlockAsStrings::~BaseBlockAsStrings()
+      BlockInterpreterFactory::~BlockInterpreterFactory()
       {
         // does nothing.
       }

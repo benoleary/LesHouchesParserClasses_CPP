@@ -51,7 +51,7 @@ namespace LHPC
     bool
     eventReadSuccessfully();
     // this returns true if the last event that was read was also successfully
-    // interpretted.
+    // interpreted.
 
 
   protected:
@@ -124,7 +124,7 @@ namespace LHPC
   inline bool
   LhefParser::eventReadSuccessfully()
   // this returns true if the last event that was read was also successfully
-  // interpretted.
+  // interpreted.
   {
     return eventIsValid;
   }

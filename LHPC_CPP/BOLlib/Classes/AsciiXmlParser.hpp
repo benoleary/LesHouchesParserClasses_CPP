@@ -23,7 +23,7 @@
 namespace BOL
 {
   /* this parses out blocks of ASCII text from a string between XML opening &
-   * closing tags, & returns the text between the tags (without interpretting
+   * closing tags, & returns the text between the tags (without interpreting
    * it further as XML).
    */
   class AsciiXmlParser

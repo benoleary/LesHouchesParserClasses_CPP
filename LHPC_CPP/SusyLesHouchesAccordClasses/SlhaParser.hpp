@@ -19,41 +19,31 @@
 #include "../BOLlib/Classes/CommentedTextParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "../MassEigenstateCollectionClasses/MassSpectrum.hpp"
-#include "BlockClasses/InterpretterClasses/BlockInterpretterFactory.hpp"
-// #include "BlockTypes.hpp"
-// - SlhaParser does not know about specific block types!
+#include "../MassEigenstateCollectionClasses/ExtendedMass.hpp"
+#include "BasicParser.hpp"
+#include "BlockTypes.hpp"
 
 namespace LHPC
 {
   // this is a class for reading in a SLHA format file & parsing the data from
   // it.
-  class SlhaParser
+  class SlhaParser : public SLHA::BasicParser
   {
   public:
-    static std::string const blockIdentifierString;
-    static std::string const decayIdentifierString;
-
     SlhaParser( bool const shouldRecordBlocksNotRegistered = true,
                 bool const isVerbose = true);
+    virtual
     ~SlhaParser();
 
+    virtual SLHA::SameNameBlockSet*
+    registerBlock(
+          SLHA::InterpreterClass::BlockInterpreterFactory& blockToUpdate );
+    // this registers blockToUpdate so that its data get updated every time a
+    // new block of the appropriate name is read.
     void
     registerSpectrum( MassSpectrum& spectrumToUpdate );
     // this adds a pointer to spectrumToUpdate to spectraToUpdate so that its
     // data get updated during each readFile().
-    void
-    registerBlock(
-            SLHA::InterpretterClass::BlockInterpretterFactory& blockToUpdate );
-    // this registers blockToUpdate so that its data get updated every time a
-    // new block of the appropriate name is read.
-    void
-    registerBlock( SLHA::FmassBlock& blockToUpdate );
-    // this is a special case to try to catch if an FMASS block is given, so
-    // that the spectrum (if any) can read from it rather than needing its own.
-    void
-    registerBlock( SLHA::MassBlock& blockToUpdate );
-    // this is a special case to try to catch if a MASS block is given, so that
-    // the spectrum (if any) can read from it rather than needing its own.
     bool
     readFile( std::string const& slhaFileName );
     /* this opens the file with name given by slhaFileName, parses its data
@@ -67,38 +57,21 @@ namespace LHPC
 
 
   protected:
-    bool const shouldRecordBlocksNotRegistered;
-    bool const isVerbose;
-    BOL::CommentedTextParser fileParser;
     std::vector< MassSpectrum* > spectraToUpdate;
-    std::map< std::string, SLHA::SameNameBlockSet* > blockMap;
-    std::map< std::string, SLHA::SameNameBlockSet* >::iterator
-    blockMapIterator;
-    std::pair< std::string, SLHA::SameNameBlockSet* > mapInserter;
-    SLHA::FmassBlock* fmassBlockPointer;
+    SLHA::InterpreterClass::BlockInterpreterFactory* fmassBlockPointer;
     bool ownsFmassBlock;
-    SLHA::MassBlock* massBlockPointer;
+    std::map< int, ExtendedMass > const* fmassMap;
+    std::map< int, ExtendedMass >::const_iterator fmassMapIterator;
+    SLHA::InterpreterClass::BlockInterpreterFactory* massBlockPointer;
     bool ownsMassBlock;
-    SLHA::SameNameBlockSet* currentBlockPointer;
+    std::map< int, double > const* massMap;
+    std::map< int, double >::const_iterator massMapIterator;
     std::vector< MassEigenstate* > currentMassEigenstates;
     MassEigenstate* massEigenstateFiller;
-    std::string dataString;
-    std::string commentString;
-    std::string firstWordOfLine;
-    BOL::VectorlikeArray< std::string > wordsOfLine;
     std::vector< int > decayProductCodes;
     MassEigenstate::MassEigenstatesPairedWithBr decayRecorder;
     double recordedDecayWidth;
-    std::map< int, ExtendedMass > const* fmassMap;
-    std::map< int, ExtendedMass >::const_iterator fmassMapIterator;
-    std::map< int, double > const* massMap;
-    std::map< int, double >::const_iterator massMapIterator;
 
-    void
-    addBlockToMap(
-            SLHA::InterpretterClass::BlockInterpretterFactory& blockToUpdate );
-    // this adds blockToUpdate to blockMap, so that its data get updated during
-    // each readFile().
     void
     clearBlocks();
     // this goes through all the blocks in blockMap & calls their
@@ -146,44 +119,42 @@ namespace LHPC
     spectraToUpdate.push_back( &spectrumToUpdate );
   }
 
-  inline void
+  inline SLHA::SameNameBlockSet*
   SlhaParser::registerBlock(
-             SLHA::InterpretterClass::BlockInterpretterFactory& blockToUpdate )
+             SLHA::InterpreterClass::BlockInterpreterFactory& blockToUpdate )
   // this registers blockToUpdate so that its data get updated every time a
   // new block of the appropriate name is read.
   {
-    addBlockToMap( blockToUpdate );
-  }
-
-  inline void
-  SlhaParser::registerBlock( SLHA::FmassBlock& blockToUpdate )
-  // this is a special case to try to catch if an FMASS block is given, so
-  // that the spectrum (if any) can read from it rather than needing its own.
-  {
-    addBlockToMap( blockToUpdate );
+    SLHA::SameNameBlockSet* returnPointer( NULL );
+    blockMapIterator = blockMap.find( blockToUpdate.getName() );
+    if( blockMap.end() == blockMapIterator )
+    {
+      mapInserter.first.assign( blockToUpdate.getName() );
+      returnPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+      mapInserter.second = returnPointer;
+      blockMap.insert( mapInserter );
+    }
+    else
+    {
+      returnPointer = blockMapIterator->second;
+    }
     if( blockToUpdate.nameMatches( "FMASS" ) )
     {
       fmassBlockPointer = &blockToUpdate;
     }
-  }
-
-  inline void
-  SlhaParser::registerBlock( SLHA::MassBlock& blockToUpdate )
-  // this is a special case to try to catch if a MASS block is given, so that
-  // the spectrum (if any) can read from it rather than needing its own.
-  {
-    addBlockToMap( blockToUpdate );
     if( blockToUpdate.nameMatches( "MASS" ) )
     {
       massBlockPointer = &blockToUpdate;
     }
+    returnPointer->registerBlock( blockToUpdate );
+    return returnPointer;
   }
 
   inline SLHA::SameNameBlockSet*
   SlhaParser::getBlockAsStrings( std::string blockName )
   {
-    blockMapIterator
-    = blockMap.find( BOL::StringParser::transformToUppercase( blockName ) );
+    BOL::StringParser::transformToUppercase( blockName );
+    blockMapIterator = blockMap.find( blockName );
     if( blockMap.end() == blockMapIterator )
     {
       return NULL;
@@ -194,12 +165,12 @@ namespace LHPC
     }
   }
 
-  SLHA::SameNameBlockSet const*
+  inline SLHA::SameNameBlockSet const*
   SlhaParser::getBlockAsStrings( std::string blockName ) const
   {
+    BOL::StringParser::transformToUppercase( blockName );
     std::map< std::string, SLHA::SameNameBlockSet* >::const_iterator
-    constBlockMapIterator( blockMap.find(
-                      BOL::StringParser::transformToUppercase( blockName ) ) );
+    constBlockMapIterator( blockMap.find( blockName ) );
     if( blockMap.end() == constBlockMapIterator )
     {
       return NULL;
@@ -207,26 +178,6 @@ namespace LHPC
     else
     {
       return constBlockMapIterator->second;
-    }
-  }
-
-  inline void
-  SlhaParser::addBlockToMap(
-             SLHA::InterpretterClass::BlockInterpretterFactory& blockToUpdate )
-  // this adds blockToUpdate to blockMap, so that its data get updated during
-  // each readFile().
-  {
-    blockMapIterator = blockMap.find( blockToUpdate.getName() );
-    if( blockMap.end() == blockMapIterator )
-    {
-      mapInserter.first.assign( blockToUpdate.getName() );
-      mapInserter.second = new SLHA::SameNameBlockSet( mapInserter.first );
-      mapInserter.second->registerBlock( blockToUpdate );
-      blockMap.insert( mapInserter );
-    }
-    else
-    {
-      blockMapIterator->second->registerBlock( blockToUpdate );
     }
   }
 

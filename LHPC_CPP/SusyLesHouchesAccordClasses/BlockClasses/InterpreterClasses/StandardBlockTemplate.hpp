@@ -15,31 +15,39 @@
 #define STANDARDBLOCKTEMPLATE_HPP_
 
 #include "../../../BOLlib/Classes/UsefulStuff.hpp"
-#include "BlockInterpretter.hpp"
+#include "../../../BOLlib/Classes/StringParser.hpp"
+#include "BlockInterpreter.hpp"
 #include "../../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       // this template class derives from SlhaBlock to provide a base class for
       // blocks with values which are indexed in various ways.
       template< class ValueType >
-      class StandardBlockTemplate : public BlockInterpretter
+      class StandardBlockTemplate : public BlockInterpreter
       {
       public:
-        StandardBlockTemplate( ValueType const& defaultUnsetValue,
-                               bool const& isVerbose );
+        StandardBlockTemplate();
         virtual
         ~StandardBlockTemplate();
 
+        virtual void
+        setDefaultUnsetValue( ValueType const& defaultUnsetValue );
+        virtual void
+        setVerbosity( bool const& isVerbose );
+
 
       protected:
-        bool const& isVerbose;
-        ValueType const defaultUnsetValue;
+        ValueType defaultUnsetValue;
+        bool const* isVerbose;
         ValueType valueFromString;
+        std::string currentWord;
+        std::string lineRemainderA;
+        std::string lineRemainderB;
         std::string stringFromValue;
         std::string valuePrintingString;
 
@@ -62,14 +70,30 @@ namespace LHPC
 
 
       template< class ValueType >
+      inline void
+      StandardBlockTemplate< ValueType >::setDefaultUnsetValue(
+                                           ValueType const& defaultUnsetValue )
+      {
+        this->defaultUnsetValue = defaultUnsetValue;
+      }
+
+      template< class ValueType >
+      inline void
+      StandardBlockTemplate< ValueType >::setVerbosity( bool const& isVerbose )
+      {
+        this->isVerbose = &isVerbose;
+      }
+
+      template< class ValueType >
       inline
-      StandardBlockTemplate< ValueType >::StandardBlockTemplate(
-                                            ValueType const& defaultUnsetValue,
-                                                      bool const& isVerbose ) :
-          BlockInterpretter(),
-          defaultUnsetValue( defaultUnsetValue ),
-          isVerbose( isVerbose ),
-          valueFromString( defaultUnsetValue ),
+      StandardBlockTemplate< ValueType >::StandardBlockTemplate() :
+          BlockInterpreter(),
+          defaultUnsetValue(),
+          isVerbose( &(BlockInterpreter::defaultVerbosity) ),
+          valueFromString(),
+          currentWord( "" ),
+          lineRemainderA( "" ),
+          lineRemainderB( "" ),
           stringFromValue( "no_string_interpretation_given" ),
           valuePrintingString( "   no_string_interpretation_given" )
       {
@@ -135,19 +159,19 @@ namespace LHPC
       // this sets valueFromString according to the interpretation of
       // stringToConvert.
       {
-        SlhaBlock::currentWord.assign( BOL::StringParser::firstWordOf(
+        this->currentWord.assign( BOL::StringParser::firstWordOf(
                                                                stringToConvert,
-                                                  &(SlhaBlock::firstRemainder),
-                                                                 " \t\r\n" ) );
+                                                       &(this->lineRemainderA),
+                              BOL::StringParser::whitespaceAndNewlineChars ) );
         double
         parsedDouble( BOL::StringParser::stringToDouble( currentWord ) );
-        SlhaBlock::currentWord.assign( BOL::StringParser::firstWordOf(
-                                                     SlhaBlock::firstRemainder,
-                                                 &(SlhaBlock::secondRemainder),
-                                                                 " \t\r\n" ) );
+        this->currentWord.assign( BOL::StringParser::firstWordOf(
+                                                          this->lineRemainderA,
+                                                        &(this->lineRemainderB),
+                              BOL::StringParser::whitespaceAndNewlineChars ) );
         valueFromString.setValues( parsedDouble,
-                                 BOL::StringParser::stringToInt( currentWord ),
-                        BOL::StringParser::stringToDouble( secondRemainder ) );
+                           BOL::StringParser::stringToInt( this->currentWord ),
+                   BOL::StringParser::stringToDouble( this->lineRemainderB ) );
         return valueFromString;
       }
 

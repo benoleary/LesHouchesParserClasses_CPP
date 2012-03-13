@@ -19,47 +19,56 @@ CCEXEFLAGS=
 LDFLAGS= -L./ -lLHPC_CPP
 AR=ar
 ARFLAGS=rcs
-SHORTDIRA=LesHouchesEventFileClasses/FilterRuleClasses
-SHORTDIRB=MassEigenstateCollectionClasses/MassSpectrumClasses
-SHORTDIRC=$(SHORTDIRB)/ParticleSubsetClasses
+LHEFDIR=LesHouchesEventFileClasses
+MECDIR=MassEigenstateCollectionClasses
+MECMSCDIR=$(MECDIR)/MassSpectrumClasses
+SLHADIR=SusyLesHouchesAccordClasses
 SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
+ BOLlib/Classes/BasicObserved.cpp \
+ BOLlib/Classes/BasicObserver.cpp \
  BOLlib/Classes/CommentedTextParser.cpp \
  BOLlib/Classes/StringParser.cpp \
  BOLlib/Classes/UsefulStuff.cpp \
  LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  LesHouchesEventFileClasses/FilterRule.cpp \
  LesHouchesEventFileClasses/LhefEvent.cpp \
+ LesHouchesEventFileClasses/LhefParser.cpp \
  LesHouchesEventFileClasses/ParticleLine.cpp \
- $(SHORTDIRA)/InitialOrIntermediateOrFinalState.cpp \
- $(SHORTDIRA)/ParticleCode.cpp \
- $(SHORTDIRA)/PseudorapidityCut.cpp \
- $(SHORTDIRA)/TransverseMomentumCut.cpp \
+ $(LHEFDIR)/FilterRuleClasses/InitialOrIntermediateOrFinalState.cpp \
+ $(LHEFDIR)/FilterRuleClasses/ParticleCode.cpp \
+ $(LHEFDIR)/FilterRuleClasses/PseudorapidityCut.cpp \
+ $(LHEFDIR)/FilterRuleClasses/TransverseMomentumCut.cpp \
  MassEigenstateCollectionClasses/ExtendedMass.cpp \
  MassEigenstateCollectionClasses/MassEigenstate.cpp \
  MassEigenstateCollectionClasses/MassSpectrum.cpp \
- $(SHORTDIRB)/MinimalSupersymmetricStandardModel.cpp \
- $(SHORTDIRB)/NextToMinimalSupersymmetricStandardModel.cpp \
- $(SHORTDIRB)/StandardModel.cpp \
- $(SHORTDIRC)/ChargedSleptonsOneToSix.cpp \
- $(SHORTDIRC)/CharginosOneToTwo.cpp \
- $(SHORTDIRC)/GluinoOneGeneration.cpp \
- $(SHORTDIRC)/MssmExtraEwsbSpinZeroBosonSet.cpp \
- $(SHORTDIRC)/NeutralinosOneToFive.cpp \
- $(SHORTDIRC)/NeutralinosOneToFour.cpp \
- $(SHORTDIRC)/NmssmExtraEwsbSpinZeroBosonSet.cpp \
- $(SHORTDIRC)/SneutrinosOneToThree.cpp \
- $(SHORTDIRC)/SquarksOneToSix.cpp \
+ $(MECDIR)/MassSpectrumClasses/MinimalSupersymmetricStandardModel.cpp \
+ $(MECDIR)/MassSpectrumClasses/NextToMinimalSupersymmetricStandardModel.cpp \
+ $(MECDIR)/MassSpectrumClasses/StandardModel.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/ChargedSleptonsOneToSix.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/CharginosOneToTwo.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/GluinoOneGeneration.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/MssmExtraEwsbSpinZeroBosonSet.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/NeutralinosOneToFive.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/NeutralinosOneToFour.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/NmssmExtraEwsbSpinZeroBosonSet.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/SneutrinosOneToThree.cpp \
+ $(MECMSCDIR)/ParticleSubsetClasses/SquarksOneToSix.cpp \
  ParticleCodesAndDataClasses/NineDigitSlhaCodes.cpp \
  ParticleCodesAndDataClasses/PdgData.cpp \
  ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp \
  SlhaSpectrumPlottingClasses/LineData.cpp \
  SlhaSpectrumPlottingClasses/SpectrumPlotter.cpp \
- SusyLesHouchesAccordClasses/SlhaBlock.cpp \
+ SusyLesHouchesAccordClasses/BasicParser.cpp \
  SusyLesHouchesAccordClasses/SlhaOne.cpp \
+ SusyLesHouchesAccordClasses/SlhaParser.cpp \
  SusyLesHouchesAccordClasses/SlhaTwo.cpp \
  SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp \
- LhefParser.cpp \
- SlhaParser.cpp
+ SusyLesHouchesAccordClasses/BlockClasses/BaseBlockAsStrings.cpp \
+ SusyLesHouchesAccordClasses/BlockClasses/LinesAsStringsBlock.cpp \
+ SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.cpp \
+ $(SLHADIR)/BlockClasses/InterpreterClasses/BlockInterpreter.cpp \
+ $(SLHADIR)/BlockClasses/InterpreterClasses/BlockInterpreterFactory.cpp \
+ $(SLHADIR)/BlockClasses/InterpreterClasses/LinesAsStrings.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIBRARYFILE=libLHPC_CPP.a
 PLOTTERCPP=LhpcSpectrumPlotter.cpp

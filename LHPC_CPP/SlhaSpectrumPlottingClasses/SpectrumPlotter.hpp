@@ -33,10 +33,11 @@ namespace LHPC
     class SpectrumPlotter
     {
     public:
-      typedef BlockClass::SparseSinglyIndexed< std::string > StringBlock;
-      typedef std::map< int,
-                        std::string > LineMap;
+      typedef SparseSinglyIndexedBlock< std::string > StringBlock;
+      typedef std::map< int, std::string > LineMap;
       typedef std::list< SpectrumPlotting::LineData > LineList;
+      typedef SparseSinglyIndexedBlock< ExtendedMass > FmassBlock;
+      typedef SparseSinglyIndexedBlock< double > MassBlock;
 
       SpectrumPlotter( StringBlock const& plotControlBlock,
                        StringBlock const& linePlottingBlock,

@@ -14,13 +14,14 @@
 #ifndef SPARSESINGLYINDEXED_HPP_
 #define SPARSESINGLYINDEXED_HPP_
 
+#include <map>
 #include "IndexedBlockTemplate.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       // this template class interprets SLHA blocks that have a single int
       // index with a single ValueClass value.
@@ -28,9 +29,7 @@ namespace LHPC
       class SparseSinglyIndexed : public IndexedBlockTemplate< ValueClass >
       {
       public:
-        SparseSinglyIndexed( ValueClass const& defaultUnsetValue,
-                             bool const& isVerbose,
-                             int const indexDigits = 5 );
+        SparseSinglyIndexed();
         virtual
         ~SparseSinglyIndexed();
 
@@ -64,6 +63,9 @@ namespace LHPC
 
 
       protected:
+        typedef typename
+        std::map< int, ValueClass >::const_iterator mapIterator;
+
         std::map< int, ValueClass > valueMap;
         std::pair< int, ValueClass > valueRecorder;
       };
@@ -74,13 +76,8 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed(
-                                           ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
-                                                      int const indexDigits ) :
-          IndexedBlockTemplate< ValueClass >( defaultUnsetValue,
-                                              isVerbose,
-                                              indexDigits ),
+      SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed() :
+          IndexedBlockTemplate< ValueClass >(),
           valueMap(),
           valueRecorder()
       {
@@ -119,8 +116,7 @@ namespace LHPC
        * there already.
        */
       {
-        std::map< int, ValueClass >::const_iterator
-        valueFinder( valueMap.find( soughtIndex ) );
+        mapIterator valueFinder( valueMap.find( soughtIndex ) );
         if( valueMap.end() != valueFinder )
         {
           return valueFinder->second;
@@ -137,8 +133,7 @@ namespace LHPC
       // see base version's description.
       {
         this->stringInterpretation.clear();
-        std::map< int, ValueClass >::const_iterator
-        valueFinder( valueMap.begin() );
+        mapIterator valueFinder( valueMap.begin() );
         while( valueFinder != valueMap.end() )
         {
           this->stringInterpretation.append( this->indexToPrintingString(
@@ -202,8 +197,6 @@ namespace LHPC
       }
 
     }
-    typedef typename
-    InterpretterClass::SparseSinglyIndexed SparseSinglyIndexedBlockData;
 
   }
 

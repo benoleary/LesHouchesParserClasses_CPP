@@ -20,7 +20,7 @@ namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       // this template class interprets SLHA blocks that have a single
       // ValueClass value.
@@ -28,8 +28,7 @@ namespace LHPC
       class JustSingleValue : public StandardBlockTemplate< ValueClass >
       {
       public:
-        JustSingleValue( ValueType const& defaultUnsetValue,
-                         bool const& isVerbose );
+        JustSingleValue();
         virtual
         ~JustSingleValue();
 
@@ -58,14 +57,9 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      JustSingleValue< ValueClass >::JustSingleValue(
-                                                  std::string const& blockName,
-                                            ValueType const& defaultUnsetValue,
-                                                     bool const& isVerbose,
-                                       std::string const blockHeaderComment ) :
-          StandardBlockTemplate< ValueType >( defaultUnsetValue,
-                                              isVerbose ),
-          storedValue( defaultUnsetValue ),
+      JustSingleValue< ValueClass >::JustSingleValue() :
+          StandardBlockTemplate< ValueClass >(),
+          storedValue(),
           entryRecorded( false )
       {
         // just an initialization list.
@@ -88,7 +82,7 @@ namespace LHPC
       }
 
       template< class ValueClass >
-      inline ValueType const&
+      inline ValueClass const&
       JustSingleValue< ValueClass >::operator()() const
       // const version of above.
       {
@@ -142,8 +136,6 @@ namespace LHPC
       }
 
     }
-    typedef typename
-    InterpretterClass::JustSingleValue JustSingleValueBlockData;
 
   }
 

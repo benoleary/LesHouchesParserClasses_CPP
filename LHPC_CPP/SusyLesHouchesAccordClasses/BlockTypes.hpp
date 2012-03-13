@@ -3,6 +3,12 @@
  *
  *  Created on: Feb 26, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef BLOCKTYPES_HPP_
@@ -16,6 +22,7 @@
 #include "BlockClasses/DenseSinglyIndexedBlock.hpp"
 #include "BlockClasses/DenseDoublyIndexedBlock.hpp"
 #include "BlockClasses/DenseTriplyIndexedBlock.hpp"
+#include "BlockClasses/LinesAsStringsBlock.hpp"
 
 // this is header file to just collect some headers together with some typedefs
 // for convenience.
@@ -24,8 +31,6 @@ namespace LHPC
 {
   namespace SLHA
   {
-    typedef typename SparseSinglyIndexedBlock< double > MassBlock;
-    typedef typename SparseSinglyIndexedBlock< ExtendedMass > FmassBlock;
 
   }  // end of SLHA namespace
 

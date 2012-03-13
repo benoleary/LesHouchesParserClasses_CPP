@@ -3,6 +3,12 @@
  *
  *  Created on: Mar 4, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef SAMENAMEBLOCKSET_HPP_
@@ -11,7 +17,7 @@
 #include "../../BOLlib/Classes/VectorlikeArray.hpp"
 #include "../../BOLlib/Classes/StringParser.hpp"
 #include "BaseBlockAsStrings.hpp"
-#include "InterpretterClasses/BlockInterpretterFactory.hpp"
+#include "InterpreterClasses/BlockInterpreterFactory.hpp"
 
 namespace LHPC
 {
@@ -20,7 +26,7 @@ namespace LHPC
     /* instances of this class hold together all copies of a block which have
      * the same name (if there are 2 or more copies, it is assumed that they
      * have different energy scale values). it also holds the relevant
-     * BlockInterpretterFactory pointers for the BaseBlockAsString instances.
+     * BlockInterpreterFactory pointers for the BaseBlockAsString instances.
      */
     class SameNameBlockSet
     {
@@ -91,9 +97,9 @@ namespace LHPC
       // this clears all the data that this block set has recorded.
       void
       registerBlock(
-                  InterpretterClass::BlockInterpretterFactory& blockToUpdate );
-      /* this adds a pointer to blockToUpdate to interpretterSources, & gets
-       * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
+                  InterpreterClass::BlockInterpreterFactory& blockToUpdate );
+      /* this adds a pointer to blockToUpdate to interpreterSources, & gets
+       * BlockInterpreters for any already-existing BaseBlockAsStrings & tells
        * them to interpret.
        */
       void
@@ -110,7 +116,7 @@ namespace LHPC
       void
       finishRecordingLines();
       // this tells the entry in stringBlocks that was being recorded to get
-      // its interpretters to interpret the newly-recorded block.
+      // its interpreters to interpret the newly-recorded block.
 
 
     protected:
@@ -118,8 +124,8 @@ namespace LHPC
       BOL::VectorlikeArray< BlockClass::BaseBlockAsStrings > stringBlocks;
       std::list< std::pair< int, double > > scaleOrderedIndices;
       std::list< std::pair< int, double > >::iterator scaleIndexIterator;
-      std::vector< InterpretterClass::BlockInterpretterFactory* >
-      interpretterSources;
+      std::vector< InterpreterClass::BlockInterpreterFactory* >
+      interpreterSources;
       int lowestScaleIndex;
       BlockClass::BaseBlockAsStrings* currentStringBlock;
     };
@@ -173,19 +179,18 @@ namespace LHPC
 
     inline void
     SameNameBlockSet::registerBlock(
-                   InterpretterClass::BlockInterpretterFactory& blockToUpdate )
-    /* this adds blockToUpdate to interpretterSources, & gets
-     * BlockInterpretters for any already-existing BaseBlockAsStrings & tells
+                   InterpreterClass::BlockInterpreterFactory& blockToUpdate )
+    /* this adds blockToUpdate to interpreterSources, & gets
+     * BlockInterpreters for any already-existing BaseBlockAsStrings & tells
      * them to interpret.
      */
     {
-      interpretterSources.push_back( &blockToUpdate );
+      interpreterSources.push_back( &blockToUpdate );
       for( int scaleIndex( stringBlocks.getLastIndex() );
            0 <= scaleIndex;
            --scaleIndex )
       {
-        blockToUpdate.addAndUpdateInterpretter( stringBlocks.getPointer(
-                                                                scaleIndex ) );
+        blockToUpdate.addInterpreter( stringBlocks.getPointer( scaleIndex ) );
       }
     }
 
@@ -202,7 +207,7 @@ namespace LHPC
     inline void
     SameNameBlockSet::finishRecordingLines()
     // this tells the entry in stringBlocks that was being recorded to get
-    // its interpretters to interpret the newly-recorded block.
+    // its interpreters to interpret the newly-recorded block.
     {
       currentStringBlock->updateObservers();
     }

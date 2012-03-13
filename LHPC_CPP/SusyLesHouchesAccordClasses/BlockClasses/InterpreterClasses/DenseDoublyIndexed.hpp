@@ -20,7 +20,7 @@ namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       /* this template class derives from StandardBlockTemplate to interpret
        * SLHA blocks that have a pair of int indices with a single ValueClass
@@ -30,9 +30,7 @@ namespace LHPC
       class DenseDoublyIndexed : public IndexedBlockTemplate< ValueClass >
       {
       public:
-        DenseDoublyIndexed( ValueClass const& defaultUnsetValue,
-                            bool const& isVerbose,
-                            int const indexDigits = 5 );
+        DenseDoublyIndexed();
         virtual
         ~DenseDoublyIndexed();
 
@@ -52,7 +50,7 @@ namespace LHPC
          * an entry there already.
          */
         virtual std::string const&
-        interpretAsString( double const blockScale = 0.0 );
+        interpretAsString();
         // see base version's description.
         bool
         hasEntry( int const firstIndex,
@@ -82,13 +80,8 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      DenseDoublyIndexed< ValueClass >::DenseDoublyIndexed(
-                                           ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
-                                                      int const indexDigits ) :
-          IndexedBlockTemplate< ValueClass >( defaultUnsetValue,
-                                              isVerbose,
-                                              indexDigits ),
+      DenseDoublyIndexed< ValueClass >::DenseDoublyIndexed() :
+          IndexedBlockTemplate< ValueClass >(),
           valueMatrix(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),
@@ -194,7 +187,7 @@ namespace LHPC
       inline void
       DenseDoublyIndexed< ValueClass >::updateSelf()
       {
-        valueMatrix.clear();
+        valueMatrix.clearEntries();
         for( int whichLine( this->stringsToObserve->getNumberOfLines() );
              0 < whichLine;
              --whichLine )
@@ -203,11 +196,11 @@ namespace LHPC
                                 (*(this->stringsToObserve))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
-          if( !(SlhaBlock::currentWord.empty()) )
+          if( !(this->currentWord.empty()) )
           {
             firstRecordingIndex
             = BOL::StringParser::stringToInt( this->currentWord );
-            this->currentWord.assign( BOL::StringParser::trimFromFrontAndBack(
+            this->currentWord.assign( BOL::StringParser::firstWordOf(
                                                           this->lineRemainderA,
                                                        &(this->lineRemainderB),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
@@ -270,8 +263,6 @@ namespace LHPC
       }
 
     }
-    typedef typename
-    InterpretterClass::DenseDoublyIndexed DenseDoublyIndexedBlockData;
 
   }
 

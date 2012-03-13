@@ -15,6 +15,7 @@
 #define SLHAONE_HPP_
 
 #include "BlockTypes.hpp"
+#include "SlhaParser.hpp"
 
 namespace LHPC
 {
@@ -51,7 +52,7 @@ namespace LHPC
     SLHA::DenseDoublyIndexedBlock< double > YU;
     SLHA::DenseDoublyIndexedBlock< double > YD;
     SLHA::DenseDoublyIndexedBlock< double > YE;
-    SLHA::SlhaBlock SPINFO;
+    SLHA::LinesAsStringsBlock SPINFO;
 
 
   protected:

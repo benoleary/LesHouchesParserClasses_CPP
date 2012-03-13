@@ -31,13 +31,10 @@ namespace LHPC
     virtual
     ~SlhaTwoWithSpheno();
 
-    SLHA::BlockClass::SparseSinglyIndexed< double > SPHENOINFO;
-    SLHA::SlhaBlock SPHENOINPUT;
-    SLHA::SlhaBlock SPHENOCROSSSECTIONS;
-    SLHA::BlockClass::SparseSinglyIndexed< double > SPHENOLOWENERGY;
-
-  //protected:
-      // nothing.
+    SLHA::SparseSinglyIndexedBlock< double > SPHENOINFO;
+    SLHA::LinesAsStringsBlock SPHENOINPUT;
+    SLHA::LinesAsStringsBlock SPHENOCROSSSECTIONS;
+    SLHA::SparseSinglyIndexedBlock< double > SPHENOLOWENERGY;
   };
 
 }

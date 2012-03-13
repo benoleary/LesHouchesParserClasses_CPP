@@ -20,7 +20,7 @@ namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       /* this template class derives from StandardBlockTemplate to interpret
        * SLHA blocks that have a triple of int indices with a single ValueClass
@@ -30,9 +30,7 @@ namespace LHPC
       class DenseTriplyIndexed : public IndexedBlockTemplate< ValueClass >
       {
       public:
-        DenseTriplyIndexed( ValueClass const& defaultUnsetValue,
-                            bool const& isVerbose,
-                            int const indexDigits = 5 );
+        DenseTriplyIndexed();
         virtual
         ~DenseTriplyIndexed();
 
@@ -54,7 +52,7 @@ namespace LHPC
          * an entry there already.
          */
         virtual std::string const&
-        interpretAsString( double const blockScale = 0.0 );
+        interpretAsString();
         // see base version's description.
         bool
         hasEntry( int const firstIndex,
@@ -90,13 +88,8 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      DenseTriplyIndexed< ValueClass >::DenseTriplyIndexed(
-                                           ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
-                                                      int const indexDigits ) :
-          IndexedBlockTemplate< ValueClass >( defaultUnsetValue,
-                                              isVerbose,
-                                              indexDigits ),
+      DenseTriplyIndexed< ValueClass >::DenseTriplyIndexed() :
+          IndexedBlockTemplate< ValueClass >(),
           valueMatrixArray(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),
@@ -223,7 +216,7 @@ namespace LHPC
       inline void
       DenseTriplyIndexed< ValueClass >::updateSelf()
       {
-        valueMatrix.clear();
+        valueMatrixArray.clearEntries();
         for( int whichLine( this->stringsToObserve->getNumberOfLines() );
              0 < whichLine;
              --whichLine )
@@ -232,17 +225,17 @@ namespace LHPC
                                 (*(this->stringsToObserve))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
-          if( !(SlhaBlock::currentWord.empty()) )
+          if( !(this->currentWord.empty()) )
           {
             firstRecordingIndex
             = BOL::StringParser::stringToInt( this->currentWord );
-            this->currentWord.assign( BOL::StringParser::trimFromFrontAndBack(
+            this->currentWord.assign( BOL::StringParser::firstWordOf(
                                                           this->lineRemainderA,
                                                        &(this->lineRemainderB),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
             secondRecordingIndex
             = BOL::StringParser::stringToInt( this->currentWord );
-            this->currentWord.assign( BOL::StringParser::trimFromFrontAndBack(
+            this->currentWord.assign( BOL::StringParser::firstWordOf(
                                                           this->lineRemainderB,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
@@ -321,8 +314,6 @@ namespace LHPC
       }
 
     }
-    typedef typename
-    InterpretterClass::DenseTriplyIndexed DenseTriplyIndexedBlockData;
 
   }
 

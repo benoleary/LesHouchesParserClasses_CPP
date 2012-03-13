@@ -1,32 +1,40 @@
 /*
- * BlockInterpretter.hpp
+ * BlockInterpreter.hpp
  *
  *  Created on: Mar 11, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
-#ifndef BLOCKINTERPRETTER_HPP_
-#define BLOCKINTERPRETTER_HPP_
+#ifndef BLOCKINTERPRETER_HPP_
+#define BLOCKINTERPRETER_HPP_
 
 #include "../../../BOLlib/Classes/BasicObserver.hpp"
+#include "../../../BOLlib/Classes/StringParser.hpp"
 #include "../BaseBlockAsStrings.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    // this abstract base class provides a base class for interpretting
+    // this abstract base class provides a base class for interpreting
     // BaseBlockAsStrings instances.
-    class BlockInterpretter : public BOL::BasicObserver
+    class BlockInterpreter : public BOL::BasicObserver
     {
     public:
       static BOL::StringParser const slhaDoubleMaker;
       static BOL::StringParser const slhaIntHelper;
       static BOL::StringParser const particleCodeMaker;
+      static bool const defaultVerbosity;
 
-      BlockInterpretter();
+      BlockInterpreter();
       virtual
-      ~BlockInterpretter();
+      ~BlockInterpreter();
 
       void
       observeStrings( BlockClass::BaseBlockAsStrings* const stringsToObserve );
@@ -41,7 +49,7 @@ namespace LHPC
       virtual std::string const&
       interpretAsString() = 0;
       // derived classes should return their block as a single string of
-      // re-formatted interpretted values.
+      // re-formatted interpreted values.
 
 
     protected:
@@ -54,7 +62,7 @@ namespace LHPC
 
 
     inline void
-    BlockInterpretter::observeStrings(
+    BlockInterpreter::observeStrings(
                        BlockClass::BaseBlockAsStrings* const stringsToObserve )
     {
       // stop observing the old stringsToObserve, & start observing the new:
@@ -68,13 +76,13 @@ namespace LHPC
     }
 
     inline std::string const&
-    BlockInterpretter::getLineWithoutComment( int const whichLine ) const
+    BlockInterpreter::getLineWithoutComment( int const whichLine ) const
     {
       return (*stringsToObserve)[ whichLine ].first;
     }
 
     inline std::string
-    BlockInterpretter::getLineWithComment( int const whichLine ) const
+    BlockInterpreter::getLineWithComment( int const whichLine ) const
     /* information in comments can be decoded by someone else's code, because
      * putting important information in comments is an entirely unacceptably
      * stupid idea, in my humble opinion.
@@ -89,4 +97,4 @@ namespace LHPC
 
 }
 
-#endif /* BLOCKINTERPRETTER_HPP_ */
+#endif /* BLOCKINTERPRETER_HPP_ */

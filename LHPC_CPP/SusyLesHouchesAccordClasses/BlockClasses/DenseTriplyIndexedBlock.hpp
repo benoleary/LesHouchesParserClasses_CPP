@@ -3,21 +3,32 @@
  *
  *  Created on: Mar 12, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef DENSETRIPLYINDEXEDBLOCK_HPP_
 #define DENSETRIPLYINDEXEDBLOCK_HPP_
 
 #include "../SlhaBlock.hpp"
-#include "InterpretterClasses/DenseTriplyIndexed.hpp"
+#include "InterpreterClasses/DenseTriplyIndexed.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
+    /* this template class interprets all the blocks with the same name, though
+     * differing scale values, which are interpreted as having a triple of int
+     * indices which have to have entries for each value, each index beginning
+     * at 1.
+     */
     template< class ValueClass >
     class DenseTriplyIndexedBlock : public SlhaBlock< ValueClass,
-                                    DenseTriplyIndexedBlockData< ValueClass > >
+                          InterpreterClass::DenseTriplyIndexed< ValueClass > >
     {
     public:
       DenseTriplyIndexedBlock( std::string const& blockName,
@@ -31,7 +42,7 @@ namespace LHPC
       operator()( int const firstIndex,
                   int const secondIndex,
                   int const thirdIndex );
-      // this returns operator() of the lowest-scale interpretter.
+      // this returns operator() of the lowest-scale interpreter.
       ValueClass const&
       operator()( int const firstIndex,
                   int const secondIndex,
@@ -41,6 +52,9 @@ namespace LHPC
 
     protected:
       int const indexDigits;
+
+      virtual void
+      setExtraValuesForNewInterpreter();
     };
 
 
@@ -54,7 +68,8 @@ namespace LHPC
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
                                                       int const indexDigits ) :
-        SlhaBlock< ValueClass, DenseTriplyIndexedBlockData< ValueClass > >(
+        SlhaBlock< ValueClass,
+                   InterpreterClass::DenseTriplyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                    isVerbose ),
@@ -76,8 +91,12 @@ namespace LHPC
     DenseTriplyIndexedBlock< ValueClass >::operator()( int const firstIndex,
                                                        int const secondIndex,
                                                        int const thirdIndex )
-    // this returns operator() of the lowest-scale interpretter.
+    // this returns operator() of the lowest-scale interpreter.
     {
+      if( this->DataBlocks.isEmpty() )
+      {
+        this->DataBlocks.setSize( 1 );
+      }
       return this->DataBlocks[ this->lowestScaleIndex() ]( firstIndex,
                                                            secondIndex,
                                                            thirdIndex );
@@ -90,9 +109,23 @@ namespace LHPC
                                                    int const thirdIndex ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex() ]( firstIndex,
-                                                           secondIndex,
-                                                           thirdIndex );
+      if( this->DataBlocks.isEmpty() )
+      {
+        return this->defaultUnsetValue;
+      }
+      else
+      {
+        return this->DataBlocks[ this->lowestScaleIndex() ]( firstIndex,
+                                                             secondIndex,
+                                                             thirdIndex );
+      }
+    }
+
+    template< class ValueClass >
+    inline void
+    DenseTriplyIndexedBlock< ValueClass >::setExtraValuesForNewInterpreter()
+    {
+      this->DataBlocks.getBack().setIndexDigits( indexDigits );
     }
 
   }  // end of SLHA namespace

@@ -13,13 +13,8 @@
 
 #include <string>
 #include "SlhaSpectrumPlottingClasses/SpectrumPlotter.hpp"
-#include "SlhaParser.hpp"
+#include "SLHA.hpp"
 #include "BOLlib/Classes/UsefulStuff.hpp"
-#include "SusyLesHouchesAccordClasses/BlockTypes.hpp"
-#include "MassEigenstateCollectionClasses/MassSpectrum.hpp"
-#include "MassEigenstateCollectionClasses/DefaultSpectra.hpp"
-#include "ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp"
-#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 int main( int argumentCount,
           char* argumentCharArray[] )
@@ -66,23 +61,23 @@ int main( int argumentCount,
     LHPC::SlhaParser spectrumParser( isVerbose );
 
     // both FMASS & MASS are searched for:
-    LHPC::SLHA::FmassBlock fmassBlock( "FMASS",
-                                       LHPC::ExtendedMass(),
-                                       isVerbose );
+    LHPC::SLHA::SpectrumPlotter::FmassBlock fmassBlock( "FMASS",
+                                                        LHPC::ExtendedMass(),
+                                                        isVerbose );
     spectrumParser.registerBlock( fmassBlock );
-    LHPC::SLHA::MassBlock massBlock( "MASS",
-                                     BOL::UsefulStuff::notANumber,
-                                     isVerbose );
+    LHPC::SLHA::SpectrumPlotter::MassBlock massBlock( "MASS",
+                                                  BOL::UsefulStuff::notANumber,
+                                                      isVerbose );
     spectrumParser.registerBlock( massBlock );
 
     // the spectrum-plotter-specific blocks are also searched for in the
     // spectrum file:
-    LHPC::SLHA::BlockClass::SparseSinglyIndexed< std::string >
+    LHPC::SLHA::SparseSinglyIndexedBlock< std::string >
     controlBlock( "LHPCSPECTRUMPLOTCONTROL",
                   "error",
                   isVerbose );
     spectrumParser.registerBlock( controlBlock );
-    LHPC::SLHA::BlockClass::SparseSinglyIndexed< std::string >
+    LHPC::SLHA::SparseSinglyIndexedBlock< std::string >
     linesBlock( "LHPCSPECTRUMPLOTPARTICLES",
                 "error",
                 isVerbose );

@@ -3,6 +3,12 @@
  *
  *  Created on: Mar 4, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #include "SameNameBlockSet.hpp"
@@ -92,7 +98,7 @@ namespace LHPC
           indexForUpperScale = (++scaleIterator)->first;
           // indexForUpperScale starts at the next lowest scale.
           double upperScale( scaleIterator->second );
-          while( ( scaleWithIndexList.end() != scaleIterator )
+          while( ( scaleOrderedIndices.end() != scaleIterator )
                  &&
                  ( soughtScale >= scaleIterator->second ) )
             // until scaleIterator goes past soughtScale or hits the end of the
@@ -138,15 +144,15 @@ namespace LHPC
                                                  "",
                                                 BOL::UsefulStuff::notANumber );
         // this empties the BaseBlockAsStrings so that the following should
-        // wipe the data held in any interpretter observing it.
+        // wipe the data held in any interpreter observing it.
         stringBlocks[ whichBlock ].updateObservers();
         stringBlocks[ whichBlock ].removeAllObservers();
       }
-      for( int whichSource( interpretterSources.size() - 1 );
+      for( int whichSource( interpreterSources.size() - 1 );
            0 <= whichSource;
            --whichSource )
       {
-        interpretterSources[ whichSource ]->clearEntries();
+        interpreterSources[ whichSource ]->clearEntries();
       }
       stringBlocks.clearEntries();
       scaleOrderedIndices.clear();
@@ -176,11 +182,11 @@ namespace LHPC
       {
         lowestScaleIndex = stringBlocks.getLastIndex();
       }
-      for( int whichSource( interpretterSources.size() - 1 );
+      for( int whichSource( interpreterSources.size() - 1 );
            0 <= whichSource;
            --whichSource )
       {
-        interpretterSources[ whichSource ]->addInterpretter(
+        interpreterSources[ whichSource ]->addInterpreter(
                                                           currentStringBlock );
       }
       scaleIndexIterator = scaleOrderedIndices.begin();
@@ -190,32 +196,12 @@ namespace LHPC
       {
         ++scaleIndexIterator;
       }
-      if( scaleIndexIterator == scaleOrderedIndices.end() )
-      {
-        // debugging:
-        /**/std::cout << std::endl << "debugging:"
-        << std::endl
-        << "SameNameBlockSet::recordHeader( \"" << headerString << "\", \""
-        << commentString << "\", " << blockScale
-        << " ): scaleIndexIterator == scaleOrderedIndices.end(), so does"
-        << " insert work with scaleOrderedIndices.end()?";
-        std::cout << std::endl;/**/
-      }
-
       // now scaleIndexIterator should either be at the index with scale just
       // above blockScale, or at the end of the list.
       scaleOrderedIndices.insert( scaleIndexIterator,
                                   std::pair< int, double >(
                                                    stringBlocks.getLastIndex(),
                                                             blockScale ) );
-      if( scaleIndexIterator == scaleOrderedIndices.end() )
-      {
-        // debugging:
-        /**/std::cout << std::endl << "debugging:"
-        << std::endl
-        << "apparently it does.";
-        std::cout << std::endl;/**/
-      }
     }
 
   }

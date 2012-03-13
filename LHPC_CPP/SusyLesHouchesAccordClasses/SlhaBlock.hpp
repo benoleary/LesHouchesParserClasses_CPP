@@ -17,10 +17,11 @@
 #include <string>
 #include "../BOLlib/Classes/StringParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
-#include "BlockClasses/InterpretterClasses/BlockInterpretterFactory.hpp"
+#include "BlockClasses/InterpreterClasses/BlockInterpreter.hpp"
+#include "BlockClasses/InterpreterClasses/BlockInterpreterFactory.hpp"
 #include "BlockClasses/SameNameBlockSet.hpp"
 #include "BlockClasses/BaseBlockAsStrings.hpp"
-#include "SlhaParser.hpp"
+#include "BasicParser.hpp"
 
 namespace LHPC
 {
@@ -40,20 +41,20 @@ namespace LHPC
      *            - leave it as a SlhaBlock, because it really has no
      *              useful information
      * SPHENOCROSSSECTIONS: just stupid.
-     *                    - leave it as a SlhaBlock, to be interpretted by
+     *                    - leave it as a SlhaBlock, to be interpreted by
      *                      the general filters.
      */
 
 
     /* this is a class to hold a block from a file in the SLHA format, only
-     * interpretting it at the basic level: as set of strings. if multiple
+     * interpreting it at the basic level: as set of strings. if multiple
      * blocks with the same name but different scales are recorded, the copy
      * with the lowest scale is defaulted to if no scale is given when seeking
      * information.
      * classes which interpret the strings further derive from this class.
      */
     template< class ValueClass, class BlockData >
-    class SlhaBlock : public InterpretterClass::BlockInterpretterFactory
+    class SlhaBlock : public InterpreterClass::BlockInterpreterFactory
     {
     public:
       SlhaBlock( std::string const& blockName,
@@ -63,26 +64,21 @@ namespace LHPC
       ~SlhaBlock();
 
       BlockData&
-      operator[]( int whichScaleIndex = 0 );
-      /* the interpretters are indexed in the order in which they were
+      operator[]( int whichScaleIndex );
+      /* the interpreters are indexed in the order in which they were
        * read (or created). the index starts at 1 rather than 0, as well. if 0
        * is given as the argument, the index corresponding to the copy with the
        * lowest scale is used.
        */
       BlockData const&
-      operator[]( int whichScaleIndex = 0 ) const;
+      operator[]( int whichScaleIndex ) const;
       // const version of above.
+      int
+      getNumberOfCopiesWithDifferentScale() const;
       virtual void
-      registerWith( SlhaParser& registeringParser );
+      registerWith( BasicParser& registeringParser );
       // this registers this SlhaBlock with registeringParser so that the data
       // of this block update when registeringParser reads a file.
-      std::string const&
-      getName() const;
-      // this returns the name in uppercase.
-      bool
-      nameMatches( std::string const& nameToCompare ) const;
-      // this returns true if nameToCompare matches the block name ignoring
-      // case.
       bool
       hasRecordedScale( double const soughtScale,
                         int& indexForLowerScale,
@@ -135,18 +131,18 @@ namespace LHPC
        */
       void
       clearEntries();
-      // this clears all the data that this block has interpretted or had
+      // this clears all the data that this block has interpreted or had
       // assigned.
       virtual void
-      addAndUpdateInterpretter( BaseBlockAsStrings* observedStrings );
+      addInterpreter( BlockClass::BaseBlockAsStrings* observedStrings );
 
 
     protected:
-      std::string const blockName;
       bool const& isVerbose;
       ValueClass const defaultUnsetValue;
       SameNameBlockSet* observedStringBlock;
       BOL::VectorlikeArray< BlockData > DataBlocks;
+      std::string stringInterpretation;
 
       virtual std::string
       getThisScaleAsString( int const scaleIndex );
@@ -154,6 +150,8 @@ namespace LHPC
       // std::string.
       int
       lowestScaleIndex() const;
+      virtual void
+      setExtraValuesForNewInterpreter();
     };
 
 
@@ -166,13 +164,13 @@ namespace LHPC
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                    bool const& isVerbose ) :
-        InterpretterClass::BlockInterpretterFactory(),
-        blockName( blockName ),
+        InterpreterClass::BlockInterpreterFactory( blockName ),
         isVerbose( isVerbose ),
         defaultUnsetValue( defaultUnsetValue ),
-        observedStringBlock( NULL )
+        observedStringBlock( NULL ),
+        stringInterpretation( "" )
     {
-      BOL::StringParser::transformToUppercase( this->blockName );
+      // just an initialization list.
     }
 
     template< class ValueClass, class BlockData >
@@ -186,7 +184,7 @@ namespace LHPC
     template< class ValueClass, class BlockData >
     inline BlockData&
     SlhaBlock< ValueClass, BlockData >::operator[]( int whichScaleIndex )
-    /* the interpretters are indexed in the order in which they were
+    /* the interpreters are indexed in the order in which they were
      * read (or created). the index starts at 1 rather than 0, as well. if 0
      * is given as the argument, the index corresponding to the copy with the
      * lowest scale is used.
@@ -218,9 +216,17 @@ namespace LHPC
     }
 
     template< class ValueClass, class BlockData >
+    inline int
+    SlhaBlock< ValueClass, BlockData >::getNumberOfCopiesWithDifferentScale(
+                                                                        ) const
+    {
+      return DataBlocks.getSize();
+    }
+
+    template< class ValueClass, class BlockData >
     inline void
     SlhaBlock< ValueClass, BlockData >::registerWith(
-                                                SlhaParser& registeringParser )
+                                               BasicParser& registeringParser )
     // this registers this SlhaBlock with registeringParser so that the data
     // of this block update when registeringParser reads a file.
     {
@@ -228,27 +234,8 @@ namespace LHPC
     }
 
     template< class ValueClass, class BlockData >
-    inline std::string const&
-    SlhaBlock< ValueClass, BlockData >::getName() const
-    // this returns the name in uppercase.
-    {
-      return blockName;
-    }
-
-    template< class ValueClass, class BlockData >
     inline bool
-    SlhaBlock< ValueClass, BlockData >::nameMatches(
-                                       std::string const& nameToCompare ) const
-    // this returns true if nameToCompare matches the block name ignoring
-    // case.
-    {
-      return BOL::StringParser::stringsMatchIgnoringCase( nameToCompare,
-                                                          blockName );
-    }
-
-    template< class ValueClass, class BlockData >
-    inline bool
-    SlhaBlock< ValueClass, BlockData >:: hasRecordedScale(
+    SlhaBlock< ValueClass, BlockData >::hasRecordedScale(
                                                       double const soughtScale,
                                                        int& indexForLowerScale,
                                                        int& indexForUpperScale,
@@ -288,10 +275,17 @@ namespace LHPC
      * which is still higher than soughtScale.
      */
     {
-      return observedStringBlock->hasRecordedScale( soughtScale,
-                                                    indexForLowerScale,
-                                                    indexForUpperScale,
-                                                    fractionFromLowerScale );
+      if( NULL != observedStringBlock )
+      {
+        return observedStringBlock->hasRecordedScale( soughtScale,
+                                                      indexForLowerScale,
+                                                      indexForUpperScale,
+                                                      fractionFromLowerScale );
+      }
+      else
+      {
+        return false;
+      }
     }
 
     template< class ValueClass, class BlockData >
@@ -308,44 +302,48 @@ namespace LHPC
      * less just do not have the "Q=" etc. printed.
      */
     {
-      std::string returnString( "" );
+      stringInterpretation.clear();
       for( int scaleIndex( 0 );
            observedStringBlock->getNumberOfCopies() > scaleIndex;
            ++scaleIndex )
       {
-        returnString.append( SlhaParser::blockIdentifierString );
-        returnString.append( " " );
-        returnString.append( blockName );
+        stringInterpretation.append( BasicParser::blockIdentifierString );
+        stringInterpretation.append( " " );
+        stringInterpretation.append( blockName );
         if( onlyShowScalesGreaterThanZero
             ||
-            ( 0.0 > blockScale ) )
+            ( 0.0 > (*observedStringBlock)[ scaleIndex ].getScale() ) )
         {
-          returnString.append( " Q= " );
-          returnString.append(
-                             BlockInterpretter::slhaDoubleMaker.doubleToString(
+          stringInterpretation.append( " Q= " );
+          stringInterpretation.append(
+                             BlockInterpreter::slhaDoubleMaker.doubleToString(
                            (*observedStringBlock)[ scaleIndex ].getScale() ) );
         }
-        returnString.append( "\n" );
-        returnString.append( this->getThisScaleAsString( scaleIndex ) );
+        stringInterpretation.append( "\n" );
+        stringInterpretation.append(
+                                    this->getThisScaleAsString( scaleIndex ) );
       }
-      return blockAsStringWithHeader;
+      return stringInterpretation;
     }
 
     template< class ValueClass, class BlockData >
     inline void
     SlhaBlock< ValueClass, BlockData >::clearEntries()
-    // this clears all the data that this block has interpretted or had
+    // this clears all the data that this block has interpreted or had
     // assigned.
     {
       DataBlocks.clearEntries();
     }
 
     template< class ValueClass, class BlockData >
-    inline virtual void
-    SlhaBlock< ValueClass, BlockData >::addAndUpdateInterpretter(
-                                          BaseBlockAsStrings* observedStrings )
+    inline void
+    SlhaBlock< ValueClass, BlockData >::addInterpreter(
+                              BlockClass::BaseBlockAsStrings* observedStrings )
     {
       DataBlocks.newEnd().observeStrings( observedStrings );
+      DataBlocks.getBack().setDefaultUnsetValue( this->defaultUnsetValue );
+      DataBlocks.getBack().setVerbosity( isVerbose );
+      this->setExtraValuesForNewInterpreter();
     }
 
     template< class ValueClass, class BlockData >
@@ -361,10 +359,10 @@ namespace LHPC
            ++whichLine )
       {
         returnString.append(
-                           (*observedStringBlock)[ scaleIndex ][ whichLine ] );
+                     (*observedStringBlock)[ scaleIndex ][ whichLine ].first );
         returnString.append( "\n" );
       }
-
+      return returnString;
     }
 
     template< class ValueClass, class BlockData >
@@ -372,6 +370,13 @@ namespace LHPC
     SlhaBlock< ValueClass, BlockData >::lowestScaleIndex() const
     {
       return this->observedStringBlock->getLowestScaleIndex();
+    }
+
+    template< class ValueClass, class BlockData >
+    inline void
+    SlhaBlock< ValueClass, BlockData >::setExtraValuesForNewInterpreter()
+    {
+      // this basic version does nothing.
     }
 
   }

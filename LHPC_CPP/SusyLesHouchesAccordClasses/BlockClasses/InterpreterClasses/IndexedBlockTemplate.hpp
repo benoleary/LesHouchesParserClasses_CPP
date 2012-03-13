@@ -3,6 +3,12 @@
  *
  *  Created on: Mar 12, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ *      Copyright 2012 Ben O'Leary
+ *
+ *      This file is part of LesHouchesParserClasses, released under the
+ *      GNU General Public License. Please see the accompanying
+ *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      on how to use these classes, and further details on the license.
  */
 
 #ifndef INDEXEDBLOCKTEMPLATE_HPP_
@@ -14,7 +20,7 @@ namespace LHPC
 {
   namespace SLHA
   {
-    namespace InterpretterClass
+    namespace InterpreterClass
     {
       // this class extends StandardBlockTemplate for blocks with an index or
       // with indices.
@@ -22,23 +28,21 @@ namespace LHPC
       class IndexedBlockTemplate : public StandardBlockTemplate< ValueClass >
       {
       public:
-        IndexedBlockTemplate( ValueClass const& defaultUnsetValue,
-                              bool const& isVerbose,
-                              int const indexDigits );
+        IndexedBlockTemplate();
         virtual
         ~IndexedBlockTemplate();
 
+        virtual void
+        setIndexDigits( int const indexDigits );
+
 
       protected:
-        int const indexDigits;
+        int indexDigits;
         // this is the number of characters to print before the value,
         // including the characters used to print the index.
         std::string indexPrintingString;
         std::string indexHoldingString;
         int indexPadding;
-        std::string currentWord;
-        std::string lineRemainderA;
-        std::string lineRemainderB;
 
         std::string const&
         indexToPrintingString( int indexToPrint );
@@ -52,19 +56,12 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      IndexedBlockTemplate< ValueClass >::IndexedBlockTemplate(
-                                           ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
-                                                      int const indexDigits ) :
-          StandardBlockTemplate( defaultUnsetValue,
-                                 isVerbose ),
-          indexDigits( indexDigits ),
+      IndexedBlockTemplate< ValueClass >::IndexedBlockTemplate() :
+          StandardBlockTemplate< ValueClass >(),
+          indexDigits( 5 ),
           indexPrintingString( "" ),
           indexHoldingString( "" ),
-          indexPadding( 0 ),
-          currentWord( "" ),
-          lineRemainderA( "" ),
-          lineRemainderB( "" )
+          indexPadding( 0 )
       {
         // just an initialization list.
       }
@@ -78,6 +75,14 @@ namespace LHPC
 
 
       template< class ValueClass >
+      inline void
+      IndexedBlockTemplate< ValueClass >::setIndexDigits(
+                                                        int const indexDigits )
+      {
+        this->indexDigits = indexDigits;
+      }
+
+      template< class ValueClass >
       inline std::string const&
       IndexedBlockTemplate< ValueClass >::indexToPrintingString(
                                                              int indexToPrint )
@@ -85,7 +90,7 @@ namespace LHPC
       // indexPrintingString & returns it.
       {
         indexHoldingString.assign(
-                BlockInterpretter::slhaIntHelper.intToString( intToConvert ) );
+                BlockInterpreter::slhaIntHelper.intToString( indexToPrint ) );
         indexPadding = ( indexDigits - indexHoldingString.size() + 1 );
         if( 0 < indexPadding )
         {

@@ -1,7 +1,7 @@
 /*
- * BaseBlockAsStrings.cpp
+ * LinesAsStrings.cpp
  *
- *  Created on: Mar 3, 2012
+ *  Created on: Mar 12, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,29 +11,27 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#include "BaseBlockAsStrings.hpp"
+#include "LinesAsStrings.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
-    namespace BlockClass
+    namespace InterpreterClass
     {
-      BaseBlockAsStrings::BaseBlockAsStrings() :
-          BasicObserved(),
-          blockAsStringWithHeader( "" ),
-          blocksAsStringArrays()
+      LinesAsStrings::LinesAsStrings() :
+          StandardBlockTemplate< std::string >()
       {
-        // just an initialization list.
+        this->defaultUnsetValue.assign( "" );
       }
 
-      BaseBlockAsStrings::~BaseBlockAsStrings()
+      LinesAsStrings::~LinesAsStrings()
       {
         // does nothing.
       }
 
-    }
+    }  // end of InterpreterClass namespace
 
-  }
+  }  // end of SLHA namespace
 
-}
+}  // end of LHPC namespace

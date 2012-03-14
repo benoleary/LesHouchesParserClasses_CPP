@@ -60,7 +60,7 @@ namespace LHPC
                   int const thirdIndex ) const;
         // this returns true if there is an entry at the sought indices.
         virtual void
-        updateSelf();
+        respondToObservedSignal();
 
 
       protected:
@@ -214,7 +214,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      DenseTriplyIndexed< ValueClass >::updateSelf()
+      DenseTriplyIndexed< ValueClass >::respondToObservedSignal()
       {
         valueMatrixArray.clearEntries();
         for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );

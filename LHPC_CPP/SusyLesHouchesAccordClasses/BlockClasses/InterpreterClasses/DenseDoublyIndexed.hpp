@@ -57,7 +57,7 @@ namespace LHPC
                   int const secondIndex ) const;
         // this returns true if there is an entry at the sought indices.
         virtual void
-        updateSelf();
+        respondToObservedSignal();
 
 
       protected:
@@ -185,7 +185,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      DenseDoublyIndexed< ValueClass >::updateSelf()
+      DenseDoublyIndexed< ValueClass >::respondToObservedSignal()
       {
         valueMatrix.clearEntries();
         for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );

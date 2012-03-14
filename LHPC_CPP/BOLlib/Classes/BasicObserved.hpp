@@ -20,7 +20,7 @@
 namespace BOL
 {
   // this class holds a list of BasicObserver pointers & calls
-  // updateSelf() on them all with updateObservers().
+  // respondToObservedSignal() on them all with updateObservers().
   class BasicObserved
   {
   public:
@@ -28,18 +28,29 @@ namespace BOL
     virtual
     ~BasicObserved();
 
-    virtual void
+    void
     updateObservers();
-    virtual void
+    /* this goes through observerList & either removes the observer if it has
+     * flagged its bool as false, or calls its respondToObservedSignal()
+     * otherwise.
+     */
+    void
     registerObserver( BasicObserver* const joiningObserver );
-    virtual void
+    void
     removeObserver( BasicObserver* const leavingObserver );
-    virtual void
+    /* this goes through observerList & removes any observers which have changed
+     * their flags to false, & also removes leavingObserver if found (1st asking
+     * it to discard its bool pointer).
+     */
+    void
     removeAllObservers();
+    // this clears observerList after asking all its observers to discard their
+    // bool pointers for this BasicObserved instance.
 
 
   protected:
-    std::list< BasicObserver* > observerList;
+    std::list< std::pair< BasicObserver*, bool > > observerList;
+    std::list< std::pair< BasicObserver*, bool > >::iterator observerIterator;
   };
 
 
@@ -48,31 +59,81 @@ namespace BOL
 
   inline void
   BasicObserved::updateObservers()
+  /* this goes through observerList & either removes the observer if it has
+   * flagged its bool as false, or calls its respondToObservedSignal()
+   * otherwise.
+   */
   {
-    for( std::list< BasicObserver* >::iterator
-         observerIterator( observerList.begin() );
-         observerList.end() != observerIterator;
-         ++observerIterator )
+    observerIterator = observerList.begin();
+    while( observerList.end() != observerIterator )
     {
-      (*observerIterator)->updateSelf();
+      if( observerIterator->second )
+      {
+        observerIterator->first->respondToObservedSignal();
+        ++observerIterator;
+      }
+      else
+      {
+        observerIterator = observerList.erase( observerIterator );
+      }
     }
   }
 
   inline void
   BasicObserved::registerObserver( BasicObserver* const joiningObserver )
   {
-    observerList.push_back( joiningObserver );
+    observerList.push_back( std::pair< BasicObserver*, bool >( joiningObserver,
+                                                               true ) );
+    joiningObserver->acceptFlagFromObserved( &(observerList.back().second) );
+    /* new observers are given a pointer to their associated bools, which
+     * indicate that their observers should be fine for
+     * respondToObservedSignal() calls if the bool is true, but if the bool is
+     * false, this BasicObserved instance knows to remove the observer with
+     * its next pass through the list.
+     */
   }
 
   inline void
   BasicObserved::removeObserver( BasicObserver* const leavingObserver )
+  /* this goes through observerList & removes any observers which have changed
+   * their flags to false, & also removes leavingObserver if found (1st asking
+   * it to discard its bool pointer).
+   */
   {
-    observerList.remove( leavingObserver );
+    observerIterator = observerList.begin();
+    while( observerList.end() != observerIterator )
+    {
+      if( !(observerIterator->second) )
+      {
+        observerIterator = observerList.erase( observerIterator );
+      }
+      else if( leavingObserver == observerIterator->first )
+      {
+        leavingObserver->discardFlagFromObserved(
+                                                 &(observerIterator->second) );
+        observerIterator = observerList.erase( observerIterator );
+      }
+      else
+      {
+        ++observerIterator;
+      }
+    }
   }
 
   inline void
   BasicObserved::removeAllObservers()
+  // this clears observerList after asking all its observers to discard their
+  // bool pointers for this BasicObserved instance.
   {
+    observerIterator = observerList.begin();
+    while( observerList.end() != observerIterator )
+    {
+      if( observerIterator->second )
+      {
+        observerIterator->first->discardFlagFromObserved(
+                                                 &(observerIterator->second) );
+      }
+    }
     observerList.clear();
   }
 

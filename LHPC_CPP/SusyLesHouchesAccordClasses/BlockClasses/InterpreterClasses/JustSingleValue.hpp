@@ -45,7 +45,7 @@ namespace LHPC
         hasEntry() const;
         // this returns true if there is an entry.
         virtual void
-        updateSelf();
+        respondToObservedSignal();
 
 
       protected:
@@ -112,7 +112,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      JustSingleValue< ValueClass >::updateSelf()
+      JustSingleValue< ValueClass >::respondToObservedSignal()
       {
         entryRecorded = false;
         // first it is assumed that this update is on an empty block.

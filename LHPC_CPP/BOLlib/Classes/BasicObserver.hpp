@@ -14,10 +14,12 @@
 #ifndef BASICOBSERVER_HPP_
 #define BASICOBSERVER_HPP_
 
+#include <list>
+
 namespace BOL
 {
   // this is an abstract base class that allows BasicObserved objects to
-  // call updateSelf() on its observers.
+  // call respondToObservedSignal() on its observers.
   class BasicObserver
   {
   public:
@@ -26,8 +28,46 @@ namespace BOL
     ~BasicObserver();
 
     virtual void
-    updateSelf() = 0;
+    respondToObservedSignal() = 0;
+    void
+    acceptFlagFromObserved( bool* const flagFromObserved );
+    void
+    discardFlagFromObserved( bool* const flagFromObserved );
+    void
+    clearObservingFlags();
+
+  protected:
+    std::list< bool* > stillObservingFlags;
   };
+
+
+
+
+
+  inline void
+  BasicObserver::acceptFlagFromObserved( bool* const flagFromObserved )
+  {
+    stillObservingFlags.push_back( flagFromObserved );
+  }
+
+  inline void
+  BasicObserver::discardFlagFromObserved( bool* const flagFromObserved )
+  {
+    stillObservingFlags.remove( flagFromObserved );
+  }
+
+  inline void
+  BasicObserver::clearObservingFlags()
+  {
+    for( std::list< bool* >::iterator
+         flagIterator( stillObservingFlags.begin() );
+         stillObservingFlags.end() != flagIterator;
+         ++flagIterator )
+    {
+      *(*flagIterator) = false;
+    }
+    stillObservingFlags.clear();
+  }
 
 }
 

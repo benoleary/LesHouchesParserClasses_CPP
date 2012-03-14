@@ -23,7 +23,7 @@ namespace BOL
 
   BasicObserved::~BasicObserved()
   {
-    // does nothing.
+    removeAllObservers();
   }
 
 }

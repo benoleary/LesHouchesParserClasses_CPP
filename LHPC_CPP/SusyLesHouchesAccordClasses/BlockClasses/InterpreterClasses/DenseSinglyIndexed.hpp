@@ -56,7 +56,7 @@ namespace LHPC
         hasEntry( int const soughtIndex ) const;
         // this returns true if there is an entry at soughtIndex.
         virtual void
-        updateSelf();
+        respondToObservedSignal();
 
 
       protected:
@@ -160,7 +160,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      DenseSinglyIndexed< ValueClass >::updateSelf()
+      DenseSinglyIndexed< ValueClass >::respondToObservedSignal()
       {
         valueVector.clear();
         for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );

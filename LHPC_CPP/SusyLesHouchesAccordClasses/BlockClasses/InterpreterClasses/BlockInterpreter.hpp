@@ -72,7 +72,7 @@ namespace LHPC
       }
       this->stringsToObserve = stringsToObserve;
       stringsToObserve->registerObserver( this );
-      this->updateSelf();
+      this->respondToObservedSignal();
     }
 
     inline std::string const&

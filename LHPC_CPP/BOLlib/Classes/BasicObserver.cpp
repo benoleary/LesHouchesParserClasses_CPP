@@ -22,7 +22,9 @@ namespace BOL
 
   BasicObserver::~BasicObserver()
   {
-    // does nothing.
+    clearObservingFlags();
+    // any observed targets still around need to know to stop signaling this
+    // observer.
   }
 
 }

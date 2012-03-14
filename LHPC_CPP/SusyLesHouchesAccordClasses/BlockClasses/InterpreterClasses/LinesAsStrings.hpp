@@ -42,7 +42,7 @@ namespace LHPC
         interpretAsString();
         // see base version's description.
         virtual void
-        updateSelf();
+        respondToObservedSignal();
       };
 
 
@@ -78,7 +78,7 @@ namespace LHPC
       }
 
       inline void
-      LinesAsStrings::updateSelf()
+      LinesAsStrings::respondToObservedSignal()
       {
         // does nothing.
       }

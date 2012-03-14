@@ -65,12 +65,26 @@ int main( int argumentCount,
     hmixBlock->registerWith( *testParserPointer );
     testParserPointer->registerSpectrum( *testSpectrumPointer );
 
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "about to delete testParserPointer!";
+    std::cout << std::endl;/**/
+
+    delete testParserPointer;
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "deleted testParserPointer!";
+    std::cout << std::endl;/**/
+
     // debugging:
     /**/std::cout << std::endl << "debugging:"
     << std::endl
     << "about to delete testSpectrumPointer!";
     std::cout << std::endl;/**/
-
 
     delete testSpectrumPointer;
 
@@ -85,22 +99,6 @@ int main( int argumentCount,
     << std::endl
     << "about to delete hmixBlock!";
     std::cout << std::endl;/**/
-
-
-    delete hmixBlock;
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "deleted hmixBlock!";
-    std::cout << std::endl;/**/
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "about to delete hmixBlock!";
-    std::cout << std::endl;/**/
-
 
     delete hmixBlock;
 

@@ -133,6 +133,7 @@ namespace BOL
         observerIterator->first->discardFlagFromObserved(
                                                  &(observerIterator->second) );
       }
+      ++observerIterator;
     }
     observerList.clear();
   }

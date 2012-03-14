@@ -38,12 +38,6 @@ namespace LHPC
 
   SlhaParser::~SlhaParser()
   {
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "seg fault here?";
-    std::cout << std::endl;/**/
-
     if( ownsMassBlock )
     {
       delete massBlockPointer;
@@ -58,12 +52,6 @@ namespace LHPC
       delete blockMapIterator->second;
       ++blockMapIterator;
     }
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "seg fault not here?";
-    std::cout << std::endl;/**/
   }
 
 

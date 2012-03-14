@@ -36,6 +36,7 @@ namespace BOL
     void
     clearObservingFlags();
 
+
   protected:
     std::list< bool* > stillObservingFlags;
   };

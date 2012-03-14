@@ -53,62 +53,6 @@ int main( int argumentCount,
     LHPC::SLHA::DenseDoublyIndexedBlock< double > nmixBlock( "NMIX",
                                                              0.0,
                                                              isVerbose );
-    LHPC::SLHA::DenseDoublyIndexedBlock< double >*
-    hmixBlock( new LHPC::SLHA::DenseDoublyIndexedBlock< double >( "HMIX",
-                                                                  0.0,
-                                                                 isVerbose ) );
-
-
-    LHPC::MassSpectrumClass::MSSM*
-    testSpectrumPointer( new LHPC::MassSpectrumClass::MSSM( isVerbose ) );
-    LHPC::SlhaParser* testParserPointer( new LHPC::SlhaParser( isVerbose ) );
-    hmixBlock->registerWith( *testParserPointer );
-    testParserPointer->registerSpectrum( *testSpectrumPointer );
-
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "about to delete testParserPointer!";
-    std::cout << std::endl;/**/
-
-    delete testParserPointer;
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "deleted testParserPointer!";
-    std::cout << std::endl;/**/
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "about to delete testSpectrumPointer!";
-    std::cout << std::endl;/**/
-
-    delete testSpectrumPointer;
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "deleted testSpectrumPointer!";
-    std::cout << std::endl;/**/
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "about to delete hmixBlock!";
-    std::cout << std::endl;/**/
-
-    delete hmixBlock;
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "deleted hmixBlock!";
-    std::cout << std::endl;/**/
-
-
 
     // a parser is also needed, to do the actual reading of the file & passing
     // of strings to the blocks:

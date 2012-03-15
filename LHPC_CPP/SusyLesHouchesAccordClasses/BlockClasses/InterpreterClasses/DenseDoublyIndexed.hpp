@@ -14,7 +14,7 @@
 #ifndef DENSEDOUBLYINDEXED_HPP_
 #define DENSEDOUBLYINDEXED_HPP_
 
-#include "IndexedBlockTemplate.hpp"
+#include "IndexedInterpreter.hpp"
 
 namespace LHPC
 {
@@ -27,7 +27,7 @@ namespace LHPC
        * value.
        */
       template< class ValueClass >
-      class DenseDoublyIndexed : public IndexedBlockTemplate< ValueClass >
+      class DenseDoublyIndexed : public IndexedInterpreter< ValueClass >
       {
       public:
         DenseDoublyIndexed();
@@ -49,15 +49,16 @@ namespace LHPC
          * than copying in a new element at the sought indices if there isn't
          * an entry there already.
          */
-        virtual std::string const&
-        interpretAsString();
-        // see base version's description.
         bool
         hasEntry( int const firstIndex,
                   int const secondIndex ) const;
         // this returns true if there is an entry at the sought indices.
+        virtual std::string const&
+        getAsString();
+        // see base version's description.
         virtual void
-        respondToObservedSignal();
+        clearEntries();
+        // derived classes should clear their interpreted values.
 
 
       protected:
@@ -72,6 +73,8 @@ namespace LHPC
                          int const secondIndex );
         // this ensures that the entry at the sought indices exists, filling
         // out with copies of defaultUnsetValue, & returns it.
+        virtual void
+        interpretCurrentStringBlock();
       };
 
 
@@ -81,7 +84,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseDoublyIndexed< ValueClass >::DenseDoublyIndexed() :
-          IndexedBlockTemplate< ValueClass >(),
+          IndexedInterpreter< ValueClass >(),
           valueMatrix(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),
@@ -133,9 +136,31 @@ namespace LHPC
         }
       }
 
+
+      template< class ValueClass >
+      inline bool
+      DenseDoublyIndexed< ValueClass >::hasEntry( int const firstIndex,
+                                                  int const secondIndex ) const
+      {
+        if( ( 0 < firstIndex )
+            &&
+            ( 0 < secondIndex )
+            &&
+            ( firstIndex <= valueMatrix.getSize() )
+            &&
+            ( (size_t)secondIndex < valueMatrix[ firstIndex - 1 ].size() ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
       template< class ValueClass >
       inline std::string const&
-      DenseDoublyIndexed< ValueClass >::interpretAsString()
+      DenseDoublyIndexed< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
@@ -163,37 +188,55 @@ namespace LHPC
       }
 
       template< class ValueClass >
-      inline bool
-      DenseDoublyIndexed< ValueClass >::hasEntry( int const firstIndex,
-                                                  int const secondIndex ) const
+      inline void
+      DenseDoublyIndexed< ValueClass >::clearEntries()
+      // this ensures that the entry at soughtIndex exists, filling out with
+      // copies of defaultUnsetValue, & returns it.
       {
-        if( ( 0 < firstIndex )
-            &&
-            ( 0 < secondIndex )
-            &&
-            ( firstIndex <= valueMatrix.getSize() )
-            &&
-            ( (size_t)secondIndex < valueMatrix[ firstIndex - 1 ].size() ) )
+        valueMatrix.clearEntries();
+      }
+
+      template< class ValueClass >
+      inline ValueClass&
+      DenseDoublyIndexed< ValueClass >::findOrMakeEntry( int firstIndex,
+                                                        int const secondIndex )
+      // this ensures that the entry at the sought indices exists, filling
+      // out with copies of defaultUnsetValue, & returns it.
+      {
+        if( firstIndex > largestFirstIndex )
         {
-          return true;
+          largestFirstIndex = firstIndex;
         }
-        else
+        if( (size_t)secondIndex > largestSecondIndex )
         {
-          return false;
+          largestSecondIndex = secondIndex;
         }
+        while( valueMatrix.getSize() < firstIndex )
+        {
+          valueMatrix.newEnd().clear();
+          // empty std::vectors are added as necessary.
+        }
+        if( valueMatrix[ (--firstIndex) ].size() < (size_t)secondIndex )
+          // the conditional does the job of converting from sane starts-at-one
+          // format to silly starts-at-zero format.
+        {
+          valueMatrix[ firstIndex ].resize( secondIndex,
+                                            this->defaultUnsetValue );
+        }
+        return valueMatrix[ firstIndex ][ secondIndex - 1 ];
       }
 
       template< class ValueClass >
       inline void
-      DenseDoublyIndexed< ValueClass >::respondToObservedSignal()
+      DenseDoublyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
         valueMatrix.clearEntries();
-        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
+        for( int whichLine( this->currentStringBlock->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {
           this->currentWord.assign( BOL::StringParser::firstWordOf(
-                                (*(this->stringsToObserve))[ whichLine ].first,
+                              (*(this->currentStringBlock))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
           if( !(this->currentWord.empty()) )
@@ -225,41 +268,11 @@ namespace LHPC
               << std::endl
               << "LHPC::SLHA::error! expected to find 2 positive indices then"
               << " a value, instead found \""
-              << (*(this->stringsToObserve))[ whichLine ].first << "\"";
+              << (*(this->currentStringBlock))[ whichLine ].first << "\"";
               std::cout << std::endl;
             }
           }
         }
-      }
-
-      template< class ValueClass >
-      inline ValueClass&
-      DenseDoublyIndexed< ValueClass >::findOrMakeEntry( int firstIndex,
-                                                        int const secondIndex )
-      // this ensures that the entry at the sought indices exists, filling
-      // out with copies of defaultUnsetValue, & returns it.
-      {
-        if( firstIndex > largestFirstIndex )
-        {
-          largestFirstIndex = firstIndex;
-        }
-        if( (size_t)secondIndex > largestSecondIndex )
-        {
-          largestSecondIndex = secondIndex;
-        }
-        while( valueMatrix.getSize() < firstIndex )
-        {
-          valueMatrix.newEnd().clear();
-          // empty std::vectors are added as necessary.
-        }
-        if( valueMatrix[ (--firstIndex) ].size() < (size_t)secondIndex )
-          // the conditional does the job of converting from sane starts-at-one
-          // format to silly starts-at-zero format.
-        {
-          valueMatrix[ firstIndex ].resize( secondIndex,
-                                            this->defaultUnsetValue );
-        }
-        return valueMatrix[ firstIndex ][ secondIndex - 1 ];
       }
 
     }

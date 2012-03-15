@@ -11,6 +11,8 @@
  *      on how to use these classes, and further details on the license.
  */
 
+#include <list>
+#include "../../BOLlib/Classes/UsefulStuff.hpp"
 #include "BaseStringBlock.hpp"
 
 namespace LHPC
@@ -19,6 +21,10 @@ namespace LHPC
   {
     namespace BlockClass
     {
+      std::string const BaseStringBlock::blockIdentifierString( "BLOCK" );
+      std::string const BaseStringBlock::decayIdentifierString( "DECAY" );
+
+
       BaseStringBlock::BaseStringBlock() :
           blockAsStringWithHeader( "" ),
           stringPairArray()
@@ -74,13 +80,13 @@ namespace LHPC
        * which is still higher than soughtScale.
        */
       {
-        if( scaleOrderedIndices.isEmpty() )
+        if( scaleOrderedIndices.empty() )
         {
           return false;
         }
         else
         {
-          if( 1 == scaleOrderedIndices.getSize() )
+          if( 1 == scaleOrderedIndices.size() )
           {
             indexForLowerScale = 1;
             indexForUpperScale = 1;
@@ -89,7 +95,7 @@ namespace LHPC
           else
             // otherwise, there are 2 or more copies.
           {
-            std::list< std::pair< int, double > >::iterator
+            std::list< std::pair< int, double > >::const_iterator
             scaleIterator( scaleOrderedIndices.begin() );
             indexForLowerScale = scaleIterator->first;
             // indexForLowerScale starts at the lowest scale.

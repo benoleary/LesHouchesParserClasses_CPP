@@ -38,6 +38,12 @@ namespace BOL
      * otherwise.
      */
     virtual void
+    updateObservers();
+    /* this goes through observerList & either removes the observer if it has
+     * flagged its bool as false, or calls its respondToObservedSignal()
+     * otherwise.
+     */
+    virtual void
     registerObserver( PushedToObserver< PushedClass >* const joiningObserver );
     virtual void
     removeObserver( PushedToObserver< PushedClass >* const leavingObserver );
@@ -54,8 +60,10 @@ namespace BOL
   protected:
     typedef typename
     std::pair< PushedToObserver< PushedClass >*, bool > observerWithBool;
+    typedef typename
+    std::list< observerWithBool >::iterator observerWithBoolListIterator;
     std::list< observerWithBool > observerList;
-    std::list< observerWithBool >::iterator observerIterator;
+    observerWithBoolListIterator observerIterator;
   };
 
 
@@ -93,6 +101,29 @@ namespace BOL
       if( observerIterator->second )
       {
         observerIterator->first->respondToPush( pushedValue );
+        ++observerIterator;
+      }
+      else
+      {
+        observerIterator = observerList.erase( observerIterator );
+      }
+    }
+  }
+
+  template< class PushedClass >
+  inline void
+  PushingObserved< PushedClass >::updateObservers()
+  /* this goes through observerList & either removes the observer if it has
+   * flagged its bool as false, or calls its respondToObservedSignal()
+   * otherwise.
+   */
+  {
+    observerIterator = observerList.begin();
+    while( observerList.end() != observerIterator )
+    {
+      if( observerIterator->second )
+      {
+        observerIterator->first->respondToObservedSignal();
         ++observerIterator;
       }
       else

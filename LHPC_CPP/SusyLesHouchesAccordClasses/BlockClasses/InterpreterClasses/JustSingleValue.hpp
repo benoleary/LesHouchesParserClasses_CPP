@@ -14,7 +14,7 @@
 #ifndef JUSTSINGLEVALUE_HPP_
 #define JUSTSINGLEVALUE_HPP_
 
-#include "StandardBlockTemplate.hpp"
+#include "InterpreterTemplate.hpp"
 
 namespace LHPC
 {
@@ -38,19 +38,23 @@ namespace LHPC
         ValueClass const&
         operator()() const;
         // const version of above.
-        virtual std::string const&
-        interpretAsString();
-        // see base version's description.
         bool
         hasEntry() const;
         // this returns true if there is an entry.
+        virtual std::string const&
+        getAsString();
+        // see base version's description.
         virtual void
-        respondToObservedSignal();
+        clearEntries();
+        // derived classes should clear their interpreted values.
 
 
       protected:
         ValueClass storedValue;
         bool entryRecorded;
+
+        virtual void
+        interpretCurrentStringBlock();
       };
 
 
@@ -90,8 +94,16 @@ namespace LHPC
       }
 
       template< class ValueClass >
+      inline bool
+      JustSingleValue< ValueClass >::hasEntry() const
+      // this returns true if there is an entry.
+      {
+        return entryRecorded;
+      }
+
+      template< class ValueClass >
       inline std::string const&
-      JustSingleValue< ValueClass >::interpretAsString()
+      JustSingleValue< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.assign( "      " );
@@ -103,29 +115,31 @@ namespace LHPC
       }
 
       template< class ValueClass >
-      inline bool
-      JustSingleValue< ValueClass >::hasEntry() const
-      // this returns true if there is an entry.
+      inline void
+      JustSingleValue< ValueClass >::clearEntries()
+      // this ensures that the entry at soughtIndex exists, filling out with
+      // copies of defaultUnsetValue, & returns it.
       {
-        return entryRecorded;
+        entryRecorded = false;
+        storedValue = this->defaultUnsetValue;
       }
 
       template< class ValueClass >
       inline void
-      JustSingleValue< ValueClass >::respondToObservedSignal()
+      JustSingleValue< ValueClass >::interpretCurrentStringBlock()
       {
         entryRecorded = false;
         // first it is assumed that this update is on an empty block.
         for( int whichLine( 1 );
              ( !entryRecorded
                &&
-               ( this->stringsToObserve->getNumberOfBodyLines()
+               ( this->currentStringBlock->getNumberOfBodyLines()
                  > whichLine ) );
              ++whichLine )
           // each line after the header (if any) is looked at.
         {
           this->currentWord.assign( BOL::StringParser::trimFromFrontAndBack(
-                                (*(this->stringsToObserve))[ whichLine ].first,
+                              (*(this->currentStringBlock))[ whichLine ].first,
                                                                  " \t\r\n" ) );
           if( !(this->currentWord.empty()) )
             // if there is a non-empty line...

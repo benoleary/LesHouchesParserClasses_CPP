@@ -17,21 +17,27 @@ namespace LHPC
 {
   SlhaParser::SlhaParser( bool const shouldRecordBlocksNotRegistered,
                           bool const isVerbose ) :
-      SLHA::BasicParser( shouldRecordBlocksNotRegistered,
-                         isVerbose ),
-      fmassBlockPointer( NULL ),
+      isVerbose( isVerbose ),
+      shouldRecordBlocksNotRegistered( shouldRecordBlocksNotRegistered ),
+      fileParser( "#",
+                  this->isVerbose ),
+      blockMap(),
+      blockMapIterator(),
+      mapInserter( "",
+                   NULL ),
+      currentBlockPointer( NULL ),
+      dataString( "" ),
+      commentString( "" ),
+      firstWordOfLine( "" ),
+      wordsOfLine( 2 ),
+      observingSpectrumUpdater(),
       ownsFmassBlock( false ),
+      fmassBlockPointer( NULL ),
       fmassMap(),
-      fmassMapIterator(),
-      massBlockPointer( NULL ),
       ownsMassBlock( false ),
+      massBlockPointer( NULL ),
       massMap(),
-      massMapIterator(),
-      currentMassEigenstates(),
-      massEigenstateFiller( NULL ),
-      decayProductCodes(),
-      decayRecorder(),
-      recordedDecayWidth( BOL::UsefulStuff::notANumber )
+      successfullyRead( false )
   {
     // just an initialization list.
   }
@@ -55,14 +61,53 @@ namespace LHPC
   }
 
 
+
+  void
+  SlhaParser::registerBlock( SLHA::BaseSlhaBlock& blockToUpdate )
+  // this registers blockToUpdate so that its data get updated every time a
+  // new block of the appropriate name is read.
+  {
+    blockMapIterator = blockMap.find( blockToUpdate.getName() );
+    if( blockMap.end() == blockMapIterator )
+    {
+      mapInserter.first.assign( blockToUpdate.getName() );
+      currentBlockPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+      mapInserter.second = currentBlockPointer;
+      blockMap.insert( mapInserter );
+    }
+    else
+    {
+      currentBlockPointer = blockMapIterator->second;
+    }
+    if( blockToUpdate.isFmassBlock() )
+    {
+      if( ownsFmassBlock )
+      {
+        delete fmassBlockPointer;
+        ownsFmassBlock = false;
+      }
+      fmassBlockPointer = &blockToUpdate;
+    }
+    else if( blockToUpdate.isMassBlock() )
+    {
+      if( ownsMassBlock )
+      {
+        delete massBlockPointer;
+        ownsMassBlock = false;
+      }
+      massBlockPointer = &blockToUpdate;
+    }
+    currentBlockPointer->registerObserver( &blockToUpdate );
+  }
+
   bool
   SlhaParser::readFile( std::string const& slhaFileName )
   /* this opens the file with name given by slhaFileName, parses its data
-   * into strings, & passes each registered SlhaBlock & each BaseSlhaDecay
-   * its appropriate string to interpret.
+   * into strings, stores them in its BaseStringBlocks within its
+   * SameNameBlockSets, & updates all the observing SlhaBlocks & MassSpectrums.
    */
   {
-    bool successfullyRead( false );
+    currentBlockPointer = NULL;
     clearBlocks();
     // new data should overwrite the old data, not append to it.
     checkForMassBlocksForSpectrum();
@@ -73,13 +118,13 @@ namespace LHPC
       firstWordOfLine.assign( BOL::StringParser::firstWordOf( dataString ) );
       // some perverts use tabs in their SLHA files.
       BOL::StringParser::transformToLowercase( firstWordOfLine );
-      if( BOL::StringParser::stringsMatchIgnoringCase( blockIdentifierString,
-                                                       firstWordOfLine ) )
+      if( BOL::StringParser::stringsMatchIgnoringCase( firstWordOfLine,
+                   SLHA::BlockClass::BaseStringBlock::blockIdentifierString ) )
       {
         prepareToReadNewBlock();
       }
       else if( BOL::StringParser::stringsMatchIgnoringCase( firstWordOfLine,
-                                                      decayIdentifierString ) )
+                   SLHA::BlockClass::BaseStringBlock::decayIdentifierString ) )
       {
         prepareToReadNewDecay();
       }
@@ -89,7 +134,7 @@ namespace LHPC
         currentBlockPointer->recordBodyLine( dataString,
                                              commentString );
       }
-      else if( !(currentMassEigenstates.empty()) )
+      else if( observingSpectrumUpdater.isHoldingDecay() )
         // otherwise, if a decay is being recorded...
       {
         recordDecayLine();
@@ -97,14 +142,10 @@ namespace LHPC
       commentString.clear();
     }
     // the last block is closed after the last line has been read in:
-    if( NULL != currentBlockPointer )
-    {
-      currentBlockPointer->finishRecordingLines();
-    }
+    finishUpEitherBlockOrDecay();
     // after reading in the file, any recorded masses are passed to
     // spectrumToUpdate if it is not NULL:
     ensureSpectraRecordMasses();
-    ensureSpectraRecordChargeConjugateDecays();
     return successfullyRead;
   }
 
@@ -113,7 +154,7 @@ namespace LHPC
   // this ensures that if there is a spectrum to update, there are both
   // blocks for MASS & FMASS.
   {
-    if( !(spectraToUpdate.empty()) )
+    if( !(observerList.empty()) )
     {
       if( NULL == fmassBlockPointer )
         // if there is at least 1 spectrum to update, but no fmass block...
@@ -124,7 +165,6 @@ namespace LHPC
                                                               ExtendedMass(),
                                                               isVerbose,
                                                               9 );
-        givePointerToRegisteringBlock( *fmassBlockPointer );
       }
       if( NULL == massBlockPointer )
         // if there is at least 1 spectrum to update, but no mass block...
@@ -135,10 +175,7 @@ namespace LHPC
                                                   BOL::UsefulStuff::notANumber,
                                                         isVerbose,
                                                         9 );
-        givePointerToRegisteringBlock( *massBlockPointer );
       }
-      // mass & fmass blocks for the spectrum/spectra should be made,
-      // remembering to delete them in the destructor.
     }
   }
 
@@ -180,195 +217,6 @@ namespace LHPC
         currentBlockPointer->recordHeader( dataString,
                                            commentString,
                                            currentBlockScale );
-      }
-    }
-  }
-
-  void
-  SlhaParser::prepareToReadNewDecay()
-  // this parses the block header line & sets currentMassEigenstate
-  // appropriately, & records its decay width.
-  {
-    prepareForEitherBlockOrDecay();
-    if( !(spectraToUpdate.empty())
-        &&
-        ( 3 == wordsOfLine.getSize() ) )
-      // if there is a spectrum for recording decays, & if the line has the
-      // right number of entries ("DECAY", particle code, decay width)...
-    {
-      for( int whichSpectrum( spectraToUpdate.size() - 1 );
-           0 <= whichSpectrum;
-           --whichSpectrum )
-      {
-        massEigenstateFiller
-        = spectraToUpdate[ whichSpectrum ]->getMassEigenstate(
-                          BOL::StringParser::stringToInt( wordsOfLine[ 1 ] ) );
-        if( NULL != massEigenstateFiller )
-        {
-          currentMassEigenstates.push_back( massEigenstateFiller );
-          massEigenstateFiller->setDecayWidth(
-                         BOL::StringParser::stringToDouble( wordsOfLine[ 2 ] ) );
-          // note that this spectrum needs to record this decay.
-        }
-      }
-    }
-  }
-
-  void
-  SlhaParser::recordDecayLine()
-  // this interprets the current line as a decay for the spectrum.
-  {
-    wordsOfLine.clearEntries();
-    BOL::StringParser::parseByChar( dataString,
-                                    wordsOfLine,
-                                    BOL::StringParser::whitespaceChars );
-    if( !(wordsOfLine.isEmpty()) )
-      // if there is a decay to record...
-    {
-      // first find the read the codes for the products:
-      decayProductCodes.clear();
-      for( int whichWord( wordsOfLine.getLastIndex() );
-           1 < whichWord;
-           --whichWord )
-      {
-        decayProductCodes.push_back( BOL::StringParser::stringToInt(
-                                                  wordsOfLine[ whichWord ] ) );
-      }
-      // then for each MassEigenstate that needs to record this decay, prepare
-      // decayRecorder & use it to record the decay:
-      for( int whichSpectrum( currentMassEigenstates.size() - 1 );
-           0 <= whichSpectrum;
-           --whichSpectrum )
-      {
-        decayRecorder.clearPointers();
-        for( int whichProduct( decayProductCodes.size() - 1 );
-             0 <= whichProduct;
-             --whichProduct )
-        {
-          decayRecorder.addPointer(
-              currentMassEigenstates[ whichSpectrum ]->findPointerWithCode(
-                                         decayProductCodes[ whichProduct ] ) );
-        }
-        decayRecorder.setPairedValueAndSortPointers(
-                       BOL::StringParser::stringToDouble( wordsOfLine[ 0 ] ) );
-
-        currentMassEigenstates[ whichSpectrum ]->recordDecay( decayRecorder );
-      }
-      // decays are only parsed properly to go into MassEigenstate instances.
-    }
-  }
-
-  void
-  SlhaParser::ensureSpectraRecordMasses()
-  // this reads the masses from the FMASS & MASS blocks into the spectrum, if
-  // necessary.
-  {
-    if( !(spectraToUpdate.empty()) )
-    {
-      massMap = massBlockPointer->getMassMap();
-      if( NULL != massMap )
-      {
-        massMapIterator = massMap->begin();
-        while( massMap->end() != massMapIterator )
-        {
-          for( int whichSpectrum( spectraToUpdate.size() - 1 );
-               0 <= whichSpectrum;
-               --whichSpectrum )
-          {
-            massEigenstateFiller
-            = spectraToUpdate[ whichSpectrum ]->getMassEigenstate(
-                                                      massMapIterator->first );
-            if( NULL != massEigenstateFiller )
-            {
-              massEigenstateFiller->recordMass( massMapIterator->second );
-              // now the charge-conjugate is considered:
-              if( !(massEigenstateFiller->getChargeConjugate(
-                                                     ).hasMassBeenRecorded()) )
-              {
-                massEigenstateFiller->getChargeConjugate().recordMass(
-                                                     massMapIterator->second );
-              }
-            }
-          }
-          ++massMapIterator;
-        }
-      }
-      fmassMap = fmassBlockPointer->getFmassMap();
-      if( NULL != fmassMap )
-      {
-        fmassMapIterator = fmassMap->begin();
-        while( fmassMap->end() != fmassMapIterator )
-        {
-          for( int whichSpectrum( spectraToUpdate.size() - 1 );
-               0 <= whichSpectrum;
-               --whichSpectrum )
-          {
-            massEigenstateFiller
-            = spectraToUpdate[ whichSpectrum ]->getMassEigenstate(
-                                                     fmassMapIterator->first );
-            if( NULL != massEigenstateFiller )
-            {
-              massEigenstateFiller->recordMass(
-                                            fmassMapIterator->second.getMass(),
-                                          fmassMapIterator->second.getScheme(),
-                                         fmassMapIterator->second.getScale() );
-              // now the charge-conjugate is considered:
-              if( massEigenstateFiller->getChargeConjugate(
-                                                ).getAllRecordedMasses().size()
-                  < massEigenstateFiller->getAllRecordedMasses().size() )
-              {
-                massEigenstateFiller->getChargeConjugate().recordMass(
-                                            fmassMapIterator->second.getMass(),
-                                          fmassMapIterator->second.getScheme(),
-                                         fmassMapIterator->second.getScale() );
-              }
-            }
-          }
-          ++fmassMapIterator;
-        }
-      }
-    }
-  }
-
-  void
-  SlhaParser::ensureSpectraRecordChargeConjugateDecays()
-  /* this checks each particle in spectrumToUpdate for whether it is
-   * self-conjugate, & if not, this checks to see if the charge-conjugate's
-   * decays were already recorded, & if not, this gives the charge-conjugate
-   * the charge-conjugate decays of the checked particle.
-   */
-  {
-    for( int whichSpectrum( spectraToUpdate.size() - 1 );
-         0 <= whichSpectrum;
-         --whichSpectrum )
-    {
-      for( int
-           whichParticle(
-                spectraToUpdate[ whichSpectrum ]->getMassEigenstateSet().size()
-                          - 1 );
-           0 <= whichParticle;
-           --whichParticle )
-      {
-        massEigenstateFiller
-        = spectraToUpdate[ whichSpectrum ]->getMassEigenstateSet()[
-                                                               whichParticle ];
-        if( !(massEigenstateFiller->isSelfConjugate())
-            &&
-            !(massEigenstateFiller->getChargeConjugate(
-                                                  ).haveDecaysBeenRecorded()) )
-        {
-          for( int whichDecay( massEigenstateFiller->getDecaySet().size()
-                               - 1 );
-               0 <= whichDecay;
-               --whichDecay )
-          {
-            massEigenstateFiller->getChargeConjugate(
-                                                ).recordChargeConjugateOfDecay(
-                        *(massEigenstateFiller->getDecaySet()[ whichDecay ]) );
-          }
-          massEigenstateFiller->getChargeConjugate().setDecayWidth(
-                                       massEigenstateFiller->getDecayWidth() );
-        }
       }
     }
   }

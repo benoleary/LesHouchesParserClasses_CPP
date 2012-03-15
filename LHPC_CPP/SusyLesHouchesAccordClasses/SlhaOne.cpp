@@ -86,28 +86,28 @@ namespace LHPC
       fileParser( fileParser ),
       isVerbose( isVerbose )
   {
-    MODSEL.registerWith( fileParser );
-    SMINPUTS.registerWith( fileParser );
-    MINPAR.registerWith( fileParser );
-    EXTPAR.registerWith( fileParser );
-    MASS.registerWith( fileParser );
-    NMIX.registerWith( fileParser );
-    UMIX.registerWith( fileParser );
-    VMIX.registerWith( fileParser );
-    STOPMIX.registerWith( fileParser );
-    SBOTMIX.registerWith( fileParser );
-    STAUMIX.registerWith( fileParser );
-    ALPHA.registerWith( fileParser );
-    HMIX.registerWith( fileParser );
-    GAUGE.registerWith( fileParser );
-    MSOFT.registerWith( fileParser );
-    AU.registerWith( fileParser );
-    AD.registerWith( fileParser );
-    AE.registerWith( fileParser );
-    YU.registerWith( fileParser );
-    YD.registerWith( fileParser );
-    YE.registerWith( fileParser );
-    SPINFO.registerWith( fileParser );
+    fileParser.registerBlock( MODSEL );
+    fileParser.registerBlock( SMINPUTS );
+    fileParser.registerBlock( MINPAR );
+    fileParser.registerBlock( EXTPAR );
+    fileParser.registerBlock( MASS );
+    fileParser.registerBlock( NMIX );
+    fileParser.registerBlock( UMIX );
+    fileParser.registerBlock( VMIX );
+    fileParser.registerBlock( STOPMIX );
+    fileParser.registerBlock( SBOTMIX );
+    fileParser.registerBlock( STAUMIX );
+    fileParser.registerBlock( ALPHA );
+    fileParser.registerBlock( HMIX );
+    fileParser.registerBlock( GAUGE );
+    fileParser.registerBlock( MSOFT );
+    fileParser.registerBlock( AU );
+    fileParser.registerBlock( AD );
+    fileParser.registerBlock( AE );
+    fileParser.registerBlock( YU );
+    fileParser.registerBlock( YD );
+    fileParser.registerBlock( YE );
+    fileParser.registerBlock( SPINFO );
   }
 
   SlhaOne::~SlhaOne()

@@ -385,3 +385,15 @@ Release/LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.o
 Release/LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.d
 
 Release/LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.o
+
+Release/LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.d
+
+Release/LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.o
+
+Release/LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseSlhaBlock.d
+
+Release/LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseSlhaBlock.o
+
+Release/LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseStringBlock.d
+
+Release/LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseStringBlock.o

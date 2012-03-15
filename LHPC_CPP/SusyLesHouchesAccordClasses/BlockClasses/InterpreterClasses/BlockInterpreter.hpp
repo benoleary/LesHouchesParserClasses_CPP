@@ -38,7 +38,7 @@ namespace LHPC
       void
       interpretStringBlock(
                        BlockClass::BaseStringBlock const& stringsToInterpret );
-      std::string const&
+      std::string
       getLineWithoutComment( int const whichLine ) const;
       std::string
       getLineWithComment( int const whichLine ) const;
@@ -46,6 +46,8 @@ namespace LHPC
        * putting important information in comments is an entirely unacceptably
        * stupid idea, in my humble opinion.
        */
+      double
+      getScale() const;
       virtual std::string const&
       getAsString() = 0;
       // derived classes should return their block as a single string of
@@ -56,7 +58,7 @@ namespace LHPC
 
 
     protected:
-      BlockClass::BaseStringBlock* currentStringBlock;
+      BlockClass::BaseStringBlock const* currentStringBlock;
       std::string stringInterpretation;
 
       virtual void
@@ -72,14 +74,24 @@ namespace LHPC
                         BlockClass::BaseStringBlock const& stringsToInterpret )
     {
       clearEntries();
-      this->stringsToInterpret = &stringsToInterpret;
+      currentStringBlock = &stringsToInterpret;
       interpretCurrentStringBlock();
     }
 
-    inline std::string const&
+    inline std::string
     BlockInterpreter::getLineWithoutComment( int const whichLine ) const
     {
-      return (*stringsToInterpret)[ whichLine ].first;
+      if( NULL == currentStringBlock )
+      {
+        std::string lineReturnString;
+        lineReturnString.assign( "LHPC::error! this block has not been" );
+        lineReturnString.append( " registered with an SlhaParser properly!" );
+        return lineReturnString;
+      }
+      else
+      {
+        return (*currentStringBlock)[ whichLine ].first;
+      }
     }
 
     inline std::string
@@ -89,9 +101,31 @@ namespace LHPC
      * stupid idea, in my humble opinion.
      */
     {
-      std::string returnString( (*stringsToInterpret)[ whichLine ].first );
-      returnString.append( (*stringsToInterpret)[ whichLine ].second );
-      return returnString;
+      std::string lineReturnString;
+      if( NULL == currentStringBlock )
+      {
+        lineReturnString.assign( "LHPC::error! this block has not been" );
+        lineReturnString.append( " registered with an SlhaParser properly!" );
+      }
+      else
+      {
+        lineReturnString.assign( (*currentStringBlock)[ whichLine ].first );
+        lineReturnString.append( (*currentStringBlock)[ whichLine ].second );
+      }
+      return lineReturnString;
+    }
+
+    inline double
+    BlockInterpreter::getScale() const
+    {
+      if( NULL != currentStringBlock )
+      {
+        return currentStringBlock->getScale();
+      }
+      else
+      {
+        return 0.0;
+      }
     }
 
   }

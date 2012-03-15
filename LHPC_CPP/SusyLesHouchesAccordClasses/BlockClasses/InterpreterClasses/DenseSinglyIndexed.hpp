@@ -14,7 +14,7 @@
 #ifndef DENSESINGLYINDEXED_HPP_
 #define DENSESINGLYINDEXED_HPP_
 
-#include "IndexedBlockTemplate.hpp"
+#include "IndexedInterpreter.hpp"
 
 namespace LHPC
 {
@@ -25,7 +25,7 @@ namespace LHPC
       // this template class interprets SLHA blocks that have a single int
       // index with a single ValueClass value.
       template< class ValueClass >
-      class DenseSinglyIndexed : public IndexedBlockTemplate< ValueClass >
+      class DenseSinglyIndexed : public IndexedInterpreter< ValueClass >
       {
       public:
         DenseSinglyIndexed();
@@ -49,14 +49,15 @@ namespace LHPC
         ValueClass const&
         operator[]( int const soughtIndex ) const { return (*this)(
                                                                soughtIndex ); }
-        virtual std::string const&
-        interpretAsString();
-        // see base version's description.
         bool
         hasEntry( int const soughtIndex ) const;
         // this returns true if there is an entry at soughtIndex.
+        virtual std::string const&
+        getAsString();
+        // see base version's description.
         virtual void
-        respondToObservedSignal();
+        clearEntries();
+        // derived classes should clear their interpreted values.
 
 
       protected:
@@ -67,6 +68,8 @@ namespace LHPC
         findOrMakeEntry( int const soughtIndex );
         // this ensures that the entry at soughtIndex exists, filling out with
         // copies of defaultUnsetValue, & returns it.
+        virtual void
+        interpretCurrentStringBlock();
       };
 
 
@@ -76,7 +79,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseSinglyIndexed< ValueClass >::DenseSinglyIndexed() :
-          IndexedBlockTemplate< ValueClass >(),
+          IndexedInterpreter< ValueClass >(),
           valueVector(),
           recordingIndex( 0 )
       {
@@ -122,8 +125,24 @@ namespace LHPC
       }
 
       template< class ValueClass >
+      inline bool
+      DenseSinglyIndexed< ValueClass >::hasEntry( int const soughtIndex ) const
+      {
+        if( ( 0 < soughtIndex )
+            &&
+            ( (size_t)soughtIndex <= valueVector.size() ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+      template< class ValueClass >
       inline std::string const&
-      DenseSinglyIndexed< ValueClass >::interpretAsString()
+      DenseSinglyIndexed< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
@@ -143,32 +162,39 @@ namespace LHPC
       }
 
       template< class ValueClass >
-      inline bool
-      DenseSinglyIndexed< ValueClass >::hasEntry( int const soughtIndex ) const
+      inline void
+      DenseSinglyIndexed< ValueClass >::clearEntries()
+      // this ensures that the entry at soughtIndex exists, filling out with
+      // copies of defaultUnsetValue, & returns it.
       {
-        if( ( 0 < soughtIndex )
-            &&
-            ( (size_t)soughtIndex <= valueVector.size() ) )
+        valueVector.clear();
+      }
+
+      template< class ValueClass >
+      inline ValueClass&
+      DenseSinglyIndexed< ValueClass >::findOrMakeEntry(
+                                                        int const soughtIndex )
+      // this ensures that the entry at soughtIndex exists, filling out with
+      // copies of defaultUnsetValue, & returns it.
+      {
+        if( valueVector.size() < (size_t)soughtIndex )
         {
-          return true;
+          valueVector.resize( soughtIndex,
+                              this->defaultUnsetValue );
         }
-        else
-        {
-          return false;
-        }
+        return valueVector[ soughtIndex - 1 ];
       }
 
       template< class ValueClass >
       inline void
-      DenseSinglyIndexed< ValueClass >::respondToObservedSignal()
+      DenseSinglyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
-        valueVector.clear();
-        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
+        for( int whichLine( this->currentStringBlock->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {
           this->currentWord.assign( BOL::StringParser::firstWordOf(
-                                (*(this->stringsToObserve))[ whichLine ].first,
+                              (*(this->currentStringBlock))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
           if( !(this->currentWord.empty()) )
@@ -191,26 +217,11 @@ namespace LHPC
               << std::endl
               << "LHPC::SLHA::error! expected to find 1 positive index then a"
               << " value, instead found \""
-              << (*(this->stringsToObserve))[ whichLine ].first << "\"";
+              << (*(this->currentStringBlock))[ whichLine ].first << "\"";
               std::cout << std::endl;
             }
           }
         }
-      }
-
-      template< class ValueClass >
-      inline ValueClass&
-      DenseSinglyIndexed< ValueClass >::findOrMakeEntry(
-                                                        int const soughtIndex )
-      // this ensures that the entry at soughtIndex exists, filling out with
-      // copies of defaultUnsetValue, & returns it.
-      {
-        if( valueVector.size() < (size_t)soughtIndex )
-        {
-          valueVector.resize( soughtIndex,
-                              this->defaultUnsetValue );
-        }
-        return valueVector[ soughtIndex - 1 ];
       }
 
     }

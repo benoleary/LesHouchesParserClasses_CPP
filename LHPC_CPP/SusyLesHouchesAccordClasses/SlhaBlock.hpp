@@ -19,6 +19,7 @@
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "BlockClasses/BaseSlhaBlock.hpp"
 #include "BlockClasses/BaseStringBlock.hpp"
+#include "BlockClasses/InterpreterClasses/BlockInterpreter.hpp"
 
 namespace LHPC
 {
@@ -300,7 +301,8 @@ namespace LHPC
            DataBlocks.getSize() > scaleIndex;
            ++scaleIndex )
       {
-        stringInterpretation.append( BasicParser::blockIdentifierString );
+        stringInterpretation.append(
+                          BlockClass::BaseStringBlock::blockIdentifierString );
         stringInterpretation.append( " " );
         stringInterpretation.append( blockName );
         if( onlyShowScalesGreaterThanZero
@@ -344,7 +346,8 @@ namespace LHPC
         DataBlocks.getBack().setVerbosity( isVerbose );
         prepareNewDataBlock();
         DataBlocks.getBack().interpretStringBlock( pushedValue );
-        if( blockScale < DataBlocks[ lowestScaleIndex ].getScale() )
+        if( pushedValue.getScale()
+            < DataBlocks[ lowestScaleIndex ].getScale() )
           /* since hasHadPushSinceLastReset is true, lowestScaleIndex is a
            * valid index for DataBlocks, so the comparison is valid, & if true,
            *  lowestScaleIndex is set correctly.
@@ -361,7 +364,7 @@ namespace LHPC
       scaleIndexIterator = scaleOrderedIndices.begin();
       while( ( scaleIndexIterator != scaleOrderedIndices.end() )
              &&
-             ( scaleIndexIterator->second < blockScale ) )
+             ( scaleIndexIterator->second < pushedValue.getScale() ) )
       {
         ++scaleIndexIterator;
       }
@@ -369,7 +372,7 @@ namespace LHPC
       // above blockScale, or at the end of the list.
       scaleOrderedIndices.insert( scaleIndexIterator,
                            std::pair< int, double >( DataBlocks.getLastIndex(),
-                                                     blockScale ) );
+                                                    pushedValue.getScale() ) );
     }
 
     template< class ValueClass, class BlockParser >

@@ -64,11 +64,11 @@ int main( int argumentCount,
     LHPC::SLHA::SpectrumPlotter::FmassBlock fmassBlock( "FMASS",
                                                         LHPC::ExtendedMass(),
                                                         isVerbose );
-    spectrumParser.givePointerToRegisteringBlock( fmassBlock );
+    spectrumParser.registerBlock( fmassBlock );
     LHPC::SLHA::SpectrumPlotter::MassBlock massBlock( "MASS",
                                                   BOL::UsefulStuff::notANumber,
                                                       isVerbose );
-    spectrumParser.givePointerToRegisteringBlock( massBlock );
+    spectrumParser.registerBlock( massBlock );
 
     // the spectrum-plotter-specific blocks are also searched for in the
     // spectrum file:
@@ -76,12 +76,12 @@ int main( int argumentCount,
     controlBlock( "LHPCSPECTRUMPLOTCONTROL",
                   "error",
                   isVerbose );
-    spectrumParser.givePointerToRegisteringBlock( controlBlock );
+    spectrumParser.registerBlock( controlBlock );
     LHPC::SLHA::SparseSinglyIndexedBlock< std::string >
     linesBlock( "LHPCSPECTRUMPLOTPARTICLES",
                 "error",
                 isVerbose );
-    spectrumParser.givePointerToRegisteringBlock( linesBlock );
+    spectrumParser.registerBlock( linesBlock );
 
     // the spectrum file is now read:
     spectrumParser.readFile( argumentCharArray[ 1 ] );
@@ -95,8 +95,8 @@ int main( int argumentCount,
       // the control blocks are registered with a different parser, which
       // reads in the extra file & over-writes the control blocks:
       LHPC::SlhaParser controlParser( isVerbose );
-      controlParser.givePointerToRegisteringBlock( controlBlock );
-      controlParser.givePointerToRegisteringBlock( linesBlock );
+      controlParser.registerBlock( controlBlock );
+      controlParser.registerBlock( linesBlock );
       controlParser.readFile( argumentCharArray[ 2 ] );
 
       if( 4 == argumentCount )

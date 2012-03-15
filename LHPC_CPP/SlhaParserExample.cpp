@@ -60,9 +60,9 @@ int main( int argumentCount,
     // true as the argument so that warnings are printed.
 
     // the blocks have to register with the parser:
-    modselBlock.registerWith( testParser );
-    minparBlock.registerWith( testParser );
-    nmixBlock.registerWith( testParser );
+    testParser.registerBlock( modselBlock );
+    testParser.registerBlock( minparBlock );
+    testParser.registerBlock( nmixBlock );
 
     // one can also register a spectrum of particles, which automatically
     // groups masses & decays together for each mass eigenstate:

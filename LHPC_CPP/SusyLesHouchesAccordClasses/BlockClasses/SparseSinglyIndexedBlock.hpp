@@ -66,8 +66,8 @@ namespace LHPC
 
 
     protected:
-      bool isFmassBlock;
-      bool isMassBlock;
+      bool isFmassBlockFlag;
+      bool isMassBlockFlag;
     };
 
 
@@ -87,16 +87,16 @@ namespace LHPC
                                                              defaultUnsetValue,
                                                                    isVerbose,
                                                                  indexDigits ),
-        isFmassBlock( false ),
-        isMassBlock( false )
+        isFmassBlockFlag( false ),
+        isMassBlockFlag( false )
     {
       if( this->nameMatches( "FMASS" ) )
       {
-        this->isFmassBlock = true;
+        isFmassBlockFlag = true;
       }
       else if( this->nameMatches( "MASS" ) )
       {
-        this->isMassBlock = true;
+        isMassBlockFlag = true;
       }
     }
 
@@ -113,7 +113,7 @@ namespace LHPC
     SparseSinglyIndexedBlock< ValueClass >::operator()( int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestIndex ]( soughtIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -122,7 +122,7 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestIndex ]( soughtIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -140,7 +140,7 @@ namespace LHPC
     // this returns false. only a specific derived class should over-ride it
     // to return true if it is actually an interpreter for an FMASS block.
     {
-      return this->isFmassBlock;
+      return isFmassBlockFlag;
     }
 
     template< class ValueClass >
@@ -155,9 +155,9 @@ namespace LHPC
     SparseSinglyIndexedBlock< ExtendedMass >::getFmassMap() const
     // this over-rides the default to return a non-NULL pointer if appropriate.
     {
-      if( this->isFmassBlock )
+      if( isFmassBlockFlag )
       {
-        return &(this->DataBlocks[ this->lowestIndex ].getValueMap());
+        return &(this->DataBlocks[ this->lowestScaleIndex ].getValueMap());
       }
       else
       {
@@ -171,7 +171,7 @@ namespace LHPC
     // this returns false. only a specific derived class should over-ride it
     // to return true if it is actually an interpreter for an FMASS block.
     {
-      return this->isMassBlock;
+      return isMassBlockFlag;
     }
 
     template< class ValueClass >
@@ -188,9 +188,9 @@ namespace LHPC
     SparseSinglyIndexedBlock< double >::getMassMap() const
     // this over-rides the default to return a non-NULL pointer if appropriate.
     {
-      if( this->isMassBlock )
+      if( isMassBlockFlag )
       {
-        return &(this->DataBlocks[ this->lowestIndex ].getValueMap());
+        return &(this->DataBlocks[ this->lowestScaleIndex ].getValueMap());
       }
       else
       {

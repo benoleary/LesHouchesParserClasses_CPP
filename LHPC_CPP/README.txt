@@ -32,6 +32,8 @@
  *      LHPC_CPP/BOLlib/Classes/BasicObserver.cpp
  *      LHPC_CPP/BOLlib/Classes/CommentedTextParser.hpp
  *      LHPC_CPP/BOLlib/Classes/CommentedTextParser.hpp
+ *      LHPC_CPP/BOLlib/Classes/PushingObserved.hpp
+ *      LHPC_CPP/BOLlib/Classes/PushedToObserver.hpp
  *      LHPC_CPP/BOLlib/Classes/StdVectorFiller.hpp
  *      LHPC_CPP/BOLlib/Classes/StringParser.hpp
  *      LHPC_CPP/BOLlib/Classes/StringParser.cpp
@@ -69,6 +71,8 @@
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.cpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/PointersPairedWithValue.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.cpp
  *      7 files and a subdirectory in
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrumClasses/:
  *      - CodesAndDataForMassEigenstates.hpp
@@ -107,11 +111,8 @@
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.cpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/BasicParser.hpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/BasicParser.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.hpp
@@ -120,33 +121,34 @@
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
- *      11 files and a subdirectory in
+ *      14 files and a subdirectory in
  *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
- *      - BaseBlockAsStrings.hpp
- *      - BaseBlockAsStrings.cpp
+ *      - BaseSlhaBlock.hpp
+ *      - BaseSlhaBlock.cpp
+ *      - BaseStringBlock.hpp
+ *      - BaseStringBlock.cpp
  *      - DenseDoublyIndexedBlock.hpp
  *      - DenseSinglyIndexedBlock.hpp
  *      - DenseTriplyIndexedBlock.hpp
+ *      - IndexedBlockTemplate.hpp
  *      - JustSingleValueBlock.hpp
  *      - LinesAsStringsBlock.hpp
  *      - LinesAsStringsBlock.cpp
  *      - SameNameBlockSet.hpp
  *      - SameNameBlockSet.cpp
  *      - SparseSinglyIndexedBlock.hpp
- *      - InterpreterClasses/ with 13 files:
+ *      - InterpreterClasses/ with 11 files:
  *        - BlockInterpreter.hpp
  *        - BlockInterpreter.cpp
- *        - BlockInterpreterFactory.hpp
- *        - BlockInterpreterFactory.cpp
  *        - DenseDoublyIndexed.hpp
  *        - DenseSinglyIndexed.hpp
  *        - DenseTriplyIndexed.hpp
- *        - IndexedBlockTemplate.hpp
+ *        - IndexedInterpreter.hpp
+ *        - InterpreterTemplate.hpp
  *        - JustSingleValue.hpp
  *        - LinesAsStrings.hpp
  *        - LinesAsStrings.cpp
  *        - SparseSinglyIndexed.hpp
- *        - StandardBlockTemplate.hpp
  *      LHPC_CPP/LHEF.hpp
  *      LHPC_CPP/LhefParserExample.cpp
  *      LHPC_CPP/LhpcSpectrumPlotter.cpp

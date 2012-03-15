@@ -28,6 +28,9 @@ namespace LHPC
       class BaseStringBlock
       {
       public:
+        static std::string const blockIdentifierString;
+        static std::string const decayIdentifierString;
+
         static bool
         findScaleIndices( double const soughtScale,
               std::list< std::pair< int, double > > const& scaleOrderedIndices,

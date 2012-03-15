@@ -14,7 +14,7 @@
 #ifndef DENSEDOUBLYINDEXEDBLOCK_HPP_
 #define DENSEDOUBLYINDEXEDBLOCK_HPP_
 
-#include "../SlhaBlock.hpp"
+#include "IndexedBlockTemplate.hpp"
 #include "InterpreterClasses/DenseDoublyIndexed.hpp"
 
 namespace LHPC
@@ -27,7 +27,7 @@ namespace LHPC
      * at 1.
      */
     template< class ValueClass >
-    class DenseDoublyIndexedBlock : public SlhaBlock< ValueClass,
+    class DenseDoublyIndexedBlock : public IndexedBlockTemplate< ValueClass,
                            InterpreterClass::DenseDoublyIndexed< ValueClass > >
     {
     public:
@@ -46,17 +46,11 @@ namespace LHPC
       operator()( int const firstIndex,
                   int const secondIndex ) const;
       // const version of above.
-
-
-    protected:
-      int const indexDigits;
-
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
-      virtual void
-      setExtraValuesForNewInterpreter();
+      bool
+      hasEntry( int const firstIndex,
+                int const secondIndex ) const;
+      // this returns hasEntry( firstIndex, secondIndex ) of the
+      // lowest-scale interpreter.
     };
 
 
@@ -70,12 +64,12 @@ namespace LHPC
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
                                                       int const indexDigits ) :
-        SlhaBlock< ValueClass,
-                   InterpreterClass::DenseDoublyIndexed< ValueClass > >(
+        IndexedBlockTemplate< ValueClass,
+                          InterpreterClass::DenseDoublyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
-                                                                   isVerbose ),
-        indexDigits( indexDigits )
+                                                                     isVerbose,
+                                                                  indexDigits )
     {
       // just an initialization list.
     }
@@ -94,12 +88,8 @@ namespace LHPC
                                                        int const secondIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        this->DataBlocks.setSize( 1 );
-      }
-      return this->DataBlocks[ this->defaultDataBlockIndex() ]( firstIndex,
-                                                                secondIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+                                                         secondIndex );
     }
 
     template< class ValueClass >
@@ -108,32 +98,19 @@ namespace LHPC
                                                   int const secondIndex ) const
     // const version of above.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        return this->defaultUnsetValue;
-      }
-      else
-      {
-        return this->DataBlocks[ this->defaultDataBlockIndex() ]( firstIndex,
-                                                                 secondIndex );
-      }
+      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+                                                         secondIndex );
     }
 
     template< class ValueClass >
-    inline std::string
-    DenseDoublyIndexedBlock< ValueClass >::getThisScaleAsString(
-                                                         int const scaleIndex )
+    inline bool
+    DenseDoublyIndexedBlock< ValueClass >::hasEntry( int const firstIndex,
+                                                  int const secondIndex ) const
     // derived classes over-ride this to interpret their data as a
     // std::string.
     {
-      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
-    }
-
-    template< class ValueClass >
-    inline void
-    DenseDoublyIndexedBlock< ValueClass >::setExtraValuesForNewInterpreter()
-    {
-      this->DataBlocks.getBack().setIndexDigits( indexDigits );
+      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+                                                         secondIndex );
     }
 
   }  // end of SLHA namespace

@@ -14,7 +14,7 @@
 #ifndef DENSETRIPLYINDEXED_HPP_
 #define DENSETRIPLYINDEXED_HPP_
 
-#include "IndexedBlockTemplate.hpp"
+#include "IndexedInterpreter.hpp"
 
 namespace LHPC
 {
@@ -27,7 +27,7 @@ namespace LHPC
        * value.
        */
       template< class ValueClass >
-      class DenseTriplyIndexed : public IndexedBlockTemplate< ValueClass >
+      class DenseTriplyIndexed : public IndexedInterpreter< ValueClass >
       {
       public:
         DenseTriplyIndexed();
@@ -51,16 +51,17 @@ namespace LHPC
          * than copying in a new element at the sought indices if there isn't
          * an entry there already.
          */
-        virtual std::string const&
-        interpretAsString();
-        // see base version's description.
         bool
         hasEntry( int const firstIndex,
                   int const secondIndex,
                   int const thirdIndex ) const;
         // this returns true if there is an entry at the sought indices.
+        virtual std::string const&
+        getAsString();
+        // see base version's description.
         virtual void
-        respondToObservedSignal();
+        clearEntries();
+        // derived classes should clear their interpreted values.
 
 
       protected:
@@ -80,6 +81,8 @@ namespace LHPC
                          int const thirdIndex );
         // this ensures that the entry at the sought indices exists, filling
         // out with copies of defaultUnsetValue, & returns it.
+        virtual void
+        interpretCurrentStringBlock();
       };
 
 
@@ -89,7 +92,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseTriplyIndexed< ValueClass >::DenseTriplyIndexed() :
-          IndexedBlockTemplate< ValueClass >(),
+          IndexedInterpreter< ValueClass >(),
           valueMatrixArray(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),
@@ -149,8 +152,35 @@ namespace LHPC
       }
 
       template< class ValueClass >
+      inline bool
+      DenseTriplyIndexed< ValueClass >::hasEntry( int firstIndex,
+                                                  int secondIndex,
+                                                  int const thirdIndex ) const
+      {
+        if( ( 0 < firstIndex )
+            &&
+            ( 0 < secondIndex )
+            &&
+            ( 0 < thirdIndex )
+            &&
+            ( (--firstIndex) < valueMatrixArray.getSize() )
+            &&
+            ( (--secondIndex) < valueMatrixArray[ firstIndex ].getSize() )
+            &&
+            ( (size_t)thirdIndex
+               <= valueMatrixArray[ firstIndex ][ secondIndex ].size() ) )
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+
+      template< class ValueClass >
       inline std::string const&
-      DenseTriplyIndexed< ValueClass >::interpretAsString()
+      DenseTriplyIndexed< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
@@ -186,43 +216,24 @@ namespace LHPC
       }
 
       template< class ValueClass >
-      inline bool
-      DenseTriplyIndexed< ValueClass >::hasEntry( int firstIndex,
-                                                  int secondIndex,
-                                                  int const thirdIndex ) const
+      inline void
+      DenseTriplyIndexed< ValueClass >::clearEntries()
+      // this ensures that the entry at soughtIndex exists, filling out with
+      // copies of defaultUnsetValue, & returns it.
       {
-        if( ( 0 < firstIndex )
-            &&
-            ( 0 < secondIndex )
-            &&
-            ( 0 < thirdIndex )
-            &&
-            ( (--firstIndex) < valueMatrixArray.getSize() )
-            &&
-            ( (--secondIndex) < valueMatrixArray[ firstIndex ].getSize() )
-            &&
-            ( (size_t)thirdIndex
-               <= valueMatrixArray[ firstIndex ][ secondIndex ].size() ) )
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
+        valueMatrixArray.clearEntries();
       }
 
       template< class ValueClass >
       inline void
-      DenseTriplyIndexed< ValueClass >::respondToObservedSignal()
+      DenseTriplyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
-        valueMatrixArray.clearEntries();
-        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
+        for( int whichLine( this->currentStringBlock->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {
           this->currentWord.assign( BOL::StringParser::firstWordOf(
-                                (*(this->stringsToObserve))[ whichLine ].first,
+                              (*(this->currentStringBlock))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
           if( !(this->currentWord.empty()) )
@@ -264,7 +275,7 @@ namespace LHPC
               << std::endl
               << "LHPC::SLHA::error! expected to find 3 positive indices then"
               << " a value, instead found \""
-              << (*(this->stringsToObserve))[ whichLine ].first << "\"";
+              << (*(this->currentStringBlock))[ whichLine ].first << "\"";
               std::cout << std::endl;
             }
           }

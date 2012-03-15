@@ -185,12 +185,12 @@ namespace LHPC
       inline void
       SparseSinglyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
-        for( int whichLine( this->stringsToInterpret->getNumberOfBodyLines() );
+        for( int whichLine( this->currentStringBlock->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {
           this->currentWord.assign( BOL::StringParser::firstWordOf(
-                              (*(this->stringsToInterpret))[ whichLine ].first,
+                              (*(this->currentStringBlock))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
           if( !(this->currentWord.empty()) )

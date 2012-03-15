@@ -41,6 +41,7 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  MassEigenstateCollectionClasses/ExtendedMass.cpp \
  MassEigenstateCollectionClasses/MassEigenstate.cpp \
  MassEigenstateCollectionClasses/MassSpectrum.cpp \
+ MassEigenstateCollectionClasses/SpectrumUpdater.cpp \
  $(MECDIR)/MassSpectrumClasses/MinimalSupersymmetricStandardModel.cpp \
  $(MECDIR)/MassSpectrumClasses/NextToMinimalSupersymmetricStandardModel.cpp \
  $(MECDIR)/MassSpectrumClasses/StandardModel.cpp \
@@ -58,7 +59,6 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp \
  SlhaSpectrumPlottingClasses/LineData.cpp \
  SlhaSpectrumPlottingClasses/SpectrumPlotter.cpp \
- SusyLesHouchesAccordClasses/BasicParser.cpp \
  SusyLesHouchesAccordClasses/SlhaOne.cpp \
  SusyLesHouchesAccordClasses/SlhaParser.cpp \
  SusyLesHouchesAccordClasses/SlhaTwo.cpp \

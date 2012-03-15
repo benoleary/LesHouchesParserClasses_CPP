@@ -16,12 +16,17 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <map>
 #include "MassEigenstate.hpp"
+#include "SpectrumUpdater.hpp"
+#include "../BOLlib/Classes/PushedToObserver.hpp"
 #include "../BOLlib/Classes/StringParser.hpp"
 
 namespace LHPC
 {
-  class MassSpectrum
+  // this class holds a set of MassEigenstate instances & can update them with
+  // a pair of maps of codes to masses.
+  class MassSpectrum : public BOL::PushedToObserver< SpectrumUpdater >
   {
   public:
     enum defaultFlags
@@ -54,6 +59,11 @@ namespace LHPC
     clearMassesAndDecays();
     bool const&
     getVerbosityReference() const;
+    virtual void
+    respondToObservedSignal();
+    // the default is over-ridden to call clearMassesAndDecays().
+    virtual void
+    respondToPush( SpectrumUpdater const& pushedValue );
 
 
   protected:
@@ -73,7 +83,6 @@ namespace LHPC
     MassEigenstateCodeToPointerMap pdgCodeMap;
     bool const& isVerbose;
     MassEigenstateMapAndVectorAndBools mapAndVectorAndBools;
-
   };
 
 
@@ -134,6 +143,19 @@ namespace LHPC
   MassSpectrum::getVerbosityReference() const
   {
     return isVerbose;
+  }
+
+  inline void
+  MassSpectrum::respondToObservedSignal()
+  // the default is over-ridden to call clearMassesAndDecays().
+  {
+    clearMassesAndDecays();
+  }
+
+  inline void
+  MassSpectrum::respondToPush( SpectrumUpdater const& pushedValue )
+  {
+    pushedValue.updateMassEigenstates( pdgCodeMap );
   }
 
   inline MassEigenstate&

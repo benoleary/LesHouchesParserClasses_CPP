@@ -14,7 +14,7 @@
 #ifndef DENSETRIPLYINDEXEDBLOCK_HPP_
 #define DENSETRIPLYINDEXEDBLOCK_HPP_
 
-#include "../SlhaBlock.hpp"
+#include "IndexedBlockTemplate.hpp"
 #include "InterpreterClasses/DenseTriplyIndexed.hpp"
 
 namespace LHPC
@@ -27,8 +27,8 @@ namespace LHPC
      * at 1.
      */
     template< class ValueClass >
-    class DenseTriplyIndexedBlock : public SlhaBlock< ValueClass,
-                          InterpreterClass::DenseTriplyIndexed< ValueClass > >
+    class DenseTriplyIndexedBlock : public IndexedBlockTemplate< ValueClass,
+                           InterpreterClass::DenseTriplyIndexed< ValueClass > >
     {
     public:
       DenseTriplyIndexedBlock( std::string const& blockName,
@@ -48,17 +48,12 @@ namespace LHPC
                   int const secondIndex,
                   int const thirdIndex ) const;
       // const version of above.
-
-
-    protected:
-      int const indexDigits;
-
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
-      virtual void
-      setExtraValuesForNewInterpreter();
+      bool
+      hasEntry( int const firstIndex,
+                int const secondIndex,
+                int const thirdIndex ) const;
+      // this returns hasEntry( firstIndex, secondIndex, thirdIndex ) of the
+      // lowest-scale interpreter.
     };
 
 
@@ -72,12 +67,12 @@ namespace LHPC
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
                                                       int const indexDigits ) :
-        SlhaBlock< ValueClass,
-                   InterpreterClass::DenseTriplyIndexed< ValueClass > >(
+        IndexedBlockTemplate< ValueClass,
+                          InterpreterClass::DenseTriplyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
-                                                                   isVerbose ),
-        indexDigits( indexDigits )
+                                                                     isVerbose,
+                                                                  indexDigits )
     {
       // just an initialization list.
     }
@@ -97,13 +92,9 @@ namespace LHPC
                                                        int const thirdIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        this->DataBlocks.setSize( 1 );
-      }
-      return this->DataBlocks[ this->defaultDataBlockIndex() ]( firstIndex,
-                                                                secondIndex,
-                                                                thirdIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+                                                         secondIndex,
+                                                         thirdIndex );
     }
 
     template< class ValueClass >
@@ -113,33 +104,22 @@ namespace LHPC
                                                    int const thirdIndex ) const
     // const version of above.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        return this->defaultUnsetValue;
-      }
-      else
-      {
-        return this->DataBlocks[ this->defaultDataBlockIndex() ]( firstIndex,
+      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+                                                         secondIndex,
+                                                         thirdIndex );
+    }
+
+    template< class ValueClass >
+    inline bool
+    DenseTriplyIndexedBlock< ValueClass >::hasEntry( int const firstIndex,
+                                                     int const secondIndex,
+                                                   int const thirdIndex ) const
+    // this returns hasEntry( firstIndex, secondIndex, thirdIndex ) of the
+    // lowest-scale interpreter.
+    {
+      return this->DataBlocks[ this->lowestScaleIndex ].hasEntry( firstIndex,
                                                                   secondIndex,
                                                                   thirdIndex );
-      }
-    }
-
-    template< class ValueClass >
-    inline std::string
-    DenseTriplyIndexedBlock< ValueClass >::getThisScaleAsString(
-                                                         int const scaleIndex )
-    // derived classes over-ride this to interpret their data as a
-    // std::string.
-    {
-      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
-    }
-
-    template< class ValueClass >
-    inline void
-    DenseTriplyIndexedBlock< ValueClass >::setExtraValuesForNewInterpreter()
-    {
-      this->DataBlocks.getBack().setIndexDigits( indexDigits );
     }
 
   }  // end of SLHA namespace

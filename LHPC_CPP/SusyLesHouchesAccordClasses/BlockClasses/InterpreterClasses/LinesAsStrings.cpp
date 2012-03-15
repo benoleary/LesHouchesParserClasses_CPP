@@ -20,7 +20,7 @@ namespace LHPC
     namespace InterpreterClass
     {
       LinesAsStrings::LinesAsStrings() :
-          StandardBlockTemplate< std::string >()
+          InterpreterTemplate< std::string >()
       {
         this->defaultUnsetValue.assign( "" );
       }

@@ -34,10 +34,10 @@ namespace LHPC
   public:
     typedef
     MapAndVectorAndBools< MassEigenstate* > MassEigenstateMapVectorBools;
-    typedef std::map< int,
-                      MassEigenstate* > MassEigenstateCodeMap;
-    typedef PointersPairedWithValue< MassEigenstate const*,
-                                     double > MassEigenstatesPairedWithBr;
+    typedef std::map< int, MassEigenstate* > MassEigenstateCodeMap;
+    typedef
+    PointersPairedWithValue< MassEigenstate const*, double >
+    MassEigenstatesPairedWithBr;
     typedef std::vector< MassEigenstate* > MassEigenstateVector;
 
     static MassEigenstate*
@@ -227,8 +227,7 @@ namespace LHPC
   };
   typedef
   MapAndVectorAndBools< MassEigenstate* > MassEigenstateMapAndVectorAndBools;
-  typedef std::map< int,
-                    MassEigenstate* > MassEigenstateCodeToPointerMap;
+  typedef std::map< int, MassEigenstate* > MassEigenstateCodeToPointerMap;
 
 
 

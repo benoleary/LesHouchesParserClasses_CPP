@@ -14,7 +14,7 @@
 #ifndef DENSESINGLYINDEXEDBLOCK_HPP_
 #define DENSESINGLYINDEXEDBLOCK_HPP_
 
-#include "../SlhaBlock.hpp"
+#include "IndexedBlockTemplate.hpp"
 #include "InterpreterClasses/DenseSinglyIndexed.hpp"
 
 namespace LHPC
@@ -26,8 +26,8 @@ namespace LHPC
      * index which has to have entries for each value, beginning with index 1.
      */
     template< class ValueClass >
-    class DenseSinglyIndexedBlock : public SlhaBlock< ValueClass,
-                          InterpreterClass::DenseSinglyIndexed< ValueClass > >
+    class DenseSinglyIndexedBlock : public IndexedBlockTemplate< ValueClass,
+                           InterpreterClass::DenseSinglyIndexed< ValueClass > >
     {
     public:
       DenseSinglyIndexedBlock( std::string const& blockName,
@@ -43,17 +43,9 @@ namespace LHPC
       ValueClass const&
       operator()( int const soughtIndex ) const;
       // const version of above.
-
-
-    protected:
-      int const indexDigits;
-
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
-      virtual void
-      setExtraValuesForNewInterpreter();
+      bool
+      hasEntry( int const soughtIndex ) const;
+      // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     };
 
 
@@ -67,12 +59,12 @@ namespace LHPC
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
                                                       int const indexDigits ) :
-        SlhaBlock< ValueClass,
-                   InterpreterClass::DenseSinglyIndexed< ValueClass > >(
+        IndexedBlockTemplate< ValueClass,
+                          InterpreterClass::DenseSinglyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
-                                                                   isVerbose ),
-        indexDigits( indexDigits )
+                                                                     isVerbose,
+                                                                  indexDigits )
     {
       // just an initialization list.
     }
@@ -90,20 +82,7 @@ namespace LHPC
     DenseSinglyIndexedBlock< ValueClass >::operator()( int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "DenseSinglyIndexedBlock< ValueClass >::operator( " << soughtIndex
-      << " ) called. this->DataBlocks.getSize() = "
-      << this->DataBlocks.getSize() << ", this->defaultDataBlockIndex() = "
-      << this->defaultDataBlockIndex();
-      std::cout << std::endl;/**/
-
-      if( this->DataBlocks.isEmpty() )
-      {
-        this->DataBlocks.setSize( 1 );
-      }
-      return this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -112,32 +91,18 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // const version of above.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        return this->defaultUnsetValue;
-      }
-      else
-      {
-        return
-        this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
-      }
+      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
-    inline std::string
-    DenseSinglyIndexedBlock< ValueClass >::getThisScaleAsString(
-                                                         int const scaleIndex )
+    inline bool
+    DenseSinglyIndexedBlock< ValueClass >::hasEntry(
+                                                  int const soughtIndex ) const
     // derived classes over-ride this to interpret their data as a
     // std::string.
     {
-      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
-    }
-
-    template< class ValueClass >
-    inline void
-    DenseSinglyIndexedBlock< ValueClass >::setExtraValuesForNewInterpreter()
-    {
-      this->DataBlocks.getBack().setIndexDigits( indexDigits );
+      return
+      this->DataBlocks[ this->lowestScaleIndex ].hasEntry( soughtIndex );
     }
 
   }  // end of SLHA namespace

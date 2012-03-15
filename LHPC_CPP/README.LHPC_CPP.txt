@@ -71,6 +71,8 @@
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.cpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/PointersPairedWithValue.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.cpp
  *      7 files and a subdirectory in
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrumClasses/:
  *      - CodesAndDataForMassEigenstates.hpp
@@ -109,8 +111,6 @@
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.cpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  *      LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/BasicParser.hpp
- *      LHPC_CPP/SusyLesHouchesAccordClasses/BasicParser.cpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
  *      LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp

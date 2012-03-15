@@ -40,13 +40,9 @@ namespace LHPC
       ValueClass const&
       operator()() const;
       // const version of above.
-
-
-    protected:
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
+      bool
+      hasEntry() const;
+      // this returns hasEntry() of the lowest-scale interpreter.
     };
 
 
@@ -81,11 +77,7 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::operator()()
     // this returns operator() of the lowest-scale interpreter.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        this->DataBlocks.setSize( 1 );
-      }
-      return this->DataBlocks[ this->defaultDataBlockIndex() ]();
+      return this->DataBlocks[ this->lowestScaleIndex ]();
     }
 
     template< class ValueClass >
@@ -93,24 +85,15 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::operator()() const
     // const version of above.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        return this->defaultUnsetValue;
-      }
-      else
-      {
-        return this->DataBlocks[ this->defaultDataBlockIndex() ]();
-      }
+      return this->DataBlocks[ this->lowestScaleIndex ]();
     }
 
     template< class ValueClass >
-    inline std::string
-    JustSingleValueBlock< ValueClass >::getThisScaleAsString(
-                                                         int const scaleIndex )
-    // derived classes over-ride this to interpret their data as a
-    // std::string.
+    inline bool
+    JustSingleValueBlock< ValueClass >::hasEntry() const
+    // this returns hasEntry() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
+      return this->DataBlocks[ this->lowestIndex ].hasEntry();
     }
 
   }  // end of SLHA namespace

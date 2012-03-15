@@ -15,7 +15,7 @@
 #define LINESASSTRINGS_HPP_
 
 #include <string>
-#include "StandardBlockTemplate.hpp"
+#include "InterpreterTemplate.hpp"
 
 namespace LHPC
 {
@@ -39,10 +39,16 @@ namespace LHPC
         operator[]( int const whichLine ) const { return (*this)(
                                                                  whichLine ); }
         virtual std::string const&
-        interpretAsString();
+        getAsString();
         // see base version's description.
         virtual void
-        respondToObservedSignal();
+        clearEntries();
+        // derived classes should clear their interpreted values.
+
+
+      protected:
+        virtual void
+        interpretCurrentStringBlock();
       };
 
 
@@ -53,32 +59,51 @@ namespace LHPC
       LinesAsStrings::operator()( int const whichLine ) const
       // const version of above.
       {
-        std::string
-        returnString( (*(this->stringsToInterpret))[ whichLine ].first );
-        returnString.append( (*(this->stringsToInterpret))[ whichLine ].second );
+        std::string returnString( "" );
+        if( NULL != this->currentStringBlock )
+        {
+          returnString.append(
+                            (*(this->currentStringBlock))[ whichLine ].first );
+          returnString.append(
+                           (*(this->currentStringBlock))[ whichLine ].second );
+        }
         return returnString;
       }
 
       inline std::string const&
-      LinesAsStrings::interpretAsString()
+      LinesAsStrings::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
+        int numberOfLinesToPrint( 0 );
+        if( NULL != this->currentStringBlock )
+        {
+          numberOfLinesToPrint
+          = this->currentStringBlock->getNumberOfBodyLines();
+        }
         for( int whichLine( 1 );
-             this->stringsToInterpret->getNumberOfBodyLines() >= whichLine;
+             numberOfLinesToPrint >= whichLine;
              ++whichLine )
         {
           this->stringInterpretation.append(
-                              (*(this->stringsToInterpret))[ whichLine ].first );
+                            (*(this->currentStringBlock))[ whichLine ].first );
           this->stringInterpretation.append(
-                             (*(this->stringsToInterpret))[ whichLine ].second );
+                           (*(this->currentStringBlock))[ whichLine ].second );
           this->stringInterpretation.append( "\n" );
         }
         return this->stringInterpretation;
       }
 
       inline void
-      LinesAsStrings::respondToObservedSignal()
+      LinesAsStrings::clearEntries()
+      // this ensures that the entry at soughtIndex exists, filling out with
+      // copies of defaultUnsetValue, & returns it.
+      {
+        // does nothing.
+      }
+
+      inline void
+      LinesAsStrings::interpretCurrentStringBlock()
       {
         // does nothing.
       }

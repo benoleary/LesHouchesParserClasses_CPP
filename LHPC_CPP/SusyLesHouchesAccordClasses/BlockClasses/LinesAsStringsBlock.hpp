@@ -27,7 +27,7 @@ namespace LHPC
      * std::strings.
      */
     class LinesAsStringsBlock : public SlhaBlock< std::string,
-                                            InterpreterClass::LinesAsStrings >
+                                             InterpreterClass::LinesAsStrings >
     {
     public:
       LinesAsStringsBlock( std::string const& blockName,
@@ -44,11 +44,11 @@ namespace LHPC
 
 
 
-    inline std::string const&
+    inline std::string
     LinesAsStringsBlock::operator()( int const whichLine ) const
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScale ]( whichLine );
+      return this->DataBlocks[ this->lowestScaleIndex ]( whichLine );
     }
 
   }  // end of SLHA namespace

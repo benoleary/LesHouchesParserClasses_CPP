@@ -16,23 +16,24 @@
 
 #include "../../BOLlib/Classes/VectorlikeArray.hpp"
 #include "../../BOLlib/Classes/StringParser.hpp"
-#include "BaseBlockAsStrings.hpp"
-#include "InterpreterClasses/BlockInterpreterFactory.hpp"
+#include "../../BOLlib/Classes/PushingObserved.hpp"
+#include "BaseStringBlock.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
+    typedef
+    BOL::PushingObserved< BlockClass::BaseStringBlock > StringBlockPusher;
+
     /* instances of this class hold together all copies of a block which have
      * the same name (if there are 2 or more copies, it is assumed that they
-     * have different energy scale values). it also holds the relevant
-     * BlockInterpreterFactory pointers for the BaseBlockAsString instances.
+     * have different energy scale values).
      */
-    class SameNameBlockSet
+    class SameNameBlockSet : public StringBlockPusher
     {
     public:
       SameNameBlockSet( std::string const& blockName );
-      virtual
       ~SameNameBlockSet();
 
       std::string const&
@@ -81,27 +82,23 @@ namespace LHPC
        * indexForUpperScale is set to the index of the copy with lowest scale
        * which is still higher than soughtScale.
        */
-      BlockClass::BaseBlockAsStrings &
-      operator[]( int whichLine );
-      // the BaseBlockAsStrings are indexed in the order in which they were
-      // read. the index starts at 1 rather than 0, as well.
-      BlockClass::BaseBlockAsStrings const&
-      operator[]( int whichLine ) const;
+      BlockClass::BaseStringBlock &
+      operator[]( int whichScaleIndex );
+      /* the BaseStringBlocks are indexed in the order in which they were
+       * read. the index starts at 1 rather than 0, as well. if 0 is given as
+       * the argument, the index corresponding to the copy with the lowest
+       * scale is used.
+       */
+      BlockClass::BaseStringBlock const&
+      operator[]( int whichScaleIndex ) const;
       // const version of above.
       int
-      getNumberOfCopies() const;
+      getNumberOfCopiesWithDifferentScale() const;
       int
       getLowestScaleIndex() const;
       void
       clearEntries();
       // this clears all the data that this block set has recorded.
-      void
-      registerBlock(
-                  InterpreterClass::BlockInterpreterFactory& blockToUpdate );
-      /* this adds a pointer to blockToUpdate to interpreterSources, & gets
-       * BlockInterpreters for any already-existing BaseBlockAsStrings & tells
-       * them to interpret.
-       */
       void
       recordHeader( std::string const& headerString,
                     std::string const& commentString,
@@ -115,19 +112,17 @@ namespace LHPC
       // recordHeader( ... ).
       void
       finishRecordingLines();
-      // this tells the entry in stringBlocks that was being recorded to get
-      // its interpreters to interpret the newly-recorded block.
+      // this pushes currentStringBlock to all the observers so that they
+      // interpret it.
 
 
     protected:
       std::string blockNameInUppercase;
-      BOL::VectorlikeArray< BlockClass::BaseBlockAsStrings > stringBlocks;
+      BOL::VectorlikeArray< BlockClass::BaseStringBlock > stringBlocks;
       std::list< std::pair< int, double > > scaleOrderedIndices;
       std::list< std::pair< int, double > >::iterator scaleIndexIterator;
-      std::vector< InterpreterClass::BlockInterpreterFactory* >
-      interpreterSources;
       int lowestScaleIndex;
-      BlockClass::BaseBlockAsStrings* currentStringBlock;
+      BlockClass::BaseStringBlock* currentStringBlock;
     };
 
 
@@ -150,23 +145,87 @@ namespace LHPC
                                                           nameToCompare );
     }
 
-    inline BlockClass::BaseBlockAsStrings &
-    SameNameBlockSet::operator[]( int whichLine )
-    // the BaseBlockAsStrings are indexed in the order in which they were
-    // read. the index starts at 1 rather than 0, as well.
+    inline bool
+    SameNameBlockSet::hasRecordedScale( double const soughtScale,
+                                        int& indexForLowerScale,
+                                        int& indexForUpperScale,
+                                        double& fractionFromLowerScale )
+    /* this looks for the pair of blocks with energy scales closest to
+     * soughtScale.
+     * if there are no recorded copies of this block, none of the references
+     * given are changed & false is returned.
+     * if there is only one copy of the block, both indexForLowerScale &
+     * indexForUpperScale are set to 1, fractionFromLowerScale is set to NaN,
+     * & true is returned.
+     * if there are 2 or more copies of the block, indexForLowerScale &
+     * indexForUpperScale are set as described below, fractionFromLowerScale
+     * is set to be
+     * ( ( soughtScale - [ scale of copy with lower scale ] )
+     *   / [ difference of copy scales ] ), & true is returned.
+     * fractionFromLowerScale will thus be between 0.0 & 1.0 if there are
+     * copies with scales above & below soughtScale, but may be negative if
+     * soughtScale is lower than the lowest scale of the copies, or greater
+     * than 1.0 if soughtScale is higher than the highest scale of the
+     * copies.
+     * since the copies of the block with different scales are not
+     * necessarily recorded in order of scale, indexForLowerScale will not
+     * necessarily be smaller in value than indexForUpperScale.
+     * indexForLowerScale & indexForUpperScale are set as follows:
+     * if soughtScale is lower than the lowest scale of the copies,
+     * indexForLowerScale is set to the index of the copy with lowest scale,
+     * & indexForUpperScale is set to the index of the copy with the next
+     * lowest scale.
+     * if soughtScale is higher than the highest scale of the copies,
+     * indexForUpperScale is set to the index of the copy with highest scale,
+     * & indexForLowerScale is set to the index of the copy with the next
+     * highest scale.
+     * otherwise, indexForLowerScale is set to the index of the copy with
+     * highest scale which is still lower than soughtScale, &
+     * indexForUpperScale is set to the index of the copy with lowest scale
+     * which is still higher than soughtScale.
+     */
     {
-      return stringBlocks[ (--whichLine) ];
+      return BlockClass::BaseStringBlock::findScaleIndices( soughtScale,
+                                                           scaleOrderedIndices,
+                                                            indexForLowerScale,
+                                                            indexForUpperScale,
+                                                      fractionFromLowerScale );
     }
 
-    inline BlockClass::BaseBlockAsStrings const&
-    SameNameBlockSet::operator[]( int whichLine ) const
+    inline BlockClass::BaseStringBlock &
+    SameNameBlockSet::operator[]( int whichScaleIndex )
+    /* the BaseStringBlocks are indexed in the order in which they were
+     * read. the index starts at 1 rather than 0, as well. if 0 is given as
+     * the argument, the index corresponding to the copy with the lowest
+     * scale is used.
+     */
+    {
+      if( 0 == whichScaleIndex )
+      {
+        return stringBlocks[ lowestScaleIndex ];
+      }
+      else
+      {
+        return stringBlocks[ (--whichScaleIndex) ];
+      }
+    }
+
+    inline BlockClass::BaseStringBlock const&
+    SameNameBlockSet::operator[]( int whichScaleIndex ) const
     // const version of above.
     {
-      return stringBlocks[ (--whichLine) ];
+      if( 0 == whichScaleIndex )
+      {
+        return stringBlocks[ lowestScaleIndex ];
+      }
+      else
+      {
+        return stringBlocks[ (--whichScaleIndex) ];
+      }
     }
 
     inline int
-    SameNameBlockSet::getNumberOfCopies() const
+    SameNameBlockSet::getNumberOfCopiesWithDifferentScale() const
     {
       return stringBlocks.getSize();
     }
@@ -178,20 +237,15 @@ namespace LHPC
     }
 
     inline void
-    SameNameBlockSet::registerBlock(
-                   InterpreterClass::BlockInterpreterFactory& blockToUpdate )
-    /* this adds blockToUpdate to interpreterSources, & gets
-     * BlockInterpreters for any already-existing BaseBlockAsStrings & tells
-     * them to interpret.
-     */
+    SameNameBlockSet::clearEntries()
+    // this clears all the data that this block set has recorded.
     {
-      interpreterSources.push_back( &blockToUpdate );
-      for( int scaleIndex( stringBlocks.getLastIndex() );
-           0 <= scaleIndex;
-           --scaleIndex )
-      {
-        blockToUpdate.addInterpreter( stringBlocks.getPointer( scaleIndex ) );
-      }
+      stringBlocks.clearEntries();
+      scaleOrderedIndices.clear();
+      lowestScaleIndex = -1;
+      updateObservers();
+      // respondToObservedSignal() has been over-ridden for the observers so
+      // that this clears their entries.
     }
 
     inline void
@@ -206,10 +260,10 @@ namespace LHPC
 
     inline void
     SameNameBlockSet::finishRecordingLines()
-    // this tells the entry in stringBlocks that was being recorded to get
-    // its interpreters to interpret the newly-recorded block.
+    // this pushes currentStringBlock to all the observers so that they
+    // interpret it.
     {
-      currentStringBlock->updateObservers();
+      updateObservers( *currentStringBlock );
     }
 
   }

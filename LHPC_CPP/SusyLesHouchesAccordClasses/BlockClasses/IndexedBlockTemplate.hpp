@@ -1,0 +1,79 @@
+/*
+ * IndexedBlockTemplate.hpp
+ *
+ *  Created on: Mar 15, 2012
+ *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
+ */
+
+#ifndef INDEXEDBLOCKTEMPLATE_HPP_
+#define INDEXEDBLOCKTEMPLATE_HPP_
+
+#include "../SlhaBlock.hpp"
+#include "InterpreterClasses/SparseSinglyIndexed.hpp"
+
+namespace LHPC
+{
+  namespace SLHA
+  {
+    // this abstract base template class covers the common functions for a
+    // block with at least 1 index.
+    template< class ValueClass, class IndexedParser >
+    class IndexedBlockTemplate : public SlhaBlock< ValueClass, IndexedParser >
+    {
+    public:
+      IndexedBlockTemplate( std::string const& blockName,
+                            ValueClass const& defaultUnsetValue,
+                            bool const& isVerbose,
+                            int const indexDigits );
+      virtual
+      ~IndexedBlockTemplate();
+
+
+    protected:
+      int const indexDigits;
+
+      virtual void
+      prepareNewDataBlock();
+      // derived classes can insert extra arguments to any new block
+      // interpreters by over-riding this.
+    };
+
+
+
+
+
+    template< class ValueClass, class IndexedParser >
+    inline
+    IndexedBlockTemplate< ValueClass, IndexedParser >::IndexedBlockTemplate(
+                                                  std::string const& blockName,
+                                           ValueClass const& defaultUnsetValue,
+                                                         bool const& isVerbose,
+                                                      int const indexDigits ) :
+        SlhaBlock< ValueClass, IndexedParser >( blockName,
+                                                defaultUnsetValue,
+                                                isVerbose ),
+        indexDigits( indexDigits )
+    {
+      // just an initialization list.
+    }
+
+    template< class ValueClass, class IndexedParser >
+    inline
+    IndexedBlockTemplate< ValueClass, IndexedParser >::~IndexedBlockTemplate()
+    {
+      // does nothing.
+    }
+
+
+    template< class ValueClass, class IndexedParser >
+    inline void
+    IndexedBlockTemplate< ValueClass, IndexedParser >::prepareNewDataBlock()
+    {
+      this->DataBlocks.getBack().setIndexDigits( indexDigits );
+    }
+
+  }  // end of SLHA namespace
+
+}  // end of LHPC namespace
+
+#endif /* INDEXEDBLOCKTEMPLATE_HPP_ */

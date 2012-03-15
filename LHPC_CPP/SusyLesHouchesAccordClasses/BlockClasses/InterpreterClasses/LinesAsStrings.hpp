@@ -25,7 +25,7 @@ namespace LHPC
     {
       // this class interprets SLHA blocks as just a set of full lines as
       // std::strings.
-      class LinesAsStrings : public StandardBlockTemplate< std::string >
+      class LinesAsStrings : public InterpreterTemplate< std::string >
       {
       public:
         LinesAsStrings();
@@ -54,8 +54,8 @@ namespace LHPC
       // const version of above.
       {
         std::string
-        returnString( (*(this->stringsToObserve))[ whichLine ].first );
-        returnString.append( (*(this->stringsToObserve))[ whichLine ].second );
+        returnString( (*(this->stringsToInterpret))[ whichLine ].first );
+        returnString.append( (*(this->stringsToInterpret))[ whichLine ].second );
         return returnString;
       }
 
@@ -65,13 +65,13 @@ namespace LHPC
       {
         this->stringInterpretation.clear();
         for( int whichLine( 1 );
-             this->stringsToObserve->getNumberOfBodyLines() >= whichLine;
+             this->stringsToInterpret->getNumberOfBodyLines() >= whichLine;
              ++whichLine )
         {
           this->stringInterpretation.append(
-                              (*(this->stringsToObserve))[ whichLine ].first );
+                              (*(this->stringsToInterpret))[ whichLine ].first );
           this->stringInterpretation.append(
-                             (*(this->stringsToObserve))[ whichLine ].second );
+                             (*(this->stringsToInterpret))[ whichLine ].second );
           this->stringInterpretation.append( "\n" );
         }
         return this->stringInterpretation;

@@ -1,5 +1,5 @@
 /*
- * IndexedBlockTemplate.hpp
+ * IndexedInterpreter.hpp
  *
  *  Created on: Mar 12, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
@@ -11,10 +11,10 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#ifndef INDEXEDBLOCKTEMPLATE_HPP_
-#define INDEXEDBLOCKTEMPLATE_HPP_
+#ifndef INDEXEDINTERPRETER_HPP_
+#define INDEXEDINTERPRETER_HPP_
 
-#include "StandardBlockTemplate.hpp"
+#include "InterpreterTemplate.hpp"
 
 namespace LHPC
 {
@@ -22,15 +22,15 @@ namespace LHPC
   {
     namespace InterpreterClass
     {
-      // this class extends StandardBlockTemplate for blocks with an index or
-      // with indices.
+      // this class extends InterpreterTemplate for blocks with an
+      // index or with indices.
       template< class ValueClass >
-      class IndexedBlockTemplate : public StandardBlockTemplate< ValueClass >
+      class IndexedInterpreter : public InterpreterTemplate< ValueClass >
       {
       public:
-        IndexedBlockTemplate();
+        IndexedInterpreter();
         virtual
-        ~IndexedBlockTemplate();
+        ~IndexedInterpreter();
 
         virtual void
         setIndexDigits( int const indexDigits );
@@ -56,8 +56,8 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      IndexedBlockTemplate< ValueClass >::IndexedBlockTemplate() :
-          StandardBlockTemplate< ValueClass >(),
+      IndexedInterpreter< ValueClass >::IndexedInterpreter() :
+          InterpreterTemplate< ValueClass >(),
           indexDigits( 5 ),
           indexPrintingString( "" ),
           indexHoldingString( "" ),
@@ -68,7 +68,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      IndexedBlockTemplate< ValueClass >::~IndexedBlockTemplate()
+      IndexedInterpreter< ValueClass >::~IndexedInterpreter()
       {
         // does nothing.
       }
@@ -76,15 +76,14 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      IndexedBlockTemplate< ValueClass >::setIndexDigits(
-                                                        int const indexDigits )
+      IndexedInterpreter< ValueClass >::setIndexDigits( int const indexDigits )
       {
         this->indexDigits = indexDigits;
       }
 
       template< class ValueClass >
       inline std::string const&
-      IndexedBlockTemplate< ValueClass >::indexToPrintingString(
+      IndexedInterpreter< ValueClass >::indexToPrintingString(
                                                              int indexToPrint )
       // this puts a single space then indexToPrint with indexDigits into
       // indexPrintingString & returns it.
@@ -111,4 +110,4 @@ namespace LHPC
 
 }
 
-#endif /* INDEXEDBLOCKTEMPLATE_HPP_ */
+#endif /* INDEXEDINTERPRETER_HPP_ */

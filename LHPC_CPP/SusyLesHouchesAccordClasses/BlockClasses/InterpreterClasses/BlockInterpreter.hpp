@@ -14,17 +14,16 @@
 #ifndef BLOCKINTERPRETER_HPP_
 #define BLOCKINTERPRETER_HPP_
 
-#include "../../../BOLlib/Classes/BasicObserver.hpp"
 #include "../../../BOLlib/Classes/StringParser.hpp"
-#include "../BaseBlockAsStrings.hpp"
+#include "../BaseStringBlock.hpp"
 
 namespace LHPC
 {
   namespace SLHA
   {
     // this abstract base class provides a base class for interpreting
-    // BaseBlockAsStrings instances.
-    class BlockInterpreter : public BOL::BasicObserver
+    // BaseStringBlock instances.
+    class BlockInterpreter
     {
     public:
       static BOL::StringParser const slhaDoubleMaker;
@@ -37,7 +36,8 @@ namespace LHPC
       ~BlockInterpreter();
 
       void
-      observeStrings( BlockClass::BaseBlockAsStrings* const stringsToObserve );
+      interpretStringBlock(
+                       BlockClass::BaseStringBlock const& stringsToInterpret );
       std::string const&
       getLineWithoutComment( int const whichLine ) const;
       std::string
@@ -47,14 +47,20 @@ namespace LHPC
        * stupid idea, in my humble opinion.
        */
       virtual std::string const&
-      interpretAsString() = 0;
+      getAsString() = 0;
       // derived classes should return their block as a single string of
       // re-formatted interpreted values.
+      virtual void
+      clearEntries() = 0;
+      // derived classes should clear their interpreted values.
 
 
     protected:
-      BlockClass::BaseBlockAsStrings* stringsToObserve;
+      BlockClass::BaseStringBlock* currentStringBlock;
       std::string stringInterpretation;
+
+      virtual void
+      interpretCurrentStringBlock() = 0;
     };
 
 
@@ -62,23 +68,18 @@ namespace LHPC
 
 
     inline void
-    BlockInterpreter::observeStrings(
-                       BlockClass::BaseBlockAsStrings* const stringsToObserve )
+    BlockInterpreter::interpretStringBlock(
+                        BlockClass::BaseStringBlock const& stringsToInterpret )
     {
-      // stop observing the old stringsToObserve, & start observing the new:
-      if( NULL != this->stringsToObserve )
-      {
-        this->stringsToObserve->removeObserver( this );
-      }
-      this->stringsToObserve = stringsToObserve;
-      stringsToObserve->registerObserver( this );
-      this->respondToObservedSignal();
+      clearEntries();
+      this->stringsToInterpret = &stringsToInterpret;
+      interpretCurrentStringBlock();
     }
 
     inline std::string const&
     BlockInterpreter::getLineWithoutComment( int const whichLine ) const
     {
-      return (*stringsToObserve)[ whichLine ].first;
+      return (*stringsToInterpret)[ whichLine ].first;
     }
 
     inline std::string
@@ -88,8 +89,8 @@ namespace LHPC
      * stupid idea, in my humble opinion.
      */
     {
-      std::string returnString( (*stringsToObserve)[ whichLine ].first );
-      returnString.append( (*stringsToObserve)[ whichLine ].second );
+      std::string returnString( (*stringsToInterpret)[ whichLine ].first );
+      returnString.append( (*stringsToInterpret)[ whichLine ].second );
       return returnString;
     }
 

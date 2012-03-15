@@ -15,7 +15,7 @@
 #define SPARSESINGLYINDEXED_HPP_
 
 #include <map>
-#include "IndexedBlockTemplate.hpp"
+#include "IndexedInterpreter.hpp"
 
 namespace LHPC
 {
@@ -26,7 +26,7 @@ namespace LHPC
       // this template class interprets SLHA blocks that have a single int
       // index with a single ValueClass value.
       template< class ValueClass >
-      class SparseSinglyIndexed : public IndexedBlockTemplate< ValueClass >
+      class SparseSinglyIndexed : public IndexedInterpreter< ValueClass >
       {
       public:
         SparseSinglyIndexed();
@@ -50,16 +50,17 @@ namespace LHPC
         ValueClass const&
         operator[]( int const soughtIndex ) const { return (*this)(
                                                                soughtIndex ); }
-        virtual std::string const&
-        interpretAsString();
-        // see base version's description.
         virtual std::map< int, ValueClass > const&
         getValueMap() const;
         bool
         hasEntry( int const soughtIndex ) const;
         // this returns true if there is an entry at soughtIndex.
+        virtual std::string const&
+        getAsString();
+        // see base version's description.
         virtual void
-        respondToObservedSignal();
+        clearEntries();
+        // derived classes should clear their interpreted values.
 
 
       protected:
@@ -68,6 +69,9 @@ namespace LHPC
 
         std::map< int, ValueClass > valueMap;
         std::pair< int, ValueClass > valueRecorder;
+
+        virtual void
+        interpretCurrentStringBlock();
       };
 
 
@@ -77,7 +81,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed() :
-          IndexedBlockTemplate< ValueClass >(),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           valueRecorder()
       {
@@ -128,8 +132,24 @@ namespace LHPC
       }
 
       template< class ValueClass >
+      inline std::map< int, ValueClass > const&
+      SparseSinglyIndexed< ValueClass >::getValueMap() const
+      {
+        return valueMap;
+      }
+
+      template< class ValueClass >
+      inline bool
+      SparseSinglyIndexed< ValueClass >::hasEntry(
+                                                  int const soughtIndex ) const
+      // this returns true if there is an entry at soughtIndex.
+      {
+        return ( 0 >= valueMap.count( soughtIndex ) );
+      }
+
+      template< class ValueClass >
       inline std::string const&
-      SparseSinglyIndexed< ValueClass >::interpretAsString()
+      SparseSinglyIndexed< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
@@ -155,32 +175,22 @@ namespace LHPC
       }
 
       template< class ValueClass >
-      inline std::map< int, ValueClass > const&
-      SparseSinglyIndexed< ValueClass >::getValueMap() const
+      inline void
+      SparseSinglyIndexed< ValueClass >::clearEntries()
       {
-        return valueMap;
-      }
-
-      template< class ValueClass >
-      inline bool
-      SparseSinglyIndexed< ValueClass >::hasEntry(
-                                                  int const soughtIndex ) const
-      // this returns true if there is an entry at soughtIndex.
-      {
-        return ( 0 >= valueMap.count( soughtIndex ) );
+        valueMap.clear();
       }
 
       template< class ValueClass >
       inline void
-      SparseSinglyIndexed< ValueClass >::respondToObservedSignal()
+      SparseSinglyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
-        valueMap.clear();
-        for( int whichLine( this->stringsToObserve->getNumberOfBodyLines() );
+        for( int whichLine( this->stringsToInterpret->getNumberOfBodyLines() );
              0 < whichLine;
              --whichLine )
         {
           this->currentWord.assign( BOL::StringParser::firstWordOf(
-                                (*(this->stringsToObserve))[ whichLine ].first,
+                              (*(this->stringsToInterpret))[ whichLine ].first,
                                                        &(this->lineRemainderA),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
           if( !(this->currentWord.empty()) )

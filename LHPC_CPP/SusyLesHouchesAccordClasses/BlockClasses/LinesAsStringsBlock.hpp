@@ -38,39 +38,17 @@ namespace LHPC
       std::string
       operator()( int const whichLine ) const;
       // this returns operator() of the lowest-scale interpreter.
-
-
-    protected:
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
     };
 
 
 
 
 
-    inline std::string
+    inline std::string const&
     LinesAsStringsBlock::operator()( int const whichLine ) const
-    // const version of above.
+    // this returns operator() of the lowest-scale interpreter.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        return this->defaultUnsetValue;
-      }
-      else
-      {
-        return this->DataBlocks[ this->defaultDataBlockIndex() ]( whichLine );
-      }
-    }
-
-    inline std::string
-    LinesAsStringsBlock::getThisScaleAsString( int const scaleIndex )
-    // derived classes over-ride this to interpret their data as a
-    // std::string.
-    {
-      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
+      return this->DataBlocks[ this->lowestScale ]( whichLine );
     }
 
   }  // end of SLHA namespace

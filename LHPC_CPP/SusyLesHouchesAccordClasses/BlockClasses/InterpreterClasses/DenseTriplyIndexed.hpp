@@ -22,7 +22,7 @@ namespace LHPC
   {
     namespace InterpreterClass
     {
-      /* this template class derives from StandardBlockTemplate to interpret
+      /* this template class derives from InterpreterTemplate to interpret
        * SLHA blocks that have a triple of int indices with a single ValueClass
        * value.
        */

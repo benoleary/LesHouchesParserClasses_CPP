@@ -25,7 +25,7 @@ namespace LHPC
       // this template class interprets SLHA blocks that have a single
       // ValueClass value.
       template< class ValueClass >
-      class JustSingleValue : public StandardBlockTemplate< ValueClass >
+      class JustSingleValue : public InterpreterTemplate< ValueClass >
       {
       public:
         JustSingleValue();
@@ -58,7 +58,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       JustSingleValue< ValueClass >::JustSingleValue() :
-          StandardBlockTemplate< ValueClass >(),
+          InterpreterTemplate< ValueClass >(),
           storedValue(),
           entryRecorded( false )
       {

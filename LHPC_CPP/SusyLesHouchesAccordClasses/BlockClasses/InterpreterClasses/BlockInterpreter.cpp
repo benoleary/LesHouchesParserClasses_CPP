@@ -36,7 +36,7 @@ namespace LHPC
 
     BlockInterpreter::BlockInterpreter() :
         BOL::BasicObserver(),
-        stringsToObserve( NULL ),
+        stringsToInterpret( NULL ),
         stringInterpretation( "" )
     {
       // just an initialization list.
@@ -44,7 +44,7 @@ namespace LHPC
 
     BlockInterpreter::~BlockInterpreter()
     {
-      stringsToObserve->removeObserver( this );
+      stringsToInterpret->removeObserver( this );
     }
 
   }

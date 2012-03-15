@@ -14,7 +14,7 @@
 #ifndef SPARSESINGLYINDEXEDBLOCK_HPP_
 #define SPARSESINGLYINDEXEDBLOCK_HPP_
 
-#include "../SlhaBlock.hpp"
+#include "IndexedBlockTemplate.hpp"
 #include "InterpreterClasses/SparseSinglyIndexed.hpp"
 
 namespace LHPC
@@ -27,8 +27,8 @@ namespace LHPC
      * necessarily positive index values).
      */
     template< class ValueClass >
-    class SparseSinglyIndexedBlock : public SlhaBlock< ValueClass,
-                         InterpreterClass::SparseSinglyIndexed< ValueClass > >
+    class SparseSinglyIndexedBlock : public IndexedBlockTemplate< ValueClass,
+                          InterpreterClass::SparseSinglyIndexed< ValueClass > >
     {
     public:
       SparseSinglyIndexedBlock( std::string const& blockName,
@@ -44,10 +44,21 @@ namespace LHPC
       ValueClass const&
       operator()( int const soughtIndex ) const;
       // const version of above.
+      bool
+      hasEntry( int const soughtIndex ) const;
+      // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
+      virtual bool
+      isFmassBlock() const;
+      // this returns false. only a specific derived class should over-ride it
+      // to return true if it is actually an interpreter for an FMASS block.
       virtual std::map< int, ExtendedMass > const*
       getFmassMap() const;
       // this returns NULL. only a specific derived class should over-ride it
       // to return a non-NULL pointer.
+      virtual bool
+      isMassBlock() const;
+      // this returns false. only a specific derived class should over-ride it
+      // to return true if it is actually an interpreter for a MASS block.
       virtual std::map< int, double > const*
       getMassMap() const;
       // this returns NULL. only a specific derived class should over-ride it
@@ -55,14 +66,8 @@ namespace LHPC
 
 
     protected:
-      int const indexDigits;
-
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
-      virtual void
-      setExtraValuesForNewInterpreter();
+      bool isFmassBlock;
+      bool isMassBlock;
     };
 
 
@@ -76,14 +81,23 @@ namespace LHPC
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
                                                       int const indexDigits ) :
-        SlhaBlock< ValueClass,
-                   InterpreterClass::SparseSinglyIndexed< ValueClass > >(
+        IndexedBlockTemplate< ValueClass,
+                         InterpreterClass::SparseSinglyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
-                                                                   isVerbose ),
-        indexDigits( indexDigits )
+                                                                   isVerbose,
+                                                                 indexDigits ),
+        isFmassBlock( false ),
+        isMassBlock( false )
     {
-      // just an initialization list.
+      if( this->nameMatches( "FMASS" ) )
+      {
+        this->isFmassBlock = true;
+      }
+      else if( this->nameMatches( "MASS" ) )
+      {
+        this->isMassBlock = true;
+      }
     }
 
     template< class ValueClass >
@@ -99,11 +113,7 @@ namespace LHPC
     SparseSinglyIndexedBlock< ValueClass >::operator()( int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        this->DataBlocks.setSize( 1 );
-      }
-      return this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
+      return this->DataBlocks[ this->lowestIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -112,15 +122,25 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // const version of above.
     {
-      if( this->DataBlocks.isEmpty() )
-      {
-        return this->defaultUnsetValue;
-      }
-      else
-      {
-        return
-        this->DataBlocks[ this->defaultDataBlockIndex() ]( soughtIndex );
-      }
+      return this->DataBlocks[ this->lowestIndex ]( soughtIndex );
+    }
+
+    template< class ValueClass >
+    inline bool
+    SparseSinglyIndexedBlock< ValueClass >::hasEntry(
+                                                  int const soughtIndex ) const
+    // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
+    {
+      return this->DataBlocks[ this->lowestIndex ].hasEntry( soughtIndex );
+    }
+
+    template< class ValueClass >
+    inline bool
+    SparseSinglyIndexedBlock< ValueClass >::isFmassBlock() const
+    // this returns false. only a specific derived class should over-ride it
+    // to return true if it is actually an interpreter for an FMASS block.
+    {
+      return this->isFmassBlock;
     }
 
     template< class ValueClass >
@@ -133,13 +153,11 @@ namespace LHPC
     template<>
     inline std::map< int, ExtendedMass > const*
     SparseSinglyIndexedBlock< ExtendedMass >::getFmassMap() const
+    // this over-rides the default to return a non-NULL pointer if appropriate.
     {
-      if( !(this->DataBlocks.isEmpty())
-          &&
-          nameMatches( "FMASS" ) )
+      if( this->isFmassBlock )
       {
-        return
-        &(this->DataBlocks[ this->defaultDataBlockIndex() ].getValueMap());
+        return &(this->DataBlocks[ this->lowestIndex ].getValueMap());
       }
       else
       {
@@ -148,8 +166,19 @@ namespace LHPC
     }
 
     template< class ValueClass >
+    inline bool
+    SparseSinglyIndexedBlock< ValueClass >::isMassBlock() const
+    // this returns false. only a specific derived class should over-ride it
+    // to return true if it is actually an interpreter for an FMASS block.
+    {
+      return this->isMassBlock;
+    }
+
+    template< class ValueClass >
     inline std::map< int, double > const*
     SparseSinglyIndexedBlock< ValueClass >::getMassMap() const
+    // this returns NULL. only a specific derived class should over-ride it
+    // to return a non-NULL pointer.
     {
       return NULL;
     }
@@ -157,37 +186,16 @@ namespace LHPC
     template<>
     inline std::map< int, double > const*
     SparseSinglyIndexedBlock< double >::getMassMap() const
+    // this over-rides the default to return a non-NULL pointer if appropriate.
     {
-      if( !(this->DataBlocks.isEmpty())
-          &&
-          nameMatches( "MASS" ) )
+      if( this->isMassBlock )
       {
-        return
-        &(this->DataBlocks[ this->defaultDataBlockIndex() ].getValueMap());
-        // DataBlocks is in silly starts-from-0, while SameNameBlockSet
-        // deals in indices that start from 1.
+        return &(this->DataBlocks[ this->lowestIndex ].getValueMap());
       }
       else
       {
         return NULL;
       }
-    }
-
-    template< class ValueClass >
-    inline std::string
-    SparseSinglyIndexedBlock< ValueClass >::getThisScaleAsString(
-                                                         int const scaleIndex )
-    // derived classes over-ride this to interpret their data as a
-    // std::string.
-    {
-      return this->DataBlocks[ scaleIndex - 1 ].interpretAsString();
-    }
-
-    template< class ValueClass >
-    inline void
-    SparseSinglyIndexedBlock< ValueClass >::setExtraValuesForNewInterpreter()
-    {
-      this->DataBlocks.getBack().setIndexDigits( indexDigits );
     }
 
   }  // end of SLHA namespace

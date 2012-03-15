@@ -1,5 +1,5 @@
 /*
- * StandardBlockTemplate.hpp
+ * InterpreterTemplate.hpp
  *
  *  Created on: Feb 8, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
@@ -11,8 +11,8 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#ifndef STANDARDBLOCKTEMPLATE_HPP_
-#define STANDARDBLOCKTEMPLATE_HPP_
+#ifndef INTERPRETERTEMPLATE_HPP_
+#define INTERPRETERTEMPLATE_HPP_
 
 #include "../../../BOLlib/Classes/UsefulStuff.hpp"
 #include "../../../BOLlib/Classes/StringParser.hpp"
@@ -28,12 +28,12 @@ namespace LHPC
       // this template class derives from SlhaBlock to provide a base class for
       // blocks with values which are indexed in various ways.
       template< class ValueType >
-      class StandardBlockTemplate : public BlockInterpreter
+      class InterpreterTemplate : public BlockInterpreter
       {
       public:
-        StandardBlockTemplate();
+        InterpreterTemplate();
         virtual
-        ~StandardBlockTemplate();
+        ~InterpreterTemplate();
 
         virtual void
         setDefaultUnsetValue( ValueType const& defaultUnsetValue );
@@ -71,7 +71,7 @@ namespace LHPC
 
       template< class ValueType >
       inline void
-      StandardBlockTemplate< ValueType >::setDefaultUnsetValue(
+      InterpreterTemplate< ValueType >::setDefaultUnsetValue(
                                            ValueType const& defaultUnsetValue )
       {
         this->defaultUnsetValue = defaultUnsetValue;
@@ -79,14 +79,15 @@ namespace LHPC
 
       template< class ValueType >
       inline void
-      StandardBlockTemplate< ValueType >::setVerbosity( bool const& isVerbose )
+      InterpreterTemplate< ValueType >::setVerbosity(
+                                                        bool const& isVerbose )
       {
         this->isVerbose = &isVerbose;
       }
 
       template< class ValueType >
       inline
-      StandardBlockTemplate< ValueType >::StandardBlockTemplate() :
+      InterpreterTemplate< ValueType >::InterpreterTemplate() :
           BlockInterpreter(),
           defaultUnsetValue(),
           isVerbose( &(BlockInterpreter::defaultVerbosity) ),
@@ -102,14 +103,14 @@ namespace LHPC
 
       template< class ValueType >
       inline
-      StandardBlockTemplate< ValueType >::~StandardBlockTemplate()
+      InterpreterTemplate< ValueType >::~InterpreterTemplate()
       {
         // does nothing.
       }
 
       template< class ValueType >
       inline ValueType const&
-      StandardBlockTemplate< ValueType >::stringToValue(
+      InterpreterTemplate< ValueType >::stringToValue(
                                            std::string const& stringToConvert )
       /* this sets valueFromString according to the interpretation of
        * stringToConvert. this default version leaves stringFromValue as
@@ -121,7 +122,7 @@ namespace LHPC
 
       template<>
       inline int const&
-      StandardBlockTemplate< int >::stringToValue(
+      InterpreterTemplate< int >::stringToValue(
                                            std::string const& stringToConvert )
       // this sets valueFromString according to the interpretation of
       // stringToConvert.
@@ -132,7 +133,7 @@ namespace LHPC
 
       template<>
       inline double const&
-      StandardBlockTemplate< double >::stringToValue(
+      InterpreterTemplate< double >::stringToValue(
                                            std::string const& stringToConvert )
       // this sets valueFromString according to the interpretation of
       // stringToConvert.
@@ -143,7 +144,7 @@ namespace LHPC
 
       template<>
       inline std::string const&
-      StandardBlockTemplate< std::string >::stringToValue(
+      InterpreterTemplate< std::string >::stringToValue(
                                            std::string const& stringToConvert )
       // this sets valueFromString according to the interpretation of
       // stringToConvert.
@@ -154,7 +155,7 @@ namespace LHPC
 
       template<>
       inline ExtendedMass const&
-      StandardBlockTemplate< ExtendedMass >::stringToValue(
+      InterpreterTemplate< ExtendedMass >::stringToValue(
                                            std::string const& stringToConvert )
       // this sets valueFromString according to the interpretation of
       // stringToConvert.
@@ -167,7 +168,7 @@ namespace LHPC
         parsedDouble( BOL::StringParser::stringToDouble( currentWord ) );
         this->currentWord.assign( BOL::StringParser::firstWordOf(
                                                           this->lineRemainderA,
-                                                        &(this->lineRemainderB),
+                                                       &(this->lineRemainderB),
                               BOL::StringParser::whitespaceAndNewlineChars ) );
         valueFromString.setValues( parsedDouble,
                            BOL::StringParser::stringToInt( this->currentWord ),
@@ -177,7 +178,7 @@ namespace LHPC
 
       template< class ValueType >
       inline std::string const&
-      StandardBlockTemplate< ValueType >::valueToString(
+      InterpreterTemplate< ValueType >::valueToString(
                                               ValueType const& valueToConvert )
       /* this sets stringFromValue according to the interpretation of
        * valueToConvert. this default version leaves stringFromValue as a
@@ -189,7 +190,8 @@ namespace LHPC
 
       template<>
       inline std::string const&
-      StandardBlockTemplate< int >::valueToString( int const& valueToConvert )
+      InterpreterTemplate< int >::valueToString(
+                                                    int const& valueToConvert )
       // this sets stringFromValue according to the interpretation of
       // valueToConvert.
       {
@@ -203,7 +205,7 @@ namespace LHPC
 
       template<>
       inline std::string const&
-      StandardBlockTemplate< double >::valueToString(
+      InterpreterTemplate< double >::valueToString(
                                                  double const& valueToConvert )
       // this sets stringFromValue according to the interpretation of
       // valueToConvert.
@@ -215,7 +217,7 @@ namespace LHPC
 
       template<>
       inline std::string const&
-      StandardBlockTemplate< std::string >::valueToString(
+      InterpreterTemplate< std::string >::valueToString(
                                             std::string const& valueToConvert )
       // this sets stringFromValue according to the interpretation of
       // valueToConvert.
@@ -226,7 +228,7 @@ namespace LHPC
 
       template<>
       inline std::string const&
-      StandardBlockTemplate< ExtendedMass >::valueToString(
+      InterpreterTemplate< ExtendedMass >::valueToString(
                                            ExtendedMass const& valueToConvert )
       // this sets stringFromValue according to the interpretation of
       // valueToConvert.
@@ -248,8 +250,8 @@ namespace LHPC
 
       template< class ValueType >
       inline std::string const&
-      StandardBlockTemplate< ValueType >::valueToPrintingString(
-                                               ValueType const& valueToPrint )
+      InterpreterTemplate< ValueType >::valueToPrintingString(
+                                                ValueType const& valueToPrint )
       /* this puts 3 spaces into returnString, then
        * valueToString( valueToPrint ), then either way afterwards three more
        * spaces then "# no comment\n" is appended.
@@ -266,4 +268,4 @@ namespace LHPC
 
 }
 
-#endif /* STANDARDBLOCKTEMPLATE_HPP_ */
+#endif /* INTERPRETERTEMPLATE_HPP_ */

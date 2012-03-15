@@ -17,11 +17,8 @@
 #include <string>
 #include "../BOLlib/Classes/StringParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
-#include "BlockClasses/InterpreterClasses/BlockInterpreter.hpp"
-#include "BlockClasses/InterpreterClasses/BlockInterpreterFactory.hpp"
-#include "BlockClasses/SameNameBlockSet.hpp"
-#include "BlockClasses/BaseBlockAsStrings.hpp"
-#include "BasicParser.hpp"
+#include "BlockClasses/BaseSlhaBlock.hpp"
+#include "BlockClasses/BaseStringBlock.hpp"
 
 namespace LHPC
 {
@@ -53,8 +50,8 @@ namespace LHPC
      * information.
      * classes which interpret the strings further derive from this class.
      */
-    template< class ValueClass, class BlockData >
-    class SlhaBlock : public InterpreterClass::BlockInterpreterFactory
+    template< class ValueClass, class BlockParser >
+    class SlhaBlock : public BaseSlhaBlock
     {
     public:
       SlhaBlock( std::string const& blockName,
@@ -63,22 +60,18 @@ namespace LHPC
       virtual
       ~SlhaBlock();
 
-      BlockData&
+      BlockParser&
       operator[]( int whichScaleIndex );
       /* the interpreters are indexed in the order in which they were
        * read (or created). the index starts at 1 rather than 0, as well. if 0
        * is given as the argument, the index corresponding to the copy with the
        * lowest scale is used.
        */
-      BlockData const&
+      BlockParser const&
       operator[]( int whichScaleIndex ) const;
       // const version of above.
       int
       getNumberOfCopiesWithDifferentScale() const;
-      virtual void
-      registerWith( BasicParser& registeringParser );
-      // this registers this SlhaBlock with registeringParser so that the data
-      // of this block update when registeringParser reads a file.
       bool
       hasRecordedScale( double const soughtScale,
                         int& indexForLowerScale,
@@ -129,66 +122,69 @@ namespace LHPC
        * onlyShowScalesGreaterThanZero is true, blocks with scales of 0.0 or
        * less just do not have the "Q=" etc. printed.
        */
-      void
-      clearEntries();
-      // this clears all the data that this block has interpreted or had
-      // assigned.
       virtual void
-      addInterpreter( BlockClass::BaseBlockAsStrings* observedStrings );
-      void
-      setObservedStringBlock(
-                         BlockClass::BaseBlockAsStrings* observedStringBlock );
+      respondToObservedSignal();
+      /* by default, PushedToObserver instances don't respond without a pushed
+       * value, but this is over-ridden to clear all the data that this block
+       * has interpreted or had assigned.
+       */
+      virtual void
+      respondToPush( BlockClass::BaseStringBlock const& pushedValue );
+      // this adds a new BlockParser to DataBlocks & tells it to interpret
+      // pushedValue. it also sorts out scale indices.
 
 
     protected:
       bool const& isVerbose;
       ValueClass const defaultUnsetValue;
-      SameNameBlockSet* observedStringBlock;
-      BOL::VectorlikeArray< BlockData > DataBlocks;
+      BOL::VectorlikeArray< BlockParser > DataBlocks;
+      int lowestScaleIndex;
+      bool hasHadPushSinceLastReset;
+      std::list< std::pair< int, double > > scaleOrderedIndices;
+      std::list< std::pair< int, double > >::iterator scaleIndexIterator;
       std::string stringInterpretation;
 
-      virtual std::string
-      getThisScaleAsString( int const scaleIndex );
-      // derived classes over-ride this to interpret their data as a
-      // std::string.
-      int
-      defaultDataBlockIndex() const;
-      // this returns the index of the lowest-scale block, adapted to
-      // starts-from-0, as that is how DataBlocks has its index.
       virtual void
-      setExtraValuesForNewInterpreter();
+      prepareNewDataBlock();
+      // derived classes can insert extra arguments to any new block
+      // interpreters by over-riding this.
     };
 
 
 
 
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline
-    SlhaBlock< ValueClass, BlockData >::SlhaBlock(
+    SlhaBlock< ValueClass, BlockParser >::SlhaBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                   bool const& isVerbose ) :
-        InterpreterClass::BlockInterpreterFactory( blockName ),
+                                                     bool const& isVerbose ) :
+        BaseSlhaBlock( blockName ),
         isVerbose( isVerbose ),
         defaultUnsetValue( defaultUnsetValue ),
-        observedStringBlock( NULL ),
+        DataBlocks( 1 ),
+        lowestScaleIndex( 0 ),
+        hasHadPushSinceLastReset( true ),
+        scaleOrderedIndices(),
+        scaleIndexIterator(),
         stringInterpretation( "" )
     {
-      // just an initialization list.
+      DataBlocks.getFront().setDefaultUnsetValue( defaultUnsetValue );
+      DataBlocks.getFront().setVerbosity( isVerbose );
     }
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline
-    SlhaBlock< ValueClass, BlockData >::~SlhaBlock()
+    SlhaBlock< ValueClass, BlockParser >::~SlhaBlock()
     {
       // does nothing.
     }
 
 
-    template< class ValueClass, class BlockData >
-    inline BlockData&
-    SlhaBlock< ValueClass, BlockData >::operator[]( int whichScaleIndex )
+    template< class ValueClass, class BlockParser >
+    inline BlockParser&
+    SlhaBlock< ValueClass, BlockParser >::operator[]( int whichScaleIndex )
     /* the interpreters are indexed in the order in which they were
      * read (or created). the index starts at 1 rather than 0, as well. if 0
      * is given as the argument, the index corresponding to the copy with the
@@ -197,7 +193,7 @@ namespace LHPC
     {
       if( 0 == whichScaleIndex )
       {
-        return DataBlocks[ this->defaultDataBlockIndex() ];
+        return DataBlocks[ lowestScaleIndex ];
       }
       else
       {
@@ -205,14 +201,15 @@ namespace LHPC
       }
     }
 
-    template< class ValueClass, class BlockData >
-    inline BlockData const&
-    SlhaBlock< ValueClass, BlockData >::operator[]( int whichScaleIndex ) const
+    template< class ValueClass, class BlockParser >
+    inline BlockParser const&
+    SlhaBlock< ValueClass, BlockParser >::operator[](
+                                                    int whichScaleIndex ) const
     // const version of above.
     {
       if( 0 == whichScaleIndex )
       {
-        return DataBlocks[ this->defaultDataBlockIndex() ];
+        return DataBlocks[ lowestScaleIndex ];
       }
       else
       {
@@ -220,28 +217,24 @@ namespace LHPC
       }
     }
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline int
-    SlhaBlock< ValueClass, BlockData >::getNumberOfCopiesWithDifferentScale(
+    SlhaBlock< ValueClass, BlockParser >::getNumberOfCopiesWithDifferentScale(
                                                                         ) const
     {
-      return DataBlocks.getSize();
+      if( hasHadPushSinceLastReset )
+      {
+        return DataBlocks.getSize();
+      }
+      else
+      {
+        return 0;
+      }
     }
 
-    template< class ValueClass, class BlockData >
-    inline void
-    SlhaBlock< ValueClass, BlockData >::registerWith(
-                                               BasicParser& registeringParser )
-    // this registers this SlhaBlock with registeringParser so that the data
-    // of this block update when registeringParser reads a file.
-    {
-      observedStringBlock
-      = registeringParser.givePointerToRegisteringBlock( *this );
-    }
-
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline bool
-    SlhaBlock< ValueClass, BlockData >::hasRecordedScale(
+    SlhaBlock< ValueClass, BlockParser >::hasRecordedScale(
                                                       double const soughtScale,
                                                        int& indexForLowerScale,
                                                        int& indexForUpperScale,
@@ -281,24 +274,18 @@ namespace LHPC
      * which is still higher than soughtScale.
      */
     {
-      if( NULL != observedStringBlock )
-      {
-        return observedStringBlock->hasRecordedScale( soughtScale,
-                                                      indexForLowerScale,
-                                                      indexForUpperScale,
+      return BlockClass::BaseStringBlock::findScaleIndices( soughtScale,
+                                                           scaleOrderedIndices,
+                                                            indexForLowerScale,
+                                                            indexForUpperScale,
                                                       fractionFromLowerScale );
-      }
-      else
-      {
-        return false;
-      }
     }
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline std::string const&
-    SlhaBlock< ValueClass, BlockData >::interpretAsString(
+    SlhaBlock< ValueClass, BlockParser >::interpretAsString(
                                            bool onlyShowScalesGreaterThanZero )
-    /* derived classes should override getThisScaleAsString to form their
+    /* derived classes should override getStringForScale to form their
      * strings directly from their data (because the block may be being used as
      * a way of writing an input file in the SLHA format, or maybe because the
      * original formatting was incorrect, as it is in most spectrum
@@ -308,100 +295,90 @@ namespace LHPC
      * less just do not have the "Q=" etc. printed.
      */
     {
-      this->stringInterpretation.clear();
-      for( int scaleIndex( 1 );
-           observedStringBlock->getNumberOfCopies() >= scaleIndex;
+      stringInterpretation.clear();
+      for( int scaleIndex( 0 );
+           DataBlocks.getSize() > scaleIndex;
            ++scaleIndex )
       {
-        this->stringInterpretation.append(
-                                          BasicParser::blockIdentifierString );
-        this->stringInterpretation.append( " " );
-        this->stringInterpretation.append( blockName );
+        stringInterpretation.append( BasicParser::blockIdentifierString );
+        stringInterpretation.append( " " );
+        stringInterpretation.append( blockName );
         if( onlyShowScalesGreaterThanZero
             ||
-            ( 0.0 > (*observedStringBlock)[ scaleIndex ].getScale() ) )
+            ( 0.0 > DataBlocks[ scaleIndex ].getScale() ) )
         {
-          this->stringInterpretation.append( " Q= " );
-          this->stringInterpretation.append(
-                             BlockInterpreter::slhaDoubleMaker.doubleToString(
-                           (*observedStringBlock)[ scaleIndex ].getScale() ) );
+          stringInterpretation.append( " Q= " );
+          stringInterpretation.append(
+                              BlockInterpreter::slhaDoubleMaker.doubleToString(
+                                       DataBlocks[ scaleIndex ].getScale() ) );
         }
-        this->stringInterpretation.append( "\n" );
-        this->stringInterpretation.append(
-                                    this->getThisScaleAsString( scaleIndex ) );
+        stringInterpretation.append( "\n" );
+        stringInterpretation.append( DataBlocks[ scaleIndex ].getAsString() );
       }
-      return this->stringInterpretation;
+      return stringInterpretation;
     }
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline void
-    SlhaBlock< ValueClass, BlockData >::clearEntries()
-    // this clears all the data that this block has interpreted or had
-    // assigned.
+    SlhaBlock< ValueClass, BlockParser >::respondToObservedSignal()
+    /* by default, PushedToObserver instances don't respond without a pushed
+     * value, but this is over-ridden to clear all the data that this block
+     * has interpreted or had assigned.
+     */
     {
-      DataBlocks.clearEntries();
+      DataBlocks.setSize( 1 ).getBack().clearEntries();
+      scaleOrderedIndices.clear();
+      hasHadPushSinceLastReset = false;
     }
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline void
-    SlhaBlock< ValueClass, BlockData >::addInterpreter(
-                              BlockClass::BaseBlockAsStrings* observedStrings )
+    SlhaBlock< ValueClass, BlockParser >::respondToPush(
+                               BlockClass::BaseStringBlock const& pushedValue )
+    // this adds a new BlockParser to DataBlocks & tells it to interpret
+    // pushedValue. it also sorts out scale indices.
     {
-      DataBlocks.newEnd().observeStrings( observedStrings );
-      DataBlocks.getBack().setDefaultUnsetValue( this->defaultUnsetValue );
-      DataBlocks.getBack().setVerbosity( isVerbose );
-      this->setExtraValuesForNewInterpreter();
-    }
-
-    template< class ValueClass, class BlockData >
-    inline void
-    SlhaBlock< ValueClass, BlockData >::setObservedStringBlock(
-                          BlockClass::BaseBlockAsStrings* observedStringBlock )
-    {
-      this->observedStringBlock = observedStringBlock;
-    }
-
-    template< class ValueClass, class BlockData >
-    inline std::string
-    SlhaBlock< ValueClass, BlockData >::getThisScaleAsString(
-                                                         int const scaleIndex )
-    // derived classes over-ride this to interpret their data as a
-    // std::string.
-    {
-      std::string returnString( "" );
-      for( int whichLine( 1 );
-           (*observedStringBlock)[ scaleIndex ].getNumberOfBodyLines()
-           >= whichLine;
-           ++whichLine )
+      if( hasHadPushSinceLastReset )
       {
-        returnString.append(
-                     (*observedStringBlock)[ scaleIndex ][ whichLine ].first );
-        returnString.append( "\n" );
-      }
-      return returnString;
-    }
-
-    template< class ValueClass, class BlockData >
-    inline int
-    SlhaBlock< ValueClass, BlockData >::defaultDataBlockIndex() const
-    // this returns the index of the lowest-scale block, adapted to
-    // starts-from-0, as that is how DataBlocks has its index.
-    {
-      if( NULL != observedStringBlock )
-      {
-        return this->observedStringBlock->getLowestScaleIndex();
+        DataBlocks.newEnd().setDefaultUnsetValue( defaultUnsetValue );
+        DataBlocks.getBack().setVerbosity( isVerbose );
+        prepareNewDataBlock();
+        DataBlocks.getBack().interpretStringBlock( pushedValue );
+        if( blockScale < DataBlocks[ lowestScaleIndex ].getScale() )
+          /* since hasHadPushSinceLastReset is true, lowestScaleIndex is a
+           * valid index for DataBlocks, so the comparison is valid, & if true,
+           *  lowestScaleIndex is set correctly.
+           */
+        {
+          lowestScaleIndex = DataBlocks.getLastIndex();
+        }
       }
       else
       {
-        return 0;
+        DataBlocks[ 0 ].interpretStringBlock( pushedValue );
       }
+      hasHadPushSinceLastReset = true;
+      scaleIndexIterator = scaleOrderedIndices.begin();
+      while( ( scaleIndexIterator != scaleOrderedIndices.end() )
+             &&
+             ( scaleIndexIterator->second < blockScale ) )
+      {
+        ++scaleIndexIterator;
+      }
+      // now scaleIndexIterator should either be at the index with scale just
+      // above blockScale, or at the end of the list.
+      scaleOrderedIndices.insert( scaleIndexIterator,
+                           std::pair< int, double >( DataBlocks.getLastIndex(),
+                                                     blockScale ) );
     }
 
-    template< class ValueClass, class BlockData >
+    template< class ValueClass, class BlockParser >
     inline void
-    SlhaBlock< ValueClass, BlockData >::setExtraValuesForNewInterpreter()
+    SlhaBlock< ValueClass, BlockParser >::prepareNewDataBlock()
+    // derived classes can insert extra arguments to any new block interpreters
+    // by over-riding this.
     {
-      // this basic version does nothing.
+      // does nothing.
     }
 
   }

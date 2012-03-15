@@ -63,11 +63,11 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  SusyLesHouchesAccordClasses/SlhaParser.cpp \
  SusyLesHouchesAccordClasses/SlhaTwo.cpp \
  SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp \
- SusyLesHouchesAccordClasses/BlockClasses/BaseBlockAsStrings.cpp \
+ SusyLesHouchesAccordClasses/BlockClasses/BaseSlhaBlock.cpp \
+ SusyLesHouchesAccordClasses/BlockClasses/BaseStringBlock.cpp \
  SusyLesHouchesAccordClasses/BlockClasses/LinesAsStringsBlock.cpp \
  SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.cpp \
  $(SLHADIR)/BlockClasses/InterpreterClasses/BlockInterpreter.cpp \
- $(SLHADIR)/BlockClasses/InterpreterClasses/BlockInterpreterFactory.cpp \
  $(SLHADIR)/BlockClasses/InterpreterClasses/LinesAsStrings.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 LIBRARYFILE=libLHPC_CPP.a

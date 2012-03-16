@@ -107,10 +107,9 @@ namespace LHPC
    * SameNameBlockSets, & updates all the observing SlhaBlocks & MassSpectrums.
    */
   {
-    currentBlockPointer = NULL;
+    checkForMassBlocksForSpectrum();
     clearBlocks();
     // new data should overwrite the old data, not append to it.
-    checkForMassBlocksForSpectrum();
     successfullyRead = fileParser.openFile( slhaFileName );
     while( fileParser.parseNextLineOfFile( dataString,
                                            commentString ) )
@@ -165,6 +164,19 @@ namespace LHPC
                                                               ExtendedMass(),
                                                               isVerbose,
                                                               9 );
+        blockMapIterator = blockMap.find( fmassBlockPointer->getName() );
+        if( blockMap.end() == blockMapIterator )
+        {
+          mapInserter.first.assign( fmassBlockPointer->getName() );
+          currentBlockPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+          mapInserter.second = currentBlockPointer;
+          blockMap.insert( mapInserter );
+        }
+        else
+        {
+          currentBlockPointer = blockMapIterator->second;
+        }
+        currentBlockPointer->registerObserver( fmassBlockPointer );
       }
       if( NULL == massBlockPointer )
         // if there is at least 1 spectrum to update, but no mass block...
@@ -175,6 +187,19 @@ namespace LHPC
                                                   BOL::UsefulStuff::notANumber,
                                                         isVerbose,
                                                         9 );
+        blockMapIterator = blockMap.find( massBlockPointer->getName() );
+        if( blockMap.end() == blockMapIterator )
+        {
+          mapInserter.first.assign( massBlockPointer->getName() );
+          currentBlockPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+          mapInserter.second = currentBlockPointer;
+          blockMap.insert( mapInserter );
+        }
+        else
+        {
+          currentBlockPointer = blockMapIterator->second;
+        }
+        currentBlockPointer->registerObserver( massBlockPointer );
       }
     }
   }

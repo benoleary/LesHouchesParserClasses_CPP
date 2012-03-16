@@ -322,6 +322,23 @@ namespace LHPC
       moveCommand.append( " " );
       moveCommand.append( plotFileName );
       // "mv LHPC_SpectrumPlotter_LaTeX.eps plotFileName"
+
+      // debugging:
+      /**std::cout << std::endl << "debugging:"
+      << std::endl
+      << "SpectrumPlotter::loadCommands( \""
+      << plotFileName << "\" ) set the commands thusly:"
+      << std::endl << " unitFactor = " << unitFactor
+      << std::endl << " scaleMaximum = " << scaleMaximum
+      << std::endl << " labelSeparation = " << labelSeparation
+      << std::endl << " labelRoomWidth = " << labelRoomWidth
+      << std::endl << " gnuplotCommand = \"" << gnuplotCommand << "\""
+      << std::endl << " latexCommand = \"" << latexCommand << "\""
+      << std::endl << " dvipsCommand = \"" << dvipsCommand << "\""
+      << std::endl << " ps2epsCommand = \"" << ps2epsCommand << "\""
+      << std::endl << " mainCleanupCommand = \"" << mainCleanupCommand << "\""
+      << std::endl << " moveCommand = \"" << moveCommand << "\"";
+      std::cout << std::endl;**/
     }
 
     void

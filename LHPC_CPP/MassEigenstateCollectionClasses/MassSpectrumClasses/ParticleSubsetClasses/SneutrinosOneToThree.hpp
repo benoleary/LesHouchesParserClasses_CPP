@@ -24,6 +24,7 @@ namespace LHPC
     {
     public:
       SneutrinosOneToThree( bool const& isVerbose,
+                            bool const flavorConserving = false,
                             std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~SneutrinosOneToThree();

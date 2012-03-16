@@ -19,7 +19,7 @@
 #include "../BOLlib/Classes/UsefulStuff.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "ExtendedMass.hpp"
-#include "PointersPairedWithValue.hpp"
+#include "PointersWithValue.hpp"
 #include "MapAndVectorAndBools.hpp"
 
 namespace LHPC
@@ -36,7 +36,7 @@ namespace LHPC
     MapAndVectorAndBools< MassEigenstate* > MassEigenstateMapVectorBools;
     typedef std::map< int, MassEigenstate* > MassEigenstateCodeMap;
     typedef
-    PointersPairedWithValue< MassEigenstate const*, double >
+    PointersWithValue< MassEigenstate const*, double >
     MassEigenstatesPairedWithBr;
     typedef std::vector< MassEigenstate* > MassEigenstateVector;
 
@@ -51,18 +51,24 @@ namespace LHPC
                     MassEigenstateMapVectorBools& mapAndVectorAndBools,
                     bool const isSelfConjugate,
                     std::string const& asciiName,
-                    std::string const& latexName );
+                    std::string const& latexName,
+                  double const defaultResetMass = BOL::UsefulStuff::notANumber,
+               double const defaultDecayWidth = BOL::UsefulStuff::notANumber );
     MassEigenstate( int const firstPdgCode,
                     int const secondPdgCode,
                     MassEigenstateMapVectorBools& mapAndVectorAndBools,
                     bool const isSelfConjugate,
                     std::string const& asciiName,
-                    std::string const& latexName );
+                    std::string const& latexName,
+                  double const defaultResetMass = BOL::UsefulStuff::notANumber,
+               double const defaultDecayWidth = BOL::UsefulStuff::notANumber );
     MassEigenstate( std::vector< int > const& pdgCodes,
                     MassEigenstateMapVectorBools& mapAndVectorAndBools,
                     bool const isSelfConjugate,
                     std::string const& asciiName,
-                    std::string const& latexName );
+                    std::string const& latexName,
+                  double const defaultResetMass = BOL::UsefulStuff::notANumber,
+               double const defaultDecayWidth = BOL::UsefulStuff::notANumber );
     MassEigenstate( MassEigenstate const& copySource,
                     MassEigenstateMapVectorBools& mapAndVectorAndBools );
     // this last version copies as the charge conjugate of copySource:
@@ -128,6 +134,11 @@ namespace LHPC
     recordDecay( MassEigenstatesPairedWithBr const& decayToRecord );
     void
     recordChargeConjugateOfDecay(
+                            MassEigenstatesPairedWithBr const& decayToRecord );
+    void
+    recordDecayAsDefault( MassEigenstatesPairedWithBr const& decayToRecord );
+    void
+    recordChargeConjugateOfDecayAsDefault(
                             MassEigenstatesPairedWithBr const& decayToRecord );
     double
     getExactMatchBranchingRatio( MassEigenstate const& firstProduct,
@@ -204,6 +215,7 @@ namespace LHPC
     std::pair< int,
                MassEigenstate* > mapFiller;
     bool massRecorded;
+    double const defaultResetMass;
     double signedDefaultMass;
     // this defaults to the pole mass, if available.
     double absoluteDefaultMass;
@@ -211,7 +223,9 @@ namespace LHPC
     BOL::VectorlikeArray< ExtendedMass > runningMasses;
     std::vector< ExtendedMass* > runningMassesAsVector;
     bool decaysRecorded;
+    double const defaultDecayWidth;
     double decayWidth;
+    BOL::VectorlikeArray< MassEigenstatesPairedWithBr > defaultDecaySet;
     BOL::VectorlikeArray< MassEigenstatesPairedWithBr > decaySet;
     std::vector< MassEigenstatesPairedWithBr* > decaySetAsVector;
     std::string asciiName;
@@ -224,6 +238,8 @@ namespace LHPC
     constructorBodyFunction();
     void
     addToCodeMap( int const positiveExtraCode );
+    void
+    prepareToRecordDecay();
   };
   typedef
   MapAndVectorAndBools< MassEigenstate* > MassEigenstateMapAndVectorAndBools;
@@ -401,12 +417,22 @@ namespace LHPC
   {
     runningMasses.clearEntries();
     runningMassesAsVector.clear();
-    signedDefaultMass = BOL::UsefulStuff::notANumber;
-    absoluteDefaultMass = BOL::UsefulStuff::notANumber;
+    signedDefaultMass = defaultResetMass;
+    absoluteDefaultMass = defaultResetMass;
+    if( 0.0 > absoluteDefaultMass )
+    {
+      absoluteDefaultMass = -absoluteDefaultMass;
+    }
     massRecorded = false;
-    decaySet.clearEntries();
+    decaySet.becomeCopyOf( defaultDecaySet );
     decaySetAsVector.clear();
-    decayWidth = BOL::UsefulStuff::notANumber;
+    for( int whichDecay( 0 );
+         decaySet.getSize() > whichDecay;
+         ++whichDecay )
+    {
+      decaySetAsVector.push_back( decaySet.getPointer( whichDecay ) );
+    }
+    decayWidth = defaultDecayWidth;
     decaysRecorded = false;
     return this;
   }
@@ -415,6 +441,18 @@ namespace LHPC
   MassEigenstate::recordDecay(
                              MassEigenstatesPairedWithBr const& decayToRecord )
   {
+    prepareToRecordDecay();
+    decaySetAsVector.push_back( decaySet.newEnd().copyAndReturnPointer(
+                                                             decayToRecord ) );
+    // I decided to keep a separate std::vector in parallel rather than
+    // constantly converting decaySet with getAsVector(...).
+  }
+
+  inline void
+  MassEigenstate::recordChargeConjugateOfDecay(
+                             MassEigenstatesPairedWithBr const& decayToRecord )
+  {
+    prepareToRecordDecay();
     MassEigenstatesPairedWithBr& decayRecorder( decaySet.newEnd() );
     decaySetAsVector.push_back( &decayRecorder );
     // I decided to keep a separate std::vector in parallel rather than
@@ -425,20 +463,24 @@ namespace LHPC
          decayToRecord.getPointerList().end() != productIterator;
          ++productIterator )
     {
-      decayRecorder.addPointer( *productIterator );
+      decayRecorder.addPointer( &((*productIterator)->getChargeConjugate()) );
     }
     decayRecorder.setPairedValueAndSortPointers(
                                               decayToRecord.getPairedValue() );
   }
 
   inline void
-  MassEigenstate::recordChargeConjugateOfDecay(
+  MassEigenstate::recordDecayAsDefault(
                              MassEigenstatesPairedWithBr const& decayToRecord )
   {
-    MassEigenstatesPairedWithBr& decayRecorder( decaySet.newEnd() );
-    decaySetAsVector.push_back( &decayRecorder );
-    // I decided to keep a separate std::vector in parallel rather than
-    // constantly converting decaySet with getAsVector(...).
+    defaultDecaySet.newEnd().becomeCopyOf( decayToRecord );
+  }
+
+  inline void
+  MassEigenstate::recordChargeConjugateOfDecayAsDefault(
+                             MassEigenstatesPairedWithBr const& decayToRecord )
+  {
+    MassEigenstatesPairedWithBr& decayRecorder( defaultDecaySet.newEnd() );
     decayRecorder.clearPointers();
     for( std::list< MassEigenstate const* >::const_iterator
          productIterator( decayToRecord.getPointerList().begin() );
@@ -741,6 +783,19 @@ namespace LHPC
     mapFiller.first = positiveExtraCode;
     mapFiller.second = this;
     pdgCodeMap.insert( mapFiller );
+  }
+
+  inline void
+  MassEigenstate::prepareToRecordDecay()
+  {
+    if( !decaysRecorded )
+    {
+      // this ensures that any present default decays are wiped if any decays
+      // are recorded.
+      decaySet.clearEntries();
+      decaySetAsVector.clear();
+      decaysRecorded = true;
+    }
   }
 
 }

@@ -20,6 +20,7 @@ namespace LHPC
     MinimalSupersymmetricStandardModel::MinimalSupersymmetricStandardModel(
                                                          bool const& isVerbose,
                                                bool const neutrinosAreMajorana,
+                                                   bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),
@@ -29,10 +30,13 @@ namespace LHPC
         MssmExtraEwsbSpinZeroBosonSet( isVerbose,
                                        defaultFlags ),
         ChargedSleptonsOneToSix( isVerbose,
+                                 flavorConserving,
                                  defaultFlags ),
         SneutrinosOneToThree( isVerbose,
+                              flavorConserving,
                               defaultFlags ),
         SquarksOneToSix( isVerbose,
+                         flavorConserving,
                          defaultFlags ),
         NeutralinosOneToFour( isVerbose,
                               defaultFlags ),

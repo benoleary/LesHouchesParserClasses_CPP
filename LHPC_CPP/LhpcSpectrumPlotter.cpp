@@ -98,7 +98,6 @@ int main( int argumentCount,
       controlParser.registerBlock( controlBlock );
       controlParser.registerBlock( linesBlock );
       controlParser.readFile( argumentCharArray[ 2 ] );
-
       if( 4 == argumentCount )
       {
         outputFilename.assign( argumentCharArray[ 3 ] );

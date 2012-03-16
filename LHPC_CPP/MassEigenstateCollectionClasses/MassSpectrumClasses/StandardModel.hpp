@@ -379,6 +379,7 @@ namespace LHPC
       std::vector< MassEigenstate* > downQuarkPointers;
       std::vector< MassEigenstate* > upQuarkPointers;
       std::vector< MassEigenstate* > upAntiquarkPointers;
+      MassEigenstate::MassEigenstatesPairedWithBr defaultDecayFiller;
     };
     typedef StandardModel SM;
 

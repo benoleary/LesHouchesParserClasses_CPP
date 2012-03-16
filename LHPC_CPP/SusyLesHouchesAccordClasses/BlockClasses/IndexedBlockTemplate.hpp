@@ -60,7 +60,7 @@ namespace LHPC
                                                 isVerbose ),
         indexDigits( indexDigits )
     {
-      // just an initialization list.
+      this->DataBlocks.getFront().setIndexDigits( indexDigits );
     }
 
     template< class ValueClass, class IndexedParser >

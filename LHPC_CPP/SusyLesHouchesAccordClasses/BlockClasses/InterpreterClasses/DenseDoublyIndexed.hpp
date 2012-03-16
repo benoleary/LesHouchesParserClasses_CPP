@@ -148,7 +148,7 @@ namespace LHPC
             &&
             ( firstIndex <= valueMatrix.getSize() )
             &&
-            ( (size_t)secondIndex < valueMatrix[ firstIndex - 1 ].size() ) )
+            ( (size_t)secondIndex <= valueMatrix[ firstIndex - 1 ].size() ) )
         {
           return true;
         }

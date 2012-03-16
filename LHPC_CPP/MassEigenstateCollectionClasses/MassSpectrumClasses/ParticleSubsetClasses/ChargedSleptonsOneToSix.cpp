@@ -18,6 +18,7 @@ namespace LHPC
   namespace MassSpectrumClass
   {
     ChargedSleptonsOneToSix::ChargedSleptonsOneToSix( bool const& isVerbose,
+                                                   bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),
@@ -90,6 +91,33 @@ namespace LHPC
       negativeSleptonPointers[ 3 ] = &antispositronFour;
       negativeSleptonPointers[ 4 ] = &antispositronFive;
       negativeSleptonPointers[ 5 ] = &antispositronSix;
+      if( flavorConserving )
+      {
+        spositronOne.setAsciiName( "seLc" );
+        spositronOne.setLatexName( "${\\tilde{e}}_{L}^{\\ast}$" );
+        antispositronOne.setAsciiName( "seL" );
+        antispositronOne.setLatexName( "${\\tilde{e}}_{L}$" );
+        spositronTwo.setAsciiName( "smuLc" );
+        spositronTwo.setLatexName( "${\\tilde{\\mu}}_{L}^{\\ast}$" );
+        antispositronTwo.setAsciiName( "smuL" );
+        antispositronTwo.setLatexName( "${\\tilde{\\mu}}_{L}$" );
+        spositronThree.setAsciiName( "sta1c" );
+        spositronThree.setLatexName( "${\\tilde{\\tau}}_{1}^{\\ast}$" );
+        antispositronThree.setAsciiName( "sta1" );
+        antispositronThree.setLatexName( "${\\tilde{\\tau}}_{1}$" );
+        spositronFour.setAsciiName( "seRc" );
+        spositronFour.setLatexName( "${\\tilde{e}}_{R}^{\\ast}$" );
+        antispositronFour.setAsciiName( "seR" );
+        antispositronFour.setLatexName( "${\\tilde{e}}_{R}$" );
+        spositronFive.setAsciiName( "smuRc" );
+        spositronFive.setLatexName( "${\\tilde{\\mu}}_{R}^{\\ast}$" );
+        antispositronFive.setAsciiName( "smuR" );
+        antispositronFive.setLatexName( "${\\tilde{\\mu}}_{R}$" );
+        spositronSix.setAsciiName( "sta2c" );
+        spositronSix.setLatexName( "${\\tilde{\\tau}}_{2}^{\\ast}$" );
+        antispositronSix.setAsciiName( "sta2" );
+        antispositronSix.setLatexName( "${\\tilde{\\tau}}_{2}$" );
+      }
     }
 
     ChargedSleptonsOneToSix::~ChargedSleptonsOneToSix()

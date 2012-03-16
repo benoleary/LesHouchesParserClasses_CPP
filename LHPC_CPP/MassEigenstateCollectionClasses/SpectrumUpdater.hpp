@@ -112,27 +112,6 @@ namespace LHPC
                     BOL::StringParser::stringToInt( decayLine[ whichWord ] ) );
     }
     decayChannels.push_back( branchingRatioAndProducts );
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "branchingRatioAndProducts: " << branchingRatioAndProducts.first;
-    for( size_t whichCode( 0 );
-         branchingRatioAndProducts.second.size() > whichCode;
-         ++whichCode )
-    {
-      std::cout << ", " << branchingRatioAndProducts.second[ whichCode ];
-    }
-    std::cout
-    << std::endl
-    << "decayChannels.back(): " << decayChannels.back().first;
-    for( size_t whichCode( 0 );
-         decayChannels.back().second.size() > whichCode;
-         ++whichCode )
-    {
-      std::cout << ", " << decayChannels.back().second[ whichCode ];
-    }
-    std::cout << std::endl;/**/
   }
 
 }

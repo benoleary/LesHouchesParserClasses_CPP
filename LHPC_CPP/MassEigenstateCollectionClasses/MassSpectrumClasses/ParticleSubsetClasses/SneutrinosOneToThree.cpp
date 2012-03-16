@@ -18,6 +18,7 @@ namespace LHPC
   namespace MassSpectrumClass
   {
     SneutrinosOneToThree::SneutrinosOneToThree( bool const& isVerbose,
+                                                bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),
@@ -29,7 +30,7 @@ namespace LHPC
                           "${\\tilde{{\\nu}}}_{1}^{\\ast}$" ),
         sneutrinoOne( antisneutrinoOne,
                       "sv1",
-                      "$\\tilde{{\\nu}}}_{1}$" ),
+                      "${\\tilde{{\\nu}}}_{1}$" ),
         antisneutrinoTwo( PDGIX::antisneutrinoTwo,
                           -PDGVII::sneutrinoTwo,
                           mapAndVectorAndBools,
@@ -38,7 +39,7 @@ namespace LHPC
                           "${\\tilde{{\\nu}}}_{2}^{\\ast}$" ),
         sneutrinoTwo( antisneutrinoTwo,
                       "sv2",
-                      "$\\tilde{{\\nu}}}_{2}$" ),
+                      "${\\tilde{{\\nu}}}_{2}$" ),
         antisneutrinoThree( PDGIX::antisneutrinoThree,
                             -PDGVII::sneutrinoThree,
                             mapAndVectorAndBools,
@@ -47,7 +48,7 @@ namespace LHPC
                             "${\\tilde{{\\nu}}}_{3}^{\\ast}$" ),
         sneutrinoThree( antisneutrinoThree,
                         "sv3",
-                        "$\\tilde{{\\nu}}}_{3}$" ),
+                        "${\\tilde{{\\nu}}}_{3}$" ),
         antisneutrinoPointers( 3,
                                &antisneutrinoOne ),
         sneutrinoPointers( 3,
@@ -57,6 +58,23 @@ namespace LHPC
       antisneutrinoPointers[ 2 ] = &antisneutrinoThree;
       sneutrinoPointers[ 1 ] = &sneutrinoTwo;
       sneutrinoPointers[ 2 ] = &sneutrinoThree;
+      if( flavorConserving )
+      {
+        antisneutrinoOne.setAsciiName( "svec" );
+        antisneutrinoOne.setLatexName( "${\\tilde{{\\nu}}}_{eL}^{\\ast}$" );
+        sneutrinoOne.setAsciiName( "sve" );
+        sneutrinoOne.setLatexName( "${\\tilde{{\\nu}}}_{eL}$" );
+        antisneutrinoTwo.setAsciiName( "svmc" );
+        antisneutrinoTwo.setLatexName(
+                                     "${\\tilde{{\\nu}}}_{{\\mu}L}^{\\ast}$" );
+        sneutrinoTwo.setAsciiName( "svm" );
+        sneutrinoTwo.setLatexName( "${\\tilde{{\\nu}}}_{{\\mu}L}$" );
+        antisneutrinoThree.setAsciiName( "svtc" );
+        antisneutrinoThree.setLatexName(
+                                    "${\\tilde{{\\nu}}}_{{\\tau}L}^{\\ast}$" );
+        sneutrinoThree.setAsciiName( "svt" );
+        sneutrinoThree.setLatexName( "${\\tilde{{\\nu}}}_{{\\tau}L}$" );
+      }
     }
 
     SneutrinosOneToThree::~SneutrinosOneToThree()

@@ -18,6 +18,7 @@ namespace LHPC
   namespace MassSpectrumClass
   {
     SquarksOneToSix::SquarksOneToSix( bool const& isVerbose,
+                                      bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                         defaultFlags ),
@@ -168,6 +169,57 @@ namespace LHPC
       antisquarkPointers.insert( antisquarkPointers.end(),
                                  upAntisquarkPointers.begin(),
                                  upAntisquarkPointers.end() );
+      if( flavorConserving )
+      {
+        antisdownOne.setAsciiName( "sdLc" );
+        antisdownOne.setLatexName( "${\\tilde{d}}_{L}^{\\ast}$" );
+        sdownOne.setAsciiName( "sdL" );
+        sdownOne.setLatexName( "${\\tilde{d}}_{L}$" );
+        antisdownTwo.setAsciiName( "ssLc" );
+        antisdownTwo.setLatexName( "${\\tilde{s}_{L}^{\\ast}$" );
+        sdownTwo.setAsciiName( "ssL" );
+        sdownTwo.setLatexName( "${\\tilde{s}}_{L}$" );
+        antisdownThree.setAsciiName( "sb1c" );
+        antisdownThree.setLatexName( "${\\tilde{b}}_{1}^{\\ast}$" );
+        sdownThree.setAsciiName( "sb1" );
+        sdownThree.setLatexName( "${\\tilde{b}}_{1}$" );
+        antisdownFour.setAsciiName( "sdRc" );
+        antisdownFour.setLatexName( "${\\tilde{d}}_{R}^{\\ast}$" );
+        sdownFour.setAsciiName( "sdR" );
+        sdownFour.setLatexName( "${\\tilde{d}}_{R}$" );
+        antisdownFive.setAsciiName( "ssRc" );
+        antisdownFive.setLatexName( "${\\tilde{s}}_{R}^{\\ast}$" );
+        sdownFive.setAsciiName( "ssR" );
+        sdownFive.setLatexName( "${\\tilde{s}}_{R}$" );
+        antisdownSix.setAsciiName( "sb2c" );
+        antisdownSix.setLatexName( "${\\tilde{b}}_{2}^{\\ast}$" );
+        sdownSix.setAsciiName( "sb2" );
+        sdownSix.setLatexName( "${\\tilde{b}}_{2}$" );
+        supOne.setAsciiName( "suL" );
+        supOne.setLatexName( "${\\tilde{u}}_{L}$" );
+        antisupOne.setAsciiName( "suLc" );
+        antisupOne.setLatexName( "${\\tilde{u}}_{L}^{\\ast}$" );
+        supTwo.setAsciiName( "scL" );
+        supTwo.setLatexName( "${\\tilde{c}}_{L}$" );
+        antisupTwo.setAsciiName( "scLc" );
+        antisupTwo.setLatexName( "${\\tilde{c}}_{L}^{\\ast}$" );
+        supThree.setAsciiName( "st1" );
+        supThree.setLatexName( "${\\tilde{t}}_{1}$" );
+        antisupThree.setAsciiName( "st1c" );
+        antisupThree.setLatexName( "${\\tilde{t}}_{1}^{\\ast}$" );
+        supFour.setAsciiName( "suR" );
+        supFour.setLatexName( "${\\tilde{u}}_{R}$" );
+        antisupFour.setAsciiName( "suRc" );
+        antisupFour.setLatexName( "${\\tilde{u}}_{R}^{\\ast}$" );
+        supFive.setAsciiName( "scR" );
+        supFive.setLatexName( "${\\tilde{c}}_{R}$" );
+        antisupFive.setAsciiName( "scRc" );
+        antisupFive.setLatexName( "${\\tilde{c}}_{R}^{\\ast}$" );
+        supSix.setAsciiName( "st2" );
+        supSix.setLatexName( "${\\tilde{t}}_{2}$" );
+        antisupSix.setAsciiName( "st2c" );
+        antisupSix.setLatexName( "${\\tilde{t}}_{2}^{\\ast}$" );
+      }
     }
 
     SquarksOneToSix::~SquarksOneToSix()

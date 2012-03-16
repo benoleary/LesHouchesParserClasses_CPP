@@ -134,7 +134,7 @@ namespace LHPC
              ( !entryRecorded
                &&
                ( this->currentStringBlock->getNumberOfBodyLines()
-                 > whichLine ) );
+                 >= whichLine ) );
              ++whichLine )
           // each line after the header (if any) is looked at.
         {

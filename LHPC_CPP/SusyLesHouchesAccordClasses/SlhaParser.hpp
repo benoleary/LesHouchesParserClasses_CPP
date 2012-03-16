@@ -172,6 +172,7 @@ namespace LHPC
       blockMapIterator->second->clearEntries();
       ++blockMapIterator;
     }
+    currentBlockPointer = NULL;
   }
 
   inline void
@@ -232,6 +233,7 @@ namespace LHPC
     {
       observingSpectrumUpdater.setFmassMap( fmassBlockPointer->getFmassMap() );
       observingSpectrumUpdater.setMassMap( massBlockPointer->getMassMap() );
+      updateObservers( observingSpectrumUpdater );
     }
   }
 

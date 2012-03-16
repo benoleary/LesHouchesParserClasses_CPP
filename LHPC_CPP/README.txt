@@ -70,7 +70,7 @@
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassEigenstate.cpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.cpp
- *      LHPC_CPP/MassEigenstateCollectionClasses/PointersPairedWithValue.hpp
+ *      LHPC_CPP/MassEigenstateCollectionClasses/PointersWithValue.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.hpp
  *      LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.cpp
  *      7 files and a subdirectory in

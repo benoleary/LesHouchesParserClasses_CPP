@@ -39,6 +39,7 @@ namespace LHPC
   {
     MassEigenstate* massEigenstateFiller( NULL );
     // 1st the masses from the MASS block are recorded:
+
     if( NULL != massMap )
     {
       std::map< int, double >::const_iterator
@@ -101,9 +102,10 @@ namespace LHPC
       = MassEigenstate::findPointerWithCode( decayerCode,
                                              codeMap );
       massEigenstateFiller->setDecayWidth( decayWidth );
-      for( int whichChannel( decayChannels.size() - 1 );
-           0 <= whichChannel;
-           --whichChannel )
+      size_t numberOfChannels( decayChannels.size() );
+      for( size_t whichChannel( 0 );
+           numberOfChannels > whichChannel;
+           ++whichChannel )
       {
         decayRecorder.clearPointers();
         for( int whichProduct( decayChannels[ whichChannel ].second.size()
@@ -116,7 +118,7 @@ namespace LHPC
                                                                    codeMap ) );
         }
         decayRecorder.setPairedValueAndSortPointers(
-                                             branchingRatioAndProducts.first );
+                                         decayChannels[ whichChannel ].first );
         massEigenstateFiller->recordDecay( decayRecorder );
       }
 
@@ -132,9 +134,10 @@ namespace LHPC
           !(massEigenstateFiller->getChargeConjugate(
                                                   ).haveDecaysBeenRecorded()) )
       {
-        for( int whichDecay( massEigenstateFiller->getDecaySet().size() - 1 );
-             0 <= whichDecay;
-             --whichDecay )
+        numberOfChannels = massEigenstateFiller->getDecaySet().size();
+        for( size_t whichDecay( 0 );
+             numberOfChannels > whichDecay;
+             ++whichDecay )
         {
           massEigenstateFiller->getChargeConjugate(
                                                 ).recordChargeConjugateOfDecay(

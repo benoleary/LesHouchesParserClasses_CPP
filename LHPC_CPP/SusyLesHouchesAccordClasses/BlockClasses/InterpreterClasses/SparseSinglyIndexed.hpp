@@ -144,7 +144,7 @@ namespace LHPC
                                                   int const soughtIndex ) const
       // this returns true if there is an entry at soughtIndex.
       {
-        return ( 0 >= valueMap.count( soughtIndex ) );
+        return ( 0 < valueMap.count( soughtIndex ) );
       }
 
       template< class ValueClass >

@@ -160,6 +160,30 @@
  */
  
 /* CHANGELOG:
+ * 16th March 2012: version 0.2.0 released!
+ *                - major reorganization of how the code works behind the
+ *                  scenes, which should allow for using the block interpreters
+ *                  for writing input blocks too (by setting the values and
+ *                  then calling interpretAsString()).
+ *                - a consequence of the above is thateach SlhaParser can have
+ *                  multiple blocks registered for any block name. likewise,
+ *                  each SlhaParser can have multiple spectra registered.
+ *                - added hasEntry(...) functions to block interpreters to
+ *                  assist in exploring parsed SLHA files without crashing
+ *                  when asking for out-of-range values.
+ *                - can no longer give a scale to get the closest block to that
+ *                  scale: instead
+ *                  hasRecordedScale( double const, int&, int&, double& )
+ *                  should be used to find the pair of blocks nearest with the
+ *                  fraction that can be used to interpolate between values
+ *                  from the pair of blocks. not specifying a scale still
+ *                  defaults to getting values from the copy with lowest scale,
+ *                  and now copies are accessed in the order that they were
+ *                  recorded.
+ * (LHEF & SLHA parsers seem to work, spectrum plotter seems to work; after
+ * some beta testing, this version will be tweaked & released as 1.0.0 - the
+ * changes of this version represent some of the tweaking foretold below...)
+ *
  * 29th February 2012: version 0.1.0 released!
  * (LHEF & SLHA parsers seem to work, spectrum plotter seems to work; after
  * some beta testing, this version will be tweaked & released as 1.0.0)
@@ -255,37 +279,46 @@
  * the intended use of SlhaParser is that an instance of the class is
  * constructed, & then instances of derived classes of the SlhaBlock class are
  * constructed & then registered with the parser with the
- * registerBlock(
- *               LHPC::SLHA::InterpreterClass::BlockInterpreterFactory const& )
- * function (but nobody should have to deal with the base
- * BlockInterpreterFactory class directly). there are bundles of blocks that
- * automatically register their blocks with the SlhaParser given to the
- * bundle's constructor, which cover the blocks described in SLHA1 & SLHA2. an
- * instance of LHPC::SlhaOne has all the blocks in SLHA1, & an instance of
- * SlhaTwo has all the blocks mentioned in SLHA1 & in SLHA2. the entries in the
- * blocks are then filled when readFile( std::string const& ) is called. the
- * entries are accessed with operator() (various derived classes
- * use different numbers of arguments for this) for the copy of their block
- * with lowest scale value ("Q"), or the interpreter for a given copy can be
- * accessed with operator[], which returns interpreters for the blocks in the
- * order in which they were read, starting from 1. also, the block as a set of
- * lines (each line held as a separate std::string) can be obtained by
- * getLineWithoutComment( int const ) for each block.
+ * registerBlock( LHPC::SLHA::BaseSlhaBlock const& ) function (but nobody
+ * should have to deal with the base BaseSlhaBlock class directly). there are
+ * bundles of blocks that automatically register their blocks with the
+ * SlhaParser given to the bundle's constructor, which cover the blocks
+ * described in SLHA1 & SLHA2. an instance of LHPC::SlhaOne has all the blocks
+ * in SLHA1, & an instance of SlhaTwo has all the blocks mentioned in SLHA1 &
+ * in SLHA2. the entries in the blocks are then filled when
+ * readFile( std::string const& ) is called. the entries are accessed with
+ * operator() (various derived classes use different numbers of arguments for
+ * this) for the copy of their block with lowest scale value ("Q"), or the
+ * interpreter for a given copy can be accessed with operator[], which returns
+ * interpreters for the blocks in the order in which they were read, starting
+ * from 1 (asking for entry 0 returns the interpreter for the copy with the
+ * lowest scale). also, the block as a set of lines (each line held as a
+ * separate std::string) can be obtained by getLineWithoutComment( int const )
+ * for each block.
  * the function SlhaBlock::hasRecordedScale( double const, int&, int&,double& )
  * is the best compromise that I could come up with for finding blocks for a
  * given scale. see the comments of the function for how to use it.
  * I had intended to provide flexible searching of the blocks as strings to
  * accommodate non-standard blocks, but this is still on the to-do list.
  * decays are only recorded if a MassSpectrum instance has been registered with
- * the SlhaParser. a registered MassSpectrum instance has its MassEigenstate
- * data members filled with masses recorded from the MASS or FMASS blocks that
- * are read from the SLHA file, & with decays filled from the decays of the
- * file. the particle codes of the decays are interpreted so that accessing
- * the decays gets references to other MassEigenstates, to simplify following
- * cascade decays.
- * I intend to include the functionality to be able to load in the central
- * values of the masses and decays of W bosons, Z bosons, & top quarks from
- * data from the Particle Data Group (PDG), but that's still on the to-do list.
+ * the SlhaParser (by the registerSpectrum( MassSpectrum& ) function). a
+ * registered MassSpectrum instance has its MassEigenstate data members filled
+ * with masses recorded from the MASS or FMASS blocks that are read from the
+ * SLHA file, & with decays filled from the decays of the file. the particle
+ * codes of the decays are interpreted so that accessing the decays gets
+ * references to other MassEigenstates, to simplify following cascade decays
+ * for example. it includes the distinction between particles and antiparticles
+ * (e.g. say a heavy boson can decay to a top-antitop pair: this decay is
+ * accessed as a reference to the top quark paired with a reference to the
+ * antitop; the top MassEigenstate (under normal circumstances) has then a
+ * decay which is accessed as a reference to the W^+ MassEigenstate paired with
+ * a reference to the bottom quark MassEigenstate, while the antitop's decay
+ * is the W^- with the antibottom).
+ * the StandardModel class and classes derived from it automatically set up the
+ * SM particles to have masses and decay widths, along with decay channels and
+ * branching ratios, as they appeared on the Particle Data Group website
+ * http://pdg.lbl.gov/ on the 16th of March, 2012. the masses and decays are
+ * overwritten by any data found in parsed SLHA files.
  * 
  * 
  * examples:

@@ -212,8 +212,7 @@ namespace LHPC
     bool isSelfConjugateFlag;
     std::vector< int > identifyingPdgCodes;
     MassEigenstateCodeMap& pdgCodeMap;
-    std::pair< int,
-               MassEigenstate* > mapFiller;
+    std::pair< int, MassEigenstate* > mapFiller;
     bool massRecorded;
     double const defaultResetMass;
     double signedDefaultMass;

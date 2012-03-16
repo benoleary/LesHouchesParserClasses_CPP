@@ -168,6 +168,11 @@
  *                - a consequence of the above is thateach SlhaParser can have
  *                  multiple blocks registered for any block name. likewise,
  *                  each SlhaParser can have multiple spectra registered.
+ *                - also changed some names a bit: the block interpreters are
+ *                  now SparseSinglyIndexedBlock< double > etc. rather than
+ *                  BlockClass::SparseSinglyIndexed< double > and so on.
+ *                - SlhaParser::getBlockAsStrings( std::string ) can be used
+ *                  to access the blocks as sets of strings.
  *                - added hasEntry(...) functions to block interpreters to
  *                  assist in exploring parsed SLHA files without crashing
  *                  when asking for out-of-range values.

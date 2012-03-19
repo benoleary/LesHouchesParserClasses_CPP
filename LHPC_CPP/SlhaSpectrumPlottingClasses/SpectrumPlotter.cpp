@@ -279,9 +279,18 @@ namespace LHPC
       {
         epsiInstead = true;
       }
-      ps2epsCommand.append( " -f " );
+      else
+      {
+        ps2epsCommand.append( " -f " );
+      }
       ps2epsCommand.append( fullLatexBaseName );
       ps2epsCommand.append( ".ps" );
+      if( epsiInstead )
+      {
+        ps2epsCommand.append( " " );
+        ps2epsCommand.append( fullLatexBaseName );
+        ps2epsCommand.append( ".eps" );
+      }
       // "ps2eps LHPC_SpectrumPlotter_LaTeX.ps"
       mainCleanupCommand.append( " " );
       mainCleanupCommand.append( gnuplotDataFileName );

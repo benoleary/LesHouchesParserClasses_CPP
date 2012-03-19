@@ -278,6 +278,7 @@ namespace LHPC
                                       "ps2epsi" ) )
       {
         epsiInstead = true;
+        ps2epsCommand.append( " " );
       }
       else
       {
@@ -291,7 +292,8 @@ namespace LHPC
         ps2epsCommand.append( fullLatexBaseName );
         ps2epsCommand.append( ".eps" );
       }
-      // "ps2eps LHPC_SpectrumPlotter_LaTeX.ps"
+      // "ps2eps - f LHPC_SpectrumPlotter_LaTeX.ps" or
+      // "ps2epsi LHPC_SpectrumPlotter_LaTeX.ps LHPC_SpectrumPlotter_LaTeX.eps"
       mainCleanupCommand.append( " " );
       mainCleanupCommand.append( gnuplotDataFileName );
       mainCleanupCommand.append( " " );
@@ -324,10 +326,6 @@ namespace LHPC
       moveCommand.append( " " );
       moveCommand.append( fullLatexBaseName );
       moveCommand.append( ".eps" );
-      if( epsiInstead )
-      {
-        moveCommand.append( "i" );
-      }
       moveCommand.append( " " );
       moveCommand.append( plotFileName );
       // "mv LHPC_SpectrumPlotter_LaTeX.eps plotFileName"

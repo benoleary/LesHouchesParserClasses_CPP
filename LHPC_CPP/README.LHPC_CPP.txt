@@ -191,6 +191,12 @@
 
 
 CHANGELOG:
+ * 19th March 2012: version 0.2.2 released!
+ - Fixed incorrect command to run ps2epsi from wrong
+   "ps2epsi - f LHPC_SpectrumPlotter_LaTeX.ps" to correct
+   "ps2epsi LHPC_SpectrumPlotter_LaTeX.ps LHPC_SpectrumPlotter_LaTeX.eps"
+   (or path-corrected version).
+
  * 19th March 2012: version 0.2.1 released!
  - Added the SparseDoublyIndexedBlock class using the SparseDoublyIndexed
    template class as its interpreter.

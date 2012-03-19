@@ -19,6 +19,7 @@
 #include "SlhaBlock.hpp"
 #include "BlockClasses/JustSingleValueBlock.hpp"
 #include "BlockClasses/SparseSinglyIndexedBlock.hpp"
+#include "BlockClasses/SparseDoublyIndexedBlock.hpp"
 #include "BlockClasses/DenseSinglyIndexedBlock.hpp"
 #include "BlockClasses/DenseDoublyIndexedBlock.hpp"
 #include "BlockClasses/DenseTriplyIndexedBlock.hpp"

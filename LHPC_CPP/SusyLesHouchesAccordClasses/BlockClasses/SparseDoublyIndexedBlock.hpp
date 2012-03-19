@@ -1,7 +1,7 @@
 /*
- * DenseDoublyIndexedBlock.hpp
+ * SparseDoublyIndexedBlock.hpp
  *
- *  Created on: Mar 12, 2012
+ *  Created on: Mar 19, 2012
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,11 +11,11 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#ifndef DENSEDOUBLYINDEXEDBLOCK_HPP_
-#define DENSEDOUBLYINDEXEDBLOCK_HPP_
+#ifndef SPARSEDOUBLYINDEXEDBLOCK_HPP_
+#define SPARSEDOUBLYINDEXEDBLOCK_HPP_
 
 #include "IndexedBlockTemplate.hpp"
-#include "InterpreterClasses/DenseDoublyIndexed.hpp"
+#include "InterpreterClasses/SparseDoublyIndexed.hpp"
 
 namespace LHPC
 {
@@ -23,20 +23,20 @@ namespace LHPC
   {
     /* this template class interprets all the blocks with the same name, though
      * differing scale values, which are interpreted as having a pair of int
-     * indices which have to have entries for each value, each index beginning
-     * at 1.
+     * indices which does not have to have entries for each value (nor even
+     * necessarily positive index values).
      */
     template< class ValueClass >
-    class DenseDoublyIndexedBlock : public IndexedBlockTemplate< ValueClass,
-                           InterpreterClass::DenseDoublyIndexed< ValueClass > >
+    class SparseDoublyIndexedBlock : public IndexedBlockTemplate< ValueClass,
+                          InterpreterClass::SparseDoublyIndexed< ValueClass > >
     {
     public:
-      DenseDoublyIndexedBlock( std::string const& blockName,
-                               ValueClass const& defaultUnsetValue,
-                               bool const& isVerbose,
-                               int const indexDigits = 2 );
+      SparseDoublyIndexedBlock( std::string const& blockName,
+                                ValueClass const& defaultUnsetValue,
+                                bool const& isVerbose,
+                                int const indexDigits = 2 );
       virtual
-      ~DenseDoublyIndexedBlock();
+      ~SparseDoublyIndexedBlock();
 
       ValueClass&
       operator()( int const firstIndex,
@@ -49,8 +49,7 @@ namespace LHPC
       bool
       hasEntry( int const firstIndex,
                 int const secondIndex ) const;
-      // this returns hasEntry( firstIndex, secondIndex ) of the
-      // lowest-scale interpreter.
+      // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     };
 
 
@@ -59,24 +58,24 @@ namespace LHPC
 
     template< class ValueClass >
     inline
-    DenseDoublyIndexedBlock< ValueClass >::DenseDoublyIndexedBlock(
+    SparseDoublyIndexedBlock< ValueClass >::SparseDoublyIndexedBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
                                                       int const indexDigits ) :
         IndexedBlockTemplate< ValueClass,
-                          InterpreterClass::DenseDoublyIndexed< ValueClass > >(
+                         InterpreterClass::SparseDoublyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                      isVerbose,
-                                                                  indexDigits )
+                                                                 indexDigits )
     {
       // just an initialization list.
     }
 
     template< class ValueClass >
     inline
-    DenseDoublyIndexedBlock< ValueClass >::~DenseDoublyIndexedBlock()
+    SparseDoublyIndexedBlock< ValueClass >::~SparseDoublyIndexedBlock()
     {
       // does nothing.
     }
@@ -84,8 +83,8 @@ namespace LHPC
 
     template< class ValueClass >
     inline ValueClass&
-    DenseDoublyIndexedBlock< ValueClass >::operator()( int const firstIndex,
-                                                       int const secondIndex )
+    SparseDoublyIndexedBlock< ValueClass >::operator()( int const firstIndex,
+                                                        int const secondIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
       return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
@@ -94,7 +93,7 @@ namespace LHPC
 
     template< class ValueClass >
     inline ValueClass const&
-    DenseDoublyIndexedBlock< ValueClass >::operator()( int const firstIndex,
+    SparseDoublyIndexedBlock< ValueClass >::operator()( int const firstIndex,
                                                   int const secondIndex ) const
     // const version of above.
     {
@@ -104,7 +103,7 @@ namespace LHPC
 
     template< class ValueClass >
     inline bool
-    DenseDoublyIndexedBlock< ValueClass >::hasEntry( int const firstIndex,
+    SparseDoublyIndexedBlock< ValueClass >::hasEntry( int const firstIndex,
                                                   int const secondIndex ) const
     // derived classes over-ride this to interpret their data as a
     // std::string.
@@ -118,4 +117,4 @@ namespace LHPC
 }  // end of LHPC namespace
 
 
-#endif /* DENSEDOUBLYINDEXEDBLOCK_HPP_ */
+#endif /* SPARSEDOUBLYINDEXEDBLOCK_HPP_ */

@@ -85,7 +85,7 @@ namespace LHPC
                          InterpreterClass::SparseSinglyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
-                                                                   isVerbose,
+                                                                     isVerbose,
                                                                  indexDigits ),
         isFmassBlockFlag( false ),
         isMassBlockFlag( false )

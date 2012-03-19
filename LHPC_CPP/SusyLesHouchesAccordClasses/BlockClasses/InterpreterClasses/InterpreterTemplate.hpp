@@ -79,8 +79,7 @@ namespace LHPC
 
       template< class ValueType >
       inline void
-      InterpreterTemplate< ValueType >::setVerbosity(
-                                                        bool const& isVerbose )
+      InterpreterTemplate< ValueType >::setVerbosity( bool const& isVerbose )
       {
         this->isVerbose = &isVerbose;
       }
@@ -190,8 +189,7 @@ namespace LHPC
 
       template<>
       inline std::string const&
-      InterpreterTemplate< int >::valueToString(
-                                                    int const& valueToConvert )
+      InterpreterTemplate< int >::valueToString( int const& valueToConvert )
       // this sets stringFromValue according to the interpretation of
       // valueToConvert.
       {

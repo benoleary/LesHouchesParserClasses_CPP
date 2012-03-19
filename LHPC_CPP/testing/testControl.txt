@@ -11,6 +11,7 @@ Block LHPCSPECTRUMPLOTCONTROL  # general parameters
               # as a percentage of the vertical range.
     14   50.0  # how much horizontal room to leave for each particle's
                # label, as a percentage of the width of the plotted line.
+# these are the paths on Mac OSX:
     21   /opt/local/bin/gnuplot  # the path to the gnuplot executable.
     22   /usr/bin/latex  # the path to the latex executable.
     23   /usr/bin/dvips  # the path to the dvips executable.

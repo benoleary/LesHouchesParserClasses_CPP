@@ -11,11 +11,11 @@ Block LHPCSPECTRUMPLOTCONTROL  # general parameters
               # as a percentage of the vertical range.
     14   50.0  # how much horizontal room to leave for each particle's
                # label, as a percentage of the width of the plotted line.
-    21   /opt/local/bin/gnuplot  # the path to the gnuplot executable.
+    21   /usr/bin/gnuplot  # the path to the gnuplot executable.
     22   /usr/bin/latex  # the path to the latex executable.
     23   /usr/bin/dvips  # the path to the dvips executable.
     24   /usr/bin/ps2eps  # the path to the ps2eps (or ps2epsi) executable.
-    25   /usr/bin/rm  # the path to the file deletion executable.
+    25   /bin/rm  # the path to the file deletion executable.
     26   /bin/mv  # the path to the file moving executable.
 Block LHPCSPECTRUMPLOTPARTICLES  # how to plot the mass of each particle.
                                  # input "show palette colornames" in

@@ -18,6 +18,7 @@
 #include "BlockClasses/SameNameBlockSet.hpp"
 #include "SlhaBlock.hpp"
 #include "BlockClasses/JustSingleValueBlock.hpp"
+#include "BlockClasses/SinglyIndexedMultiblock.hpp"
 #include "BlockClasses/SparseSinglyIndexedBlock.hpp"
 #include "BlockClasses/SparseDoublyIndexedBlock.hpp"
 #include "BlockClasses/DenseSinglyIndexedBlock.hpp"

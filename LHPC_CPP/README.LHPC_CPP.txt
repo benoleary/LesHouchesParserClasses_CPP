@@ -320,6 +320,8 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.hpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.cpp
@@ -342,6 +344,7 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/LinesAsStringsBlock.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.cpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SinglyIndexedMultiblock.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SparseDoublyIndexedBlock.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SparseSinglyIndexedBlock.hpp
  12 files in
@@ -356,6 +359,7 @@ The C++ files of LesHouchesParserClasses are:
    - JustSingleValue.hpp
    - LinesAsStrings.hpp
    - LinesAsStrings.cpp
+   - MultipleSinglyIndexed.hpp
    - SparseDoublyIndexed.hpp
    - SparseSinglyIndexed.hpp
  LHPC_CPP/LHEF.hpp

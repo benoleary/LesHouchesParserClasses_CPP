@@ -47,9 +47,24 @@ namespace LHPC
          * than copying in a new element at the sought indices if there isn't
          * an entry there already.
          */
+        ValueClass&
+        operator()( std::pair< int, int > const& indexPair );
+        /* this returns the ValueClass mapped to by indexPair.first &
+         * indexPair.second. if there is no element at the sought indices, a
+         * new one is made & copied from defaultUnsetValue.
+         */
+        ValueClass const&
+        operator()( std::pair< int, int > const& indexPair ) const;
+        /* const version of above, though it returns defaultUnsetValue rather
+         * than copying in a new element at the sought indices if there isn't
+         * an entry there already.
+         */
         bool
         hasEntry( int const firstIndex,
                   int const secondIndex ) const;
+        // this returns true if there is an entry at the sought indices.
+        bool
+        hasEntry( std::pair< int, int > const& indexPair ) const;
         // this returns true if there is an entry at the sought indices.
         virtual std::string const&
         getAsString();
@@ -137,6 +152,42 @@ namespace LHPC
       }
 
       template< class ValueClass >
+      inline ValueClass&
+      SparseDoublyIndexed< ValueClass >::operator()(
+                                       std::pair< int, int > const& indexPair )
+      /* this returns the ValueClass mapped to by indexPair.first &
+       * indexPair.second. if there is no element at the sought indices, a
+       * new one is made & copied from defaultUnsetValue.
+       */
+      {
+        if( 0 >= valueMap.count( indexPair ) )
+        {
+          valueMap[ indexPair ] = this->defaultUnsetValue;
+        }
+        return valueMap[ indexPair ];
+      }
+
+      template< class ValueClass >
+      inline ValueClass const&
+      SparseDoublyIndexed< ValueClass >::operator()(
+                                 std::pair< int, int > const& indexPair ) const
+      /* const version of above, though it returns defaultUnsetValue rather
+       * than copying in a new element at the sought indices if there isn't
+       * an entry there already.
+       */
+      {
+        mapIterator valueFinder( valueMap.find( indexPair ) );
+        if( valueMap.end() != valueFinder )
+        {
+          return valueFinder->second;
+        }
+        else
+        {
+          return this->defaultUnsetValue;
+        }
+      }
+
+      template< class ValueClass >
       inline bool
       SparseDoublyIndexed< ValueClass >::hasEntry( int const firstIndex,
                                                   int const secondIndex ) const
@@ -144,6 +195,15 @@ namespace LHPC
       {
         return ( 0 < valueMap.count( std::pair< int, int >( firstIndex,
                                                             secondIndex ) ) );
+      }
+
+      template< class ValueClass >
+      inline bool
+      SparseDoublyIndexed< ValueClass >::hasEntry(
+                                 std::pair< int, int > const& indexPair ) const
+      // this returns true if there is an entry at soughtIndex.
+      {
+        return ( 0 < valueMap.count( indexPair ) );
       }
 
       template< class ValueClass >

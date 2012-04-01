@@ -67,7 +67,7 @@ namespace LHPC
     // then the masses from the FMASS block are recorded:
     if( NULL != fmassMap )
     {
-      std::map< int, ExtendedMass >::const_iterator
+      std::multimap< int, ExtendedMass >::const_iterator
       fmassMapIterator( fmassMap->begin() );
       while( fmassMap->end() != fmassMapIterator )
       {

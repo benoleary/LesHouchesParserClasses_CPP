@@ -50,7 +50,7 @@ namespace LHPC
       isFmassBlock() const;
       // this returns false. only a specific derived class should over-ride it
       // to return true if it is actually an interpreter for an FMASS block.
-      virtual std::map< int, ExtendedMass > const*
+      virtual std::multimap< int, ExtendedMass > const*
       getFmassMap() const;
       // this returns NULL. only a specific derived class should over-ride it
       // to return a non-NULL pointer.
@@ -95,7 +95,7 @@ namespace LHPC
       return false;
     }
 
-    inline std::map< int, ExtendedMass > const*
+    inline std::multimap< int, ExtendedMass > const*
     BaseSlhaBlock::getFmassMap() const
     {
       return NULL;

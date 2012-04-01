@@ -59,6 +59,7 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp \
  SlhaSpectrumPlottingClasses/LineData.cpp \
  SlhaSpectrumPlottingClasses/SpectrumPlotter.cpp \
+ SusyLesHouchesAccordClasses/FlhaOne.cpp \
  SusyLesHouchesAccordClasses/SlhaOne.cpp \
  SusyLesHouchesAccordClasses/SlhaParser.cpp \
  SusyLesHouchesAccordClasses/SlhaTwo.cpp \

@@ -1,7 +1,7 @@
 /*
- * SparseSinglyIndexed.hpp
+ * MultipleSinglyIndexed.hpp
  *
- *  Created on: Feb 7, 2012
+ *  Created on: Apr 1, 2012 (really!)
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,10 +11,11 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#ifndef SPARSESINGLYINDEXED_HPP_
-#define SPARSESINGLYINDEXED_HPP_
+#ifndef MULTIPLESINGLYINDEXED_HPP_
+#define MULTIPLESINGLYINDEXED_HPP_
 
 #include <map>
+#include <list>
 #include "IndexedInterpreter.hpp"
 
 namespace LHPC
@@ -26,33 +27,30 @@ namespace LHPC
       // this template class interprets SLHA blocks that have a single int
       // index with a single ValueClass value.
       template< class ValueClass >
-      class SparseSinglyIndexed : public IndexedInterpreter< ValueClass >
+      class MultipleSinglyIndexed : public IndexedInterpreter< ValueClass >
       {
       public:
-        SparseSinglyIndexed();
+        MultipleSinglyIndexed();
         virtual
-        ~SparseSinglyIndexed();
+        ~MultipleSinglyIndexed();
 
-        ValueClass&
+        std::list< ValueClass* >
         operator()( int const soughtIndex );
-        /* this returns the ValueClass mapped to by soughtIndex. if there is no
-         * element at soughtIndex, a new one is made & copied from
-         * defaultUnsetValue.
+        /* this returns a std::list of pointers to the ValueClass instances
+         * mapped to by soughtIndex. if there is no element at soughtIndex, an
+         * empty std::list is returned.
          */
-        ValueClass const&
+        std::list< ValueClass const* >
         operator()( int const soughtIndex ) const;
-        /* const version of above, though it returns defaultUnsetValue rather
-         * than copying in a new element at soughtIndex if there isn't an entry
-         * there already.
-         */
-        ValueClass&
+        // const version of above.
+        std::list< ValueClass* >
         operator[]( int const soughtIndex ) { return (*this)( soughtIndex ); }
-        ValueClass const&
+        std::list< ValueClass* > const
         operator[]( int const soughtIndex ) const { return (*this)(
                                                                soughtIndex ); }
-        std::map< int, ValueClass >&
+        std::multimap< int, ValueClass >&
         getValueMap();
-        std::map< int, ValueClass > const&
+        std::multimap< int, ValueClass > const&
         getValueMap() const;
         bool
         hasEntry( int const soughtIndex ) const;
@@ -67,9 +65,9 @@ namespace LHPC
 
       protected:
         typedef typename
-        std::map< int, ValueClass >::const_iterator mapIterator;
+        std::multimap< int, ValueClass >::const_iterator mapIterator;
 
-        std::map< int, ValueClass > valueMap;
+        std::multimap< int, ValueClass > valueMap;
         std::pair< int, ValueClass > valueRecorder;
 
         virtual void
@@ -82,7 +80,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed() :
+      MultipleSinglyIndexed< ValueClass >::MultipleSinglyIndexed() :
           IndexedInterpreter< ValueClass >(),
           valueMap(),
           valueRecorder()
@@ -92,64 +90,64 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      SparseSinglyIndexed< ValueClass >::~SparseSinglyIndexed()
+      MultipleSinglyIndexed< ValueClass >::~MultipleSinglyIndexed()
       {
         // does nothing.
       }
 
-
       template< class ValueClass >
-      inline ValueClass&
-      SparseSinglyIndexed< ValueClass >::operator()( int const soughtIndex )
-      /* this returns the ValueClass mapped to by soughtIndex for the data
-       * with lowest energy scale. if there is no element at soughtIndex, a new
-       * one is made & copied from defaultUnsetValue.
+      inline std::list< ValueClass* >
+      MultipleSinglyIndexed< ValueClass >::operator()( int const soughtIndex )
+      /* this returns a std::list of pointers to the ValueClass instances
+       * mapped to by soughtIndex. if there is no element at soughtIndex, an
+       * empty std::list is returned.
        */
       {
-        if( 0 >= valueMap.count( soughtIndex ) )
+        std::list< ValueClass* > returnList;
+        std::pair< mapIterator, mapIterator >
+        rangeIterators( valueMap.equal_range( soughtIndex ) );
+        while( rangeIterators.first != rangeIterators.second )
         {
-          valueMap[ soughtIndex ] = this->defaultUnsetValue;
+          returnList.push_back( &(rangeIterators.first->second) );
+          ++(rangeIterators.first);
         }
-        return valueMap[ soughtIndex ];
+        return returnList;
       }
 
       template< class ValueClass >
-      inline ValueClass const&
-      SparseSinglyIndexed< ValueClass >::operator()(
+      inline std::list< ValueClass const* >
+      MultipleSinglyIndexed< ValueClass >::operator()(
                                                   int const soughtIndex ) const
-      /* const version of above, though it returns defaultUnsetValue rather
-       * than copying in a new element at soughtIndex if there isn't an entry
-       * there already.
-       */
+      // const version of above.
       {
-        mapIterator valueFinder( valueMap.find( soughtIndex ) );
-        if( valueMap.end() != valueFinder )
+        std::list< ValueClass const* > returnList;
+        std::pair< mapIterator, mapIterator >
+        rangeIterators( valueMap.equal_range( soughtIndex ) );
+        while( rangeIterators.first != rangeIterators.second )
         {
-          return valueFinder->second;
+          returnList.push_back( &(rangeIterators.first->second) );
+          ++(rangeIterators.first);
         }
-        else
-        {
-          return this->defaultUnsetValue;
-        }
+        return returnList;
       }
 
       template< class ValueClass >
-      inline std::map< int, ValueClass >&
-      SparseSinglyIndexed< ValueClass >::getValueMap()
+      inline std::multimap< int, ValueClass >&
+      MultipleSinglyIndexed< ValueClass >::getValueMap()
       {
         return valueMap;
       }
 
       template< class ValueClass >
-      inline std::map< int, ValueClass > const&
-      SparseSinglyIndexed< ValueClass >::getValueMap() const
+      inline std::multimap< int, ValueClass > const&
+      MultipleSinglyIndexed< ValueClass >::getValueMap() const
       {
         return valueMap;
       }
 
       template< class ValueClass >
       inline bool
-      SparseSinglyIndexed< ValueClass >::hasEntry(
+      MultipleSinglyIndexed< ValueClass >::hasEntry(
                                                   int const soughtIndex ) const
       // this returns true if there is an entry at soughtIndex.
       {
@@ -158,7 +156,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline std::string const&
-      SparseSinglyIndexed< ValueClass >::getAsString()
+      MultipleSinglyIndexed< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
@@ -185,14 +183,14 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      SparseSinglyIndexed< ValueClass >::clearEntries()
+      MultipleSinglyIndexed< ValueClass >::clearEntries()
       {
         valueMap.clear();
       }
 
       template< class ValueClass >
       inline void
-      SparseSinglyIndexed< ValueClass >::interpretCurrentStringBlock()
+      MultipleSinglyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
         for( int whichLine( this->currentStringBlock->getNumberOfBodyLines() );
              0 < whichLine;
@@ -221,4 +219,4 @@ namespace LHPC
 
 }
 
-#endif /* SPARSESINGLYINDEXED_HPP_ */
+#endif /* MULTIPLESINGLYINDEXED_HPP_ */

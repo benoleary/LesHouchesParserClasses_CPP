@@ -32,7 +32,7 @@ namespace LHPC
     ~SpectrumUpdater();
 
     void
-    setFmassMap( std::map< int, ExtendedMass > const* fmassMap );
+    setFmassMap( std::multimap< int, ExtendedMass > const* fmassMap );
     void
     setMassMap( std::map< int, double > const* massMap );
     bool
@@ -49,7 +49,7 @@ namespace LHPC
 
 
   protected:
-    std::map< int, ExtendedMass > const* fmassMap;
+    std::multimap< int, ExtendedMass > const* fmassMap;
     std::map< int, double > const* massMap;
     bool isHoldingDecayFlag;
     int decayerCode;
@@ -64,7 +64,8 @@ namespace LHPC
 
 
   inline void
-  SpectrumUpdater::setFmassMap( std::map< int, ExtendedMass > const* fmassMap )
+  SpectrumUpdater::setFmassMap(
+                           std::multimap< int, ExtendedMass > const* fmassMap )
   {
     this->fmassMap = fmassMap;
   }

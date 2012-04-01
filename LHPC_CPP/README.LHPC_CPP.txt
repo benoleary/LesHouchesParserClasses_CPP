@@ -191,6 +191,15 @@
 
 
 CHANGELOG:
+ * 1st April 2012: version 0.3.0 released!
+ - New templates (DoublyIndexedMultipleEntriesBlock,
+   SinglyIndexedMultipleEntriesBlock, SparseQuadruplyIndexedBlock,
+   MultipleDoublyIndexed, MultipleSinglyIndexed, SparseQuadruplyIndexed) &
+   classes to go in them (RunningConstant, RunningConstantError,
+   FlavorObservable, FlavorObservableError) (& the functionality of using
+   std::pair< double, double > in the templates is now there) should allow the
+   full FLHA to be covered. Not yet tested though.
+   
  * 19th March 2012: version 0.2.2 released!
  - Fixed incorrect command to run ps2epsi from wrong
    "ps2epsi - f LHPC_SpectrumPlotter_LaTeX.ps" to correct
@@ -326,6 +335,8 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservable.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservable.cpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservableError.hpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservableError.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
@@ -337,7 +348,7 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
- 17 files in
+ 18 files in
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
    - BaseSlhaBlock.hpp
    - BaseSlhaBlock.cpp
@@ -346,6 +357,7 @@ The C++ files of LesHouchesParserClasses are:
    - DenseDoublyIndexedBlock.hpp
    - DenseSinglyIndexedBlock.hpp
    - DenseTriplyIndexedBlock.hpp
+   - DoublyIndexedMultipleEntriesBlock.hpp
    - IndexedBlockTemplate.hpp
    - JustSingleValueBlock.hpp
    - LinesAsStringsBlock.hpp
@@ -356,7 +368,7 @@ The C++ files of LesHouchesParserClasses are:
    - SparseDoublyIndexedBlock.hpp
    - SparseSinglyIndexedBlock.hpp
    - SparseQuadruplyIndexedBlock.hpp
- 14 files in
+ 15 files in
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/InterpreterClasses/:
    - BlockInterpreter.hpp
    - BlockInterpreter.cpp
@@ -368,6 +380,7 @@ The C++ files of LesHouchesParserClasses are:
    - JustSingleValue.hpp
    - LinesAsStrings.hpp
    - LinesAsStrings.cpp
+   - MultipleDoublyIndexed.hpp
    - MultipleSinglyIndexed.hpp
    - SparseDoublyIndexed.hpp
    - SparseSinglyIndexed.hpp

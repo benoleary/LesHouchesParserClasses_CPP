@@ -62,7 +62,7 @@ int main( int argumentCount,
 
     // both FMASS & MASS are searched for:
     LHPC::SLHA::SpectrumPlotter::FmassBlock fmassBlock( "FMASS",
-                                                        LHPC::ExtendedMass(),
+                                                       LHPC::RunningConstant(),
                                                         isVerbose );
     spectrumParser.registerBlock( fmassBlock );
     LHPC::SLHA::SpectrumPlotter::MassBlock massBlock( "MASS",

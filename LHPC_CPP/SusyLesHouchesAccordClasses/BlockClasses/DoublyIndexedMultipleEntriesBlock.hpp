@@ -1,7 +1,7 @@
 /*
- * DenseSinglyIndexedBlock.hpp
+ * DoublyIndexedMultipleEntriesBlock.hpp
  *
- *  Created on: Mar 12, 2012
+ *  Created on: Apr 1, 2012 (really!)
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,11 +11,12 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#ifndef DENSESINGLYINDEXEDBLOCK_HPP_
-#define DENSESINGLYINDEXEDBLOCK_HPP_
+#ifndef DOUBLYINDEXEDMULTIPLEENTRIESBLOCK_HPP_
+#define DOUBLYINDEXEDMULTIPLEENTRIESBLOCK_HPP_
 
+#include "../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
 #include "IndexedBlockTemplate.hpp"
-#include "InterpreterClasses/DenseSinglyIndexed.hpp"
+#include "InterpreterClasses/MultipleDoublyIndexed.hpp"
 
 namespace LHPC
 {
@@ -23,24 +24,28 @@ namespace LHPC
   {
     /* this template class interprets all the blocks with the same name, though
      * differing scale values, which are interpreted as having a single int
-     * index which has to have entries for each value, beginning with index 1.
+     * index which does not have to have entries for each value (nor even
+     * necessarily positive index values), allowing for multiple entries with
+     * the same index.
      */
     template< class ValueClass >
-    class DenseSinglyIndexedBlock : public IndexedBlockTemplate< ValueClass,
-                           InterpreterClass::DenseSinglyIndexed< ValueClass > >
+    class DoublyIndexedMultipleEntriesBlock : public IndexedBlockTemplate<
+                                                                    ValueClass,
+                        InterpreterClass::MultipleDoublyIndexed< ValueClass > >
     {
     public:
-      DenseSinglyIndexedBlock( std::string const& blockName,
-                               ValueClass const& defaultUnsetValue,
-                               bool const& isVerbose,
-                               int const indexDigits = 5 );
+      DoublyIndexedMultipleEntriesBlock( std::string const& blockName,
+                                         ValueClass const& defaultUnsetValue,
+                                         bool const& isVerbose,
+                                         int const firstIndexDigits = 5,
+                                         int const secondIndexDigits = 5 );
       virtual
-      ~DenseSinglyIndexedBlock();
+      ~DoublyIndexedMultipleEntriesBlock();
 
-      ValueClass&
+      std::list< ValueClass* >
       operator()( int const soughtIndex );
       // this returns operator() of the lowest-scale interpreter.
-      ValueClass const&
+      std::list< ValueClass const* >
       operator()( int const soughtIndex ) const;
       // const version of above.
       bool
@@ -54,41 +59,44 @@ namespace LHPC
 
     template< class ValueClass >
     inline
-    DenseSinglyIndexedBlock< ValueClass >::DenseSinglyIndexedBlock(
+    DoublyIndexedMultipleEntriesBlock< ValueClass
+                                          >::DoublyIndexedMultipleEntriesBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
-                                                      int const indexDigits ) :
+                                                    int const firstIndexDigits,
+                                                int const secondIndexDigits ) :
         IndexedBlockTemplate< ValueClass,
-                          InterpreterClass::DenseSinglyIndexed< ValueClass > >(
+                       InterpreterClass::MultipleDoublyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                      isVerbose,
-                                                         std::vector< int >( 1,
-                                                                indexDigits ) )
+                           BOL::Vi( firstIndexDigits ).e( secondIndexDigits ) )
     {
       // just an initialization list.
     }
 
     template< class ValueClass >
     inline
-    DenseSinglyIndexedBlock< ValueClass >::~DenseSinglyIndexedBlock()
+    DoublyIndexedMultipleEntriesBlock< ValueClass
+                                        >::~DoublyIndexedMultipleEntriesBlock()
     {
       // does nothing.
     }
 
 
     template< class ValueClass >
-    inline ValueClass&
-    DenseSinglyIndexedBlock< ValueClass >::operator()( int const soughtIndex )
+    inline std::list< ValueClass* >
+    DoublyIndexedMultipleEntriesBlock< ValueClass >::operator()(
+                                                        int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
       return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
-    inline ValueClass const&
-    DenseSinglyIndexedBlock< ValueClass >::operator()(
+    inline std::list< ValueClass const* >
+    DoublyIndexedMultipleEntriesBlock< ValueClass >::operator()(
                                                   int const soughtIndex ) const
     // const version of above.
     {
@@ -97,18 +105,15 @@ namespace LHPC
 
     template< class ValueClass >
     inline bool
-    DenseSinglyIndexedBlock< ValueClass >::hasEntry(
+    DoublyIndexedMultipleEntriesBlock< ValueClass >::hasEntry(
                                                   int const soughtIndex ) const
-    // derived classes over-ride this to interpret their data as a
-    // std::string.
+    // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     {
-      return
-      this->DataBlocks[ this->lowestScaleIndex ].hasEntry( soughtIndex );
+      return this->DataBlocks[ this->lowestIndex ].hasEntry( soughtIndex );
     }
 
   }  // end of SLHA namespace
 
 }  // end of LHPC namespace
 
-
-#endif /* DENSESINGLYINDEXEDBLOCK_HPP_ */
+#endif /* DOUBLYINDEXEDMULTIPLEENTRIESBLOCK_HPP_ */

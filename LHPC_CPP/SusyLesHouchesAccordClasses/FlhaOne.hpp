@@ -16,6 +16,8 @@
 
 #include "BlockTypes.hpp"
 #include "SlhaParser.hpp"
+#include "FlavorObservable.hpp"
+#include "FlavorObservableError.hpp"
 
 namespace LHPC
 {
@@ -45,8 +47,8 @@ namespace LHPC
     SLHA::DenseSinglyIndexedBlock< double > IMVCKM;
     SLHA::DenseSinglyIndexedBlock< double > UPMNS;
     SLHA::DenseSinglyIndexedBlock< double > IMUPMNS;
-    SLHA::SinglyIndexedMultiblock< ExtendedMass > FMASS;
-    SLHA::SinglyIndexedMultiblock< ExtendedMassError > FMASSERR;
+    SLHA::SinglyIndexedMultipleEntriesBlock< RunningConstant > FMASS;
+    SLHA::SinglyIndexedMultipleEntriesBlock< RunningConstantError > FMASSERR;
     SLHA::SparseSinglyIndexedBlock< double > FLIFE;
     SLHA::SparseSinglyIndexedBlock< std::pair< double, double > > FLIFEERR;
     SLHA::SparseDoublyIndexedBlock< double > FCONST;
@@ -54,20 +56,20 @@ namespace LHPC
     SLHA::SparseQuadruplyIndexedBlock< double > FCONSTRATIO;
     SLHA::SparseQuadruplyIndexedBlock< std::pair< double, double > >
     FCONSTRATIOERR;
-    SLHA::DoublyIndexedMultiblock< BagParameter > FBAG;
-    SLHA::DoublyIndexedMultiblock< BagParameterError > FBAGERR;
+    SLHA::DoublyIndexedMultipleEntriesBlock< RunningConstant > FBAG;
+    SLHA::DoublyIndexedMultipleEntriesBlock< RunningConstantError > FBAGERR;
     SLHA::SparseQuadruplyIndexedBlock< double > FWCOEFF;
     SLHA::SparseQuadruplyIndexedBlock< std::pair< double, double > >
     FWCOEFFERR;
     SLHA::SparseQuadruplyIndexedBlock< double > IMFWCOEFF;
     SLHA::SparseQuadruplyIndexedBlock< std::pair< double, double > >
     IMFWCOEFFERR;
-    SLHA::SparseSinglyIndexedBlock< FlavorObservable > FOBS;
-    SLHA::SparseSinglyIndexedBlock< FlavorObservableError > FOBSERR;
-    SLHA::SparseSinglyIndexedBlock< FlavorObservable > FOBSSM;
-    SLHA::SparseSinglyIndexedBlock< FlavorObservableError > FOBSSMERR;
-    SLHA::SparseSinglyIndexedBlock< FlavorObservable > FPARAM;
-    SLHA::SparseSinglyIndexedBlock< FlavorObservableError > FPARAMERR;
+    SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservable > FOBS;
+    SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservableError > FOBSERR;
+    SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservable > FOBSSM;
+    SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservableError > FOBSSMERR;
+    SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservable > FPARAM;
+    SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservableError > FPARAMERR;
 
 
   protected:

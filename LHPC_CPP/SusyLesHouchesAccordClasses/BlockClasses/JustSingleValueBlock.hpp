@@ -25,7 +25,7 @@ namespace LHPC
     // differing scale values, which are interpreted as having a single value.
     template< class ValueClass >
     class JustSingleValueBlock : public SlhaBlock< ValueClass,
-                             InterpreterClass::JustSingleValue< ValueClass > >
+                              InterpreterClass::JustSingleValue< ValueClass > >
     {
     public:
       JustSingleValueBlock( std::string const& blockName,

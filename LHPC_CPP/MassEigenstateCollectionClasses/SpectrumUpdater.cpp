@@ -67,7 +67,7 @@ namespace LHPC
     // then the masses from the FMASS block are recorded:
     if( NULL != fmassMap )
     {
-      std::multimap< int, ExtendedMass >::const_iterator
+      std::multimap< int, RunningConstant >::const_iterator
       fmassMapIterator( fmassMap->begin() );
       while( fmassMap->end() != fmassMapIterator )
       {
@@ -76,7 +76,10 @@ namespace LHPC
                                                codeMap );
         if( NULL != massEigenstateFiller )
         {
-          massEigenstateFiller->recordMass( fmassMapIterator->second.getMass(),
+          massEigenstateFiller->recordMass(
+                                           fmassMapIterator->second.getValue(),
+                                            0.0,
+                                            0.0,
                                           fmassMapIterator->second.getScheme(),
                                          fmassMapIterator->second.getScale() );
           // now the charge-conjugate is considered:
@@ -85,12 +88,47 @@ namespace LHPC
               < massEigenstateFiller->getAllRecordedMasses().size() )
           {
             massEigenstateFiller->getChargeConjugate().recordMass(
-                                            fmassMapIterator->second.getMass(),
+                                           fmassMapIterator->second.getValue(),
+                                                                   0.0,
+                                                                   0.0,
                                           fmassMapIterator->second.getScheme(),
                                          fmassMapIterator->second.getScale() );
           }
         }
         ++fmassMapIterator;
+      }
+    }
+
+    // then the mass errors from the FMASSERR block are recorded:
+    if( NULL != fmasserrMap )
+    {
+      std::multimap< int, RunningConstantError >::const_iterator
+      fmasserrMapIterator( fmasserrMap->begin() );
+      while( fmasserrMap->end() != fmasserrMapIterator )
+      {
+        massEigenstateFiller
+        = MassEigenstate::findPointerWithCode( fmasserrMapIterator->first,
+                                               codeMap );
+        if( NULL != massEigenstateFiller )
+        {
+          massEigenstateFiller->recordMassError(
+                             fmasserrMapIterator->second.getMinusUncertainty(),
+                              fmasserrMapIterator->second.getPlusUncertainty(),
+                                       fmasserrMapIterator->second.getScheme(),
+                                      fmasserrMapIterator->second.getScale() );
+          // now the charge-conjugate is considered:
+          if( !(massEigenstateFiller->isSelfConjugate()) )
+          {
+            massEigenstateFiller->getChargeConjugate().recordMassError(
+                             fmasserrMapIterator->second.getMinusUncertainty(),
+                              fmasserrMapIterator->second.getPlusUncertainty(),
+                                       fmasserrMapIterator->second.getScheme(),
+                                      fmasserrMapIterator->second.getScale() );
+            // recordMassError does nothing if it doesn't find a matching
+            // running mass.
+          }
+        }
+        ++fmasserrMapIterator;
       }
     }
 

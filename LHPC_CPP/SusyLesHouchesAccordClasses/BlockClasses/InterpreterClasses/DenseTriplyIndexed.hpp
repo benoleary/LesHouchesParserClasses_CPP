@@ -92,7 +92,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseTriplyIndexed< ValueClass >::DenseTriplyIndexed() :
-          IndexedInterpreter< ValueClass >(),
+          IndexedInterpreter< ValueClass >( 3 ),
           valueMatrixArray(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),
@@ -196,12 +196,11 @@ namespace LHPC
                  largestThirdIndex >= thirdIndex;
                  ++thirdIndex )
             {
-              this->stringInterpretation.append( this->indexToPrintingString(
-                                                                firstIndex ) );
-              this->stringInterpretation.append( this->indexToPrintingString(
-                                                               secondIndex ) );
-              this->stringInterpretation.append( this->indexToPrintingString(
-                                                                thirdIndex ) );
+              this->indexPrintingVector[ 0 ] = firstIndex;
+              this->indexPrintingVector[ 1 ] = secondIndex;
+              this->indexPrintingVector[ 2 ] = thirdIndex;
+              this->stringInterpretation.append(
+                                             this->indicesToPrintingString() );
               // SLHA indices are in the sane starts-at-one format, while C++
               // code uses the silly starts-at-zero format.
               this->stringInterpretation.append( this->valueToPrintingString(

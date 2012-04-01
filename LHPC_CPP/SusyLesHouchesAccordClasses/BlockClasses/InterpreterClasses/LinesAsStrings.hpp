@@ -34,10 +34,10 @@ namespace LHPC
 
         std::string
         operator()( int const whichLine ) const;
-        // this just returns the equivalent line from
+        // this just returns the equivalent line from currentStringBlock.
         std::string
-        operator[]( int const whichLine ) const { return (*this)(
-                                                                 whichLine ); }
+        operator[]( int const whichLine ) const
+        { return (*this)( whichLine ); }
         virtual std::string const&
         getAsString();
         // see base version's description.
@@ -57,7 +57,7 @@ namespace LHPC
 
       inline std::string
       LinesAsStrings::operator()( int const whichLine ) const
-      // const version of above.
+      // this just returns the equivalent line from currentStringBlock.
       {
         std::string returnString( "" );
         if( NULL != this->currentStringBlock )

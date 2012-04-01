@@ -28,26 +28,30 @@ namespace LHPC
       class IndexedInterpreter : public InterpreterTemplate< ValueClass >
       {
       public:
-        IndexedInterpreter();
+        IndexedInterpreter( int const numberOfIndices );
         virtual
         ~IndexedInterpreter();
 
         virtual void
-        setIndexDigits( int const indexDigits );
+        setIndexDigits( std::vector< int > const& indexDigitsVector );
 
 
       protected:
-        int indexDigits;
+        int const numberOfIndices;
+        std::vector< int > indexDigitsVector;
         // this is the number of characters to print before the value,
-        // including the characters used to print the index.
+        // including the characters used to print the index, for each index.
+        std::vector< int > indexPrintingVector;
         std::string indexPrintingString;
         std::string indexHoldingString;
         int indexPadding;
 
         std::string const&
-        indexToPrintingString( int indexToPrint );
-        // this puts a single space then indexToPrint with indexDigits into
-        // indexPrintingString & returns it.
+        indicesToPrintingString();
+        /* this puts a single space then each indexPrintingVector entry with
+         * its corresponding indexDigitsVector entry into indexPrintingString &
+         * returns it.
+         */
       };
 
 
@@ -56,9 +60,14 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      IndexedInterpreter< ValueClass >::IndexedInterpreter() :
+      IndexedInterpreter< ValueClass >::IndexedInterpreter(
+                                                  int const numberOfIndices ) :
           InterpreterTemplate< ValueClass >(),
-          indexDigits( 5 ),
+          numberOfIndices( numberOfIndices ),
+          indexDigitsVector( numberOfIndices,
+                             0 ),
+          indexPrintingVector( numberOfIndices,
+                               0 ),
           indexPrintingString( "" ),
           indexHoldingString( "" ),
           indexPadding( 0 )
@@ -76,31 +85,41 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      IndexedInterpreter< ValueClass >::setIndexDigits( int const indexDigits )
+      IndexedInterpreter< ValueClass >::setIndexDigits(
+                                  std::vector< int > const& indexDigitsVector )
       {
-        this->indexDigits = indexDigits;
+        this->indexDigitsVector = indexDigitsVector;
       }
 
       template< class ValueClass >
       inline std::string const&
-      IndexedInterpreter< ValueClass >::indexToPrintingString(
-                                                             int indexToPrint )
-      // this puts a single space then indexToPrint with indexDigits into
-      // indexPrintingString & returns it.
+      IndexedInterpreter< ValueClass >::indicesToPrintingString()
+      /* this puts a single space then each indexPrintingVector entry with
+       * its corresponding indexDigitsVector entry into indexPrintingString &
+       * returns it.
+       */
       {
-        indexHoldingString.assign(
-                BlockInterpreter::slhaIntHelper.intToString( indexToPrint ) );
-        indexPadding = ( indexDigits - indexHoldingString.size() + 1 );
-        if( 0 < indexPadding )
+        indexPrintingString.clear();
+        for( int whichIndex( 0 );
+             numberOfIndices > whichIndex;
+             ++whichIndex )
         {
-          indexPrintingString.assign( indexPadding,
-                                      ' ' );
+          indexHoldingString.assign(
+                                   BlockInterpreter::slhaIntHelper.intToString(
+                                         indexPrintingVector[ whichIndex ] ) );
+          indexPadding = ( indexDigitsVector[ whichIndex ]
+                           - indexHoldingString.size() + 1 );
+          if( 0 < indexPadding )
+          {
+            indexPrintingString.append( indexPadding,
+                                        ' ' );
+          }
+          else
+          {
+            indexPrintingString.append( " " );
+          }
+          indexPrintingString.append( indexHoldingString );
         }
-        else
-        {
-          indexPrintingString.assign( " " );
-        }
-        indexPrintingString.append( indexHoldingString );
         return indexPrintingString;
       }
 

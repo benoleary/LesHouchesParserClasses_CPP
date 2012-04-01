@@ -369,8 +369,9 @@ namespace LHPC
               &&
               ( (*fmassPointer)[ 0 ].hasEntry( whichMassEigenstate ) ) )
           {
-            massValue = ( unitFactor
-                          * (*fmassPointer)( whichMassEigenstate ).getMass() );
+            massValue
+            = ( unitFactor
+                * (*fmassPointer)( whichMassEigenstate ).getValue() );
             lastOperationSuccessful = true;
           }
           else if( ( NULL != massPointer )

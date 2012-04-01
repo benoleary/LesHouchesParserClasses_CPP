@@ -1,7 +1,7 @@
 /*
- * SparseDoublyIndexed.hpp
+ * MultipleDoublyIndexed.hpp
  *
- *  Created on: Mar 19, 2012
+ *  Created on: Apr 1, 2012 (really!)
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,10 +11,11 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#ifndef SPARSEDOUBLYINDEXED_HPP_
-#define SPARSEDOUBLYINDEXED_HPP_
+#ifndef MULTIPLEDOUBLYINDEXED_HPP_
+#define MULTIPLEDOUBLYINDEXED_HPP_
 
 #include <map>
+#include <list>
 #include "IndexedInterpreter.hpp"
 
 namespace LHPC
@@ -26,35 +27,36 @@ namespace LHPC
       // this template class interprets SLHA blocks that have a single int
       // index with a single ValueClass value.
       template< class ValueClass >
-      class SparseDoublyIndexed : public IndexedInterpreter< ValueClass >
+      class MultipleDoublyIndexed : public IndexedInterpreter< ValueClass >
       {
       public:
-        SparseDoublyIndexed();
+        MultipleDoublyIndexed();
         virtual
-        ~SparseDoublyIndexed();
+        ~MultipleDoublyIndexed();
 
-        ValueClass&
+        std::list< ValueClass* >
         operator()( std::pair< int, int > const& indexPair );
-        /* this returns the ValueClass mapped to by indexPair.first &
-         * indexPair.second. if there is no element at the sought indices, a
-         * new one is made & copied from defaultUnsetValue.
+        /* this returns a std::list of pointers to the ValueClass instances
+         * mapped to by indexPair.first & indexPair.second. if there is no
+         * element at the sought indices, an empty std::list is returned.
          */
-        ValueClass const&
+        std::list< ValueClass const* >
         operator()( std::pair< int, int > const& indexPair ) const;
-        /* const version of above, though it returns defaultUnsetValue rather
-         * than copying in a new element at the sought indices if there isn't
-         * an entry there already.
-         */
-        ValueClass&
+        // const version of above.
+        std::list< ValueClass* >
         operator()( int const firstIndex,
                     int const secondIndex )
         { return (*this)( std::make_pair( firstIndex,
                                           secondIndex ) ); }
-        ValueClass const&
+        std::list< ValueClass const* >
         operator()( int const firstIndex,
                     int const secondIndex ) const
         { return (*this)( std::make_pair( firstIndex,
                                           secondIndex ) ); }
+        std::multimap< std::pair< int, int >, ValueClass >&
+        getValueMap();
+        std::multimap< std::pair< int, int >, ValueClass > const&
+        getValueMap() const;
         bool
         hasEntry( std::pair< int, int > const& indexPair ) const;
         // this returns true if there is an entry at the sought indices.
@@ -70,17 +72,13 @@ namespace LHPC
         clearEntries();
         // derived classes should clear their interpreted values.
 
-        virtual void
-        setSecondIndexDigits( int const indexDigits );
-
 
       protected:
         typedef typename
-        std::map< std::pair< int, int >, ValueClass >::const_iterator
+        std::multimap< std::pair< int, int >, ValueClass >::const_iterator
         mapIterator;
 
-        std::map< std::pair< int, int >, ValueClass > valueMap;
-        std::pair< int, int > mapKey;
+        std::multimap< std::pair< int, int >, ValueClass > valueMap;
         std::pair< std::pair< int, int >, ValueClass > valueRecorder;
 
         virtual void
@@ -93,11 +91,9 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      SparseDoublyIndexed< ValueClass >::SparseDoublyIndexed() :
+      MultipleDoublyIndexed< ValueClass >::MultipleDoublyIndexed() :
           IndexedInterpreter< ValueClass >( 2 ),
           valueMap(),
-          mapKey( 0,
-                  0 ),
           valueRecorder()
       {
         // just an initialization list.
@@ -105,51 +101,65 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      SparseDoublyIndexed< ValueClass >::~SparseDoublyIndexed()
+      MultipleDoublyIndexed< ValueClass >::~MultipleDoublyIndexed()
       {
         // does nothing.
       }
 
-
       template< class ValueClass >
-      inline ValueClass&
-      SparseDoublyIndexed< ValueClass >::operator()(
+      inline std::list< ValueClass* >
+      MultipleDoublyIndexed< ValueClass >::operator()(
                                        std::pair< int, int > const& indexPair )
-      /* this returns the ValueClass mapped to by indexPair.first &
-       * indexPair.second. if there is no element at the sought indices, a
-       * new one is made & copied from defaultUnsetValue.
+      /* this returns a std::list of pointers to the ValueClass instances
+       * mapped to by indexPair.first & indexPair.second. if there is no
+       * element at the sought indices, an empty std::list is returned.
        */
       {
-        if( 0 >= valueMap.count( indexPair ) )
+        std::list< ValueClass* > returnList;
+        std::pair< mapIterator, mapIterator >
+        rangeIterators( valueMap.equal_range( indexPair ) );
+        while( rangeIterators.first != rangeIterators.second )
         {
-          valueMap[ indexPair ] = this->defaultUnsetValue;
+          returnList.push_back( &(rangeIterators.first->second) );
+          ++(rangeIterators.first);
         }
-        return valueMap[ indexPair ];
+        return returnList;
       }
 
       template< class ValueClass >
-      inline ValueClass const&
-      SparseDoublyIndexed< ValueClass >::operator()(
+      inline std::list< ValueClass const* >
+      MultipleDoublyIndexed< ValueClass >::operator()(
                                  std::pair< int, int > const& indexPair ) const
-      /* const version of above, though it returns defaultUnsetValue rather
-       * than copying in a new element at the sought indices if there isn't
-       * an entry there already.
-       */
+      // const version of above.
       {
-        mapIterator valueFinder( valueMap.find( indexPair ) );
-        if( valueMap.end() != valueFinder )
+        std::list< ValueClass const* > returnList;
+        std::pair< mapIterator, mapIterator >
+        rangeIterators( valueMap.equal_range( indexPair ) );
+        while( rangeIterators.first != rangeIterators.second )
         {
-          return valueFinder->second;
+          returnList.push_back( &(rangeIterators.first->second) );
+          ++(rangeIterators.first);
         }
-        else
-        {
-          return this->defaultUnsetValue;
-        }
+        return returnList;
+      }
+
+      template< class ValueClass >
+      inline std::multimap< std::pair< int, int >, ValueClass >&
+      MultipleDoublyIndexed< ValueClass >::getValueMap()
+      {
+        return valueMap;
+      }
+
+      template< class ValueClass >
+      inline std::multimap< std::pair< int, int >, ValueClass > const&
+      MultipleDoublyIndexed< ValueClass >::getValueMap() const
+      {
+        return valueMap;
       }
 
       template< class ValueClass >
       inline bool
-      SparseDoublyIndexed< ValueClass >::hasEntry(
+      MultipleDoublyIndexed< ValueClass >::hasEntry(
                                  std::pair< int, int > const& indexPair ) const
       // this returns true if there is an entry at soughtIndex.
       {
@@ -158,7 +168,7 @@ namespace LHPC
 
       template< class ValueClass >
       inline std::string const&
-      SparseDoublyIndexed< ValueClass >::getAsString()
+      MultipleDoublyIndexed< ValueClass >::getAsString()
       // see base version's description.
       {
         this->stringInterpretation.clear();
@@ -170,6 +180,14 @@ namespace LHPC
           this->stringInterpretation.append( this->indicesToPrintingString() );
           this->stringInterpretation.append( this->valueToPrintingString(
                                                        valueFinder->second ) );
+          /* negative particle codes can be avoided in any block, I think.
+           * well, the exact format is only specified for the MASS block, &
+           * in that case, negative particle codes can be avoided, since the
+           * charge-conjugate just has the same mass. if the charge-conjugate
+           * pair has a mass splitting, I think they are defined with 2
+           * separate codes. if negative codes end up here, it's not my
+           * fault...
+           */
           this->stringInterpretation.append( "\n" );
           ++valueFinder;
         }
@@ -178,14 +196,14 @@ namespace LHPC
 
       template< class ValueClass >
       inline void
-      SparseDoublyIndexed< ValueClass >::clearEntries()
+      MultipleDoublyIndexed< ValueClass >::clearEntries()
       {
         valueMap.clear();
       }
 
       template< class ValueClass >
       inline void
-      SparseDoublyIndexed< ValueClass >::interpretCurrentStringBlock()
+      MultipleDoublyIndexed< ValueClass >::interpretCurrentStringBlock()
       {
         for( int whichLine( this->currentStringBlock->getNumberOfBodyLines() );
              0 < whichLine;
@@ -223,4 +241,4 @@ namespace LHPC
 
 }
 
-#endif /* SPARSEDOUBLYINDEXED_HPP_ */
+#endif /* MULTIPLEDOUBLYINDEXED_HPP_ */

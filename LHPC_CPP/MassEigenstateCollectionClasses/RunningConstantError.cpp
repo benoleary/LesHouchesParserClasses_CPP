@@ -1,7 +1,7 @@
 /*
- * ExtendedMass.cpp
+ * RunningConstantError.cpp
  *
- *  Created on: Jan 8, 2012
+ *  Created on: Apr 1, 2012 (really!)
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)
  *      Copyright 2012 Ben O'Leary
  *
@@ -11,12 +11,11 @@
  *      on how to use these classes, and further details on the license.
  */
 
-#include "ExtendedMass.hpp"
+#include "RunningConstantError.hpp"
 
 namespace LHPC
 {
-  ExtendedMass::ExtendedMass() :
-      massValue( BOL::UsefulStuff::notANumber ),
+  RunningConstantError::RunningConstantError() :
       minusUncertainty( BOL::UsefulStuff::notANumber ),
       plusUncertainty( BOL::UsefulStuff::notANumber ),
       schemeType( -1 ),
@@ -25,8 +24,8 @@ namespace LHPC
     // just an initialization list.
   }
 
-  ExtendedMass::ExtendedMass( ExtendedMass const& copySource ) :
-      massValue( copySource.massValue ),
+  RunningConstantError::RunningConstantError(
+                                     RunningConstantError const& copySource ) :
       minusUncertainty( copySource.minusUncertainty ),
       plusUncertainty( copySource.plusUncertainty ),
       schemeType( copySource.schemeType ),
@@ -35,7 +34,7 @@ namespace LHPC
     // just an initialization list.
   }
 
-  ExtendedMass::~ExtendedMass()
+  RunningConstantError::~RunningConstantError()
   {
     // does nothing.
   }

@@ -44,10 +44,11 @@ namespace LHPC
         operator()( int const soughtIndex ) const;
         // const version of above.
         std::list< ValueClass* >
-        operator[]( int const soughtIndex ) { return (*this)( soughtIndex ); }
+        operator[]( int const soughtIndex )
+        { return (*this)( soughtIndex ); }
         std::list< ValueClass* > const
-        operator[]( int const soughtIndex ) const { return (*this)(
-                                                               soughtIndex ); }
+        operator[]( int const soughtIndex ) const
+        { return (*this)( soughtIndex ); }
         std::multimap< int, ValueClass >&
         getValueMap();
         std::multimap< int, ValueClass > const&
@@ -81,7 +82,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       MultipleSinglyIndexed< ValueClass >::MultipleSinglyIndexed() :
-          IndexedInterpreter< ValueClass >(),
+          IndexedInterpreter< ValueClass >( 1 ),
           valueMap(),
           valueRecorder()
       {
@@ -163,8 +164,8 @@ namespace LHPC
         mapIterator valueFinder( valueMap.begin() );
         while( valueFinder != valueMap.end() )
         {
-          this->stringInterpretation.append( this->indexToPrintingString(
-                                                        valueFinder->first ) );
+          this->indexPrintingVector[ 0 ] = valueFinder->first;
+          this->stringInterpretation.append( this->indicesToPrintingString() );
           this->stringInterpretation.append( this->valueToPrintingString(
                                                        valueFinder->second ) );
           /* negative particle codes can be avoided in any block, I think.

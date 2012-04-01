@@ -34,6 +34,9 @@ namespace LHPC
       ownsFmassBlock( false ),
       fmassBlockPointer( NULL ),
       fmassMap(),
+      ownsFmasserrBlock( false ),
+      fmasserrBlockPointer( NULL ),
+      fmasserrMap(),
       ownsMassBlock( false ),
       massBlockPointer( NULL ),
       massMap(),
@@ -87,6 +90,15 @@ namespace LHPC
         ownsFmassBlock = false;
       }
       fmassBlockPointer = &blockToUpdate;
+    }
+    else if( blockToUpdate.isFmasserrBlock() )
+    {
+      if( ownsFmasserrBlock )
+      {
+        delete fmasserrBlockPointer;
+        ownsFmasserrBlock = false;
+      }
+      fmasserrBlockPointer = &blockToUpdate;
     }
     else if( blockToUpdate.isMassBlock() )
     {
@@ -160,15 +172,17 @@ namespace LHPC
       {
         ownsFmassBlock = true;
         fmassBlockPointer
-        = new SLHA::SparseSinglyIndexedBlock< ExtendedMass >( "FMASS",
-                                                              ExtendedMass(),
-                                                              isVerbose,
-                                                              9 );
+        = new SLHA::SinglyIndexedMultipleEntriesBlock< RunningConstant >(
+                                                                       "FMASS",
+                                                             RunningConstant(),
+                                                                     isVerbose,
+                                                                          9 );
         blockMapIterator = blockMap.find( fmassBlockPointer->getName() );
         if( blockMap.end() == blockMapIterator )
         {
           mapInserter.first.assign( fmassBlockPointer->getName() );
-          currentBlockPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+          currentBlockPointer
+          = new SLHA::SameNameBlockSet( mapInserter.first );
           mapInserter.second = currentBlockPointer;
           blockMap.insert( mapInserter );
         }
@@ -177,6 +191,31 @@ namespace LHPC
           currentBlockPointer = blockMapIterator->second;
         }
         currentBlockPointer->registerObserver( fmassBlockPointer );
+      }
+      if( NULL == fmasserrBlockPointer )
+        // if there is at least 1 spectrum to update, but no fmasserr block...
+      {
+        ownsFmasserrBlock = true;
+        fmasserrBlockPointer
+        = new SLHA::SinglyIndexedMultipleEntriesBlock< RunningConstantError >(
+                                                                    "FMASSERR",
+                                                        RunningConstantError(),
+                                                                     isVerbose,
+                                                                           9 );
+        blockMapIterator = blockMap.find( fmasserrBlockPointer->getName() );
+        if( blockMap.end() == blockMapIterator )
+        {
+          mapInserter.first.assign( fmasserrBlockPointer->getName() );
+          currentBlockPointer
+          = new SLHA::SameNameBlockSet( mapInserter.first );
+          mapInserter.second = currentBlockPointer;
+          blockMap.insert( mapInserter );
+        }
+        else
+        {
+          currentBlockPointer = blockMapIterator->second;
+        }
+        currentBlockPointer->registerObserver( fmasserrBlockPointer );
       }
       if( NULL == massBlockPointer )
         // if there is at least 1 spectrum to update, but no mass block...
@@ -191,7 +230,8 @@ namespace LHPC
         if( blockMap.end() == blockMapIterator )
         {
           mapInserter.first.assign( massBlockPointer->getName() );
-          currentBlockPointer = new SLHA::SameNameBlockSet( mapInserter.first );
+          currentBlockPointer
+          = new SLHA::SameNameBlockSet( mapInserter.first );
           mapInserter.second = currentBlockPointer;
           blockMap.insert( mapInserter );
         }

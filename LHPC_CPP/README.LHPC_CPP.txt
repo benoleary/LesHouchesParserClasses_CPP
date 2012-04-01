@@ -281,6 +281,10 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/MassEigenstateCollectionClasses/PointersWithValue.hpp
  LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.hpp
  LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.cpp
+ LHPC_CPP/MassEigenstateCollectionClasses/RunningConstant.hpp
+ LHPC_CPP/MassEigenstateCollectionClasses/RunningConstant.cpp
+ LHPC_CPP/MassEigenstateCollectionClasses/RunningConstantError.hpp
+ LHPC_CPP/MassEigenstateCollectionClasses/RunningConstantError.cpp
  7 files and a subdirectory in
  LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrumClasses/:
  - CodesAndDataForMassEigenstates.hpp
@@ -320,6 +324,8 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservable.hpp
+ LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservable.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
@@ -331,23 +337,26 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
  LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseSlhaBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseSlhaBlock.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseStringBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/BaseStringBlock.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/DenseDoublyIndexedBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/DenseSinglyIndexedBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/DenseTriplyIndexedBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/IndexedBlockTemplate.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/JustSingleValueBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/LinesAsStringsBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/LinesAsStringsBlock.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SameNameBlockSet.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SinglyIndexedMultiblock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SparseDoublyIndexedBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/SparseSinglyIndexedBlock.hpp
- 12 files in
+ 17 files in
+ LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
+   - BaseSlhaBlock.hpp
+   - BaseSlhaBlock.cpp
+   - BaseStringBlock.hpp
+   - BaseStringBlock.cpp
+   - DenseDoublyIndexedBlock.hpp
+   - DenseSinglyIndexedBlock.hpp
+   - DenseTriplyIndexedBlock.hpp
+   - IndexedBlockTemplate.hpp
+   - JustSingleValueBlock.hpp
+   - LinesAsStringsBlock.hpp
+   - LinesAsStringsBlock.cpp
+   - SameNameBlockSet.hpp
+   - SameNameBlockSet.cpp
+   - SinglyIndexedMultipleEntriesBlock.hpp
+   - SparseDoublyIndexedBlock.hpp
+   - SparseSinglyIndexedBlock.hpp
+   - SparseQuadruplyIndexedBlock.hpp
+ 14 files in
  LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/InterpreterClasses/:
    - BlockInterpreter.hpp
    - BlockInterpreter.cpp
@@ -362,6 +371,7 @@ The C++ files of LesHouchesParserClasses are:
    - MultipleSinglyIndexed.hpp
    - SparseDoublyIndexed.hpp
    - SparseSinglyIndexed.hpp
+   - SparseQuadruplyIndexed.hpp
  LHPC_CPP/LHEF.hpp
  LHPC_CPP/LhefParserExample.cpp
  LHPC_CPP/LhpcSpectrumPlotter.cpp

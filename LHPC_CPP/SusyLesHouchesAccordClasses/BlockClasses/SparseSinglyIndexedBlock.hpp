@@ -77,7 +77,8 @@ namespace LHPC
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                      isVerbose,
-                                                                 indexDigits ),
+                                                         std::vector< int >( 1,
+                                                               indexDigits ) ),
         isMassBlockFlag( false )
     {
       if( this->nameMatches( "MASS" ) )

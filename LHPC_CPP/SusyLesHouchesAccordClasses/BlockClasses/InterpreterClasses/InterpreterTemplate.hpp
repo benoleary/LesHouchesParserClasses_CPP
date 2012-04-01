@@ -116,7 +116,9 @@ namespace LHPC
        * defaultUnsetValue.
        */
       {
-        return defaultUnsetValue;
+        //return defaultUnsetValue;
+        valueFromString.setFromString( stringToConvert );
+        return valueFromString;
       }
 
       template<>
@@ -142,6 +144,24 @@ namespace LHPC
       }
 
       template<>
+      inline std::pair< double, double > const&
+      InterpreterTemplate< std::pair< double, double > >::stringToValue(
+                                           std::string const& stringToConvert )
+      // this sets valueFromString according to the interpretation of
+      // stringToConvert.
+      {
+        this->currentWord.assign( BOL::StringParser::firstWordOf(
+                                                               stringToConvert,
+                                                       &(this->lineRemainderA),
+                              BOL::StringParser::whitespaceAndNewlineChars ) );
+        valueFromString.first
+        = BOL::StringParser::stringToDouble( this->currentWord );
+        valueFromString.second
+        = BOL::StringParser::stringToDouble( this->lineRemainderA );
+        return valueFromString;
+      }
+
+      template<>
       inline std::string const&
       InterpreterTemplate< std::string >::stringToValue(
                                            std::string const& stringToConvert )
@@ -152,7 +172,7 @@ namespace LHPC
         return valueFromString;
       }
 
-      template<>
+      /*template<>
       inline ExtendedMass const&
       InterpreterTemplate< ExtendedMass >::stringToValue(
                                            std::string const& stringToConvert )
@@ -173,7 +193,7 @@ namespace LHPC
                            BOL::StringParser::stringToInt( this->currentWord ),
                    BOL::StringParser::stringToDouble( this->lineRemainderB ) );
         return valueFromString;
-      }
+      }*/
 
       template< class ValueType >
       inline std::string const&
@@ -184,6 +204,7 @@ namespace LHPC
        * default error string.
        */
       {
+        stringFromValue.assign( valueToConvert.getAsString() );
         return stringFromValue;
       }
 
@@ -215,6 +236,21 @@ namespace LHPC
 
       template<>
       inline std::string const&
+      InterpreterTemplate< std::pair< double, double > >::valueToString(
+                            std::pair< double, double > const& valueToConvert )
+      // this sets stringFromValue according to the interpretation of
+      // valueToConvert.
+      {
+        stringFromValue.assign( slhaDoubleMaker.doubleToString(
+                                                      valueToConvert.first ) );
+        stringFromValue.append( "   " );
+        stringFromValue.append( slhaDoubleMaker.doubleToString(
+                                                     valueToConvert.second ) );
+        return stringFromValue;
+      }
+
+      template<>
+      inline std::string const&
       InterpreterTemplate< std::string >::valueToString(
                                             std::string const& valueToConvert )
       // this sets stringFromValue according to the interpretation of
@@ -224,7 +260,7 @@ namespace LHPC
         return stringFromValue;
       }
 
-      template<>
+      /*template<>
       inline std::string const&
       InterpreterTemplate< ExtendedMass >::valueToString(
                                            ExtendedMass const& valueToConvert )
@@ -232,7 +268,7 @@ namespace LHPC
       // valueToConvert.
       {
         stringFromValue.assign( slhaDoubleMaker.doubleToString(
-                                                  valueToConvert.getMass() ) );
+                                                  valueToConvert.getValue() ) );
         stringFromValue.append( "   " );
         stringFromValue.append( BOL::StringParser::intToString(
                                                     valueToConvert.getScheme(),
@@ -244,16 +280,14 @@ namespace LHPC
         stringFromValue.append( slhaDoubleMaker.doubleToString(
                                                  valueToConvert.getScale() ) );
         return stringFromValue;
-      }
+      }*/
 
       template< class ValueType >
       inline std::string const&
       InterpreterTemplate< ValueType >::valueToPrintingString(
                                                 ValueType const& valueToPrint )
-      /* this puts 3 spaces into returnString, then
-       * valueToString( valueToPrint ), then either way afterwards three more
-       * spaces then "# no comment\n" is appended.
-       */
+      // this puts 3 spaces into returnString, then
+      // valueToString( valueToPrint ).
       {
         valuePrintingString.assign( "   " );
         valuePrintingString.append( this->valueToString( valueToPrint ) );

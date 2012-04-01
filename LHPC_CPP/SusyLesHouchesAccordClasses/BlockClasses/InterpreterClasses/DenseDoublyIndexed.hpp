@@ -49,10 +49,22 @@ namespace LHPC
          * than copying in a new element at the sought indices if there isn't
          * an entry there already.
          */
+        ValueClass&
+        operator()( std::pair< int, int > const& indexPair )
+        { return (*this)( indexPair.first,
+                          indexPair.second ); }
+        ValueClass const&
+        operator()( std::pair< int, int > const& indexPair ) const
+        { return (*this)( indexPair.first,
+                          indexPair.second ); }
         bool
         hasEntry( int const firstIndex,
                   int const secondIndex ) const;
         // this returns true if there is an entry at the sought indices.
+        bool
+        hasEntry( std::pair< int, int > const& indexPair ) const
+        { return hasEntry( indexPair.first,
+                           indexPair.second ); }
         virtual std::string const&
         getAsString();
         // see base version's description.
@@ -84,7 +96,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseDoublyIndexed< ValueClass >::DenseDoublyIndexed() :
-          IndexedInterpreter< ValueClass >(),
+          IndexedInterpreter< ValueClass >( 2 ),
           valueMatrix(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),
@@ -172,10 +184,10 @@ namespace LHPC
                largestSecondIndex >= secondIndex;
                ++secondIndex )
           {
-            this->stringInterpretation.append( this->indexToPrintingString(
-                                                                firstIndex ) );
-            this->stringInterpretation.append( this->indexToPrintingString(
-                                                               secondIndex ) );
+            this->indexPrintingVector[ 0 ] = firstIndex;
+            this->indexPrintingVector[ 1 ] = secondIndex;
+            this->stringInterpretation.append(
+                                             this->indicesToPrintingString() );
             // SLHA indices are in the sane starts-at-one format, while C++
             // code uses the silly starts-at-zero format.
             this->stringInterpretation.append( this->valueToPrintingString(

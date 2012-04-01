@@ -34,7 +34,9 @@ namespace LHPC
       DenseTriplyIndexedBlock( std::string const& blockName,
                                ValueClass const& defaultUnsetValue,
                                bool const& isVerbose,
-                               int const indexDigits = 2 );
+                               int const firstIndexDigits = 2,
+                               int const secondIndexDigits = 2,
+                               int const thirdIndexDigits = 2 );
       virtual
       ~DenseTriplyIndexedBlock();
 
@@ -66,13 +68,17 @@ namespace LHPC
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
-                                                      int const indexDigits ) :
+                                                    int const firstIndexDigits,
+                                                   int const secondIndexDigits,
+                                                 int const thirdIndexDigits ) :
         IndexedBlockTemplate< ValueClass,
                           InterpreterClass::DenseTriplyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                      isVerbose,
-                                                                  indexDigits )
+                                                   BOL::Vi( firstIndexDigits )(
+                                                         secondIndexDigits ).e(
+                                                           thirdIndexDigits ) )
     {
       // just an initialization list.
     }

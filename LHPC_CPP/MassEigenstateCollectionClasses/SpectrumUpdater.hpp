@@ -20,6 +20,8 @@
 #include "../BOLlib/Classes/StringParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "MassEigenstate.hpp"
+#include "RunningConstant.hpp"
+#include "RunningConstantError.hpp"
 
 namespace LHPC
 {
@@ -32,7 +34,10 @@ namespace LHPC
     ~SpectrumUpdater();
 
     void
-    setFmassMap( std::multimap< int, ExtendedMass > const* fmassMap );
+    setFmassMap( std::multimap< int, RunningConstant > const* fmassMap );
+    void
+    setFmasserrMap(
+               std::multimap< int, RunningConstantError > const* fmasserrMap );
     void
     setMassMap( std::map< int, double > const* massMap );
     bool
@@ -49,7 +54,8 @@ namespace LHPC
 
 
   protected:
-    std::multimap< int, ExtendedMass > const* fmassMap;
+    std::multimap< int, RunningConstant > const* fmassMap;
+    std::multimap< int, RunningConstantError > const* fmasserrMap;
     std::map< int, double > const* massMap;
     bool isHoldingDecayFlag;
     int decayerCode;
@@ -65,9 +71,16 @@ namespace LHPC
 
   inline void
   SpectrumUpdater::setFmassMap(
-                           std::multimap< int, ExtendedMass > const* fmassMap )
+                        std::multimap< int, RunningConstant > const* fmassMap )
   {
     this->fmassMap = fmassMap;
+  }
+
+  inline void
+  SpectrumUpdater::setFmasserrMap(
+                std::multimap< int, RunningConstantError > const* fmasserrMap )
+  {
+    this->fmasserrMap = fmasserrMap;
   }
 
   inline void

@@ -14,13 +14,17 @@
 #ifndef BLOCKTYPES_HPP_
 #define BLOCKTYPES_HPP_
 
-#include "../MassEigenstateCollectionClasses/ExtendedMass.hpp"
+#include "../MassEigenstateCollectionClasses/RunningConstant.hpp"
+#include "../MassEigenstateCollectionClasses/RunningConstantError.hpp"
+#include "FlavorObservable.hpp"
 #include "BlockClasses/SameNameBlockSet.hpp"
 #include "SlhaBlock.hpp"
 #include "BlockClasses/JustSingleValueBlock.hpp"
-#include "BlockClasses/SinglyIndexedMultiblock.hpp"
+#include "BlockClasses/SinglyIndexedMultipleEntriesBlock.hpp"
+#include "BlockClasses/DoublyIndexedMultipleEntriesBlock.hpp"
 #include "BlockClasses/SparseSinglyIndexedBlock.hpp"
 #include "BlockClasses/SparseDoublyIndexedBlock.hpp"
+#include "BlockClasses/SparseQuadruplyIndexedBlock.hpp"
 #include "BlockClasses/DenseSinglyIndexedBlock.hpp"
 #include "BlockClasses/DenseDoublyIndexedBlock.hpp"
 #include "BlockClasses/DenseTriplyIndexedBlock.hpp"

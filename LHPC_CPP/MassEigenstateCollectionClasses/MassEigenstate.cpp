@@ -305,10 +305,14 @@ namespace LHPC
 
   void
   MassEigenstate::recordMass( double const massValue,
+                              double const minusUncertainty,
+                              double const plusUncertainty,
                               int const schemeType,
                               double const evaluationScale )
   {
     runningMasses.newEnd().setValues( massValue,
+                                      minusUncertainty,
+                                      plusUncertainty,
                                       schemeType,
                                       evaluationScale );
     runningMassesAsVector.push_back( runningMasses.getPointer(

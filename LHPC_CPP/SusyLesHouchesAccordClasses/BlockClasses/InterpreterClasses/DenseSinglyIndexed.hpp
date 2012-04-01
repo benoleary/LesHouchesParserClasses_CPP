@@ -45,10 +45,11 @@ namespace LHPC
          * entry there already.
          */
         ValueClass&
-        operator[]( int const soughtIndex ) { return (*this)( soughtIndex ); }
+        operator[]( int const soughtIndex )
+        { return (*this)( soughtIndex ); }
         ValueClass const&
-        operator[]( int const soughtIndex ) const { return (*this)(
-                                                               soughtIndex ); }
+        operator[]( int const soughtIndex ) const
+        { return (*this)( soughtIndex ); }
         bool
         hasEntry( int const soughtIndex ) const;
         // this returns true if there is an entry at soughtIndex.
@@ -79,7 +80,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseSinglyIndexed< ValueClass >::DenseSinglyIndexed() :
-          IndexedInterpreter< ValueClass >(),
+          IndexedInterpreter< ValueClass >( 1 ),
           valueVector(),
           recordingIndex( 0 )
       {
@@ -150,8 +151,8 @@ namespace LHPC
              valueVector.size() >= soughtIndex;
              ++soughtIndex )
         {
-          this->stringInterpretation.append( this->indexToPrintingString(
-                                                               soughtIndex ) );
+          this->indexPrintingVector[ 0 ] = soughtIndex;
+          this->stringInterpretation.append( this->indicesToPrintingString() );
           // SLHA indices are in the sane starts-at-one format, while C++ code
           // uses the silly starts-at-zero format.
           this->stringInterpretation.append( this->valueToPrintingString(

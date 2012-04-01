@@ -112,8 +112,15 @@ namespace LHPC
     getAllRecordedMasses() const;
     void
     recordMass( double const massValue,
+                double const minusUncertainty = 0.0,
+                double const plusUncertainty = 0.0,
                 int const schemeType = 0,
-                double const evaluationScale = BOL::UsefulStuff::notANumber );
+                double const evaluationScale = 0.0 );
+    void
+    recordMassError( double const minusUncertainty,
+                     double const plusUncertainty,
+                     int const schemeType,
+                     double const evaluationScale );
     bool
     haveDecaysBeenRecorded() const;
     double
@@ -364,6 +371,27 @@ namespace LHPC
   MassEigenstate::getAllRecordedMasses() const
   {
     return runningMassesAsVector;
+  }
+
+  inline void
+  MassEigenstate::recordMassError( double const minusUncertainty,
+                                   double const plusUncertainty,
+                                   int const schemeType,
+                                   double const evaluationScale )
+  {
+    for( int whichMass( runningMasses.getLastIndex() );
+         0 <= whichMass;
+         --whichMass )
+    {
+      if( ( schemeType == runningMasses[ whichMass ].getScheme() )
+          &&
+          ( evaluationScale == runningMasses[ whichMass ].getScale() ) )
+      {
+        runningMasses[ whichMass ].setUncertainties( minusUncertainty,
+                                                     plusUncertainty );
+        whichMass = -1;
+      }
+    }
   }
 
   inline bool

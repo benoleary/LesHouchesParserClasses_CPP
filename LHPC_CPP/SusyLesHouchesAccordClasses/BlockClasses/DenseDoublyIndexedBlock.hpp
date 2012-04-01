@@ -34,7 +34,8 @@ namespace LHPC
       DenseDoublyIndexedBlock( std::string const& blockName,
                                ValueClass const& defaultUnsetValue,
                                bool const& isVerbose,
-                               int const indexDigits = 2 );
+                               int const firstIndexDigits = 2,
+                               int const secondIndexDigits = 2 );
       virtual
       ~DenseDoublyIndexedBlock();
 
@@ -46,11 +47,23 @@ namespace LHPC
       operator()( int const firstIndex,
                   int const secondIndex ) const;
       // const version of above.
+      ValueClass&
+      operator()( std::pair< int, int > const& indexPair )
+      { return (*this)( indexPair.first,
+                        indexPair.second ); }
+      ValueClass const&
+      operator()( std::pair< int, int > const& indexPair ) const
+      { return (*this)( indexPair.first,
+                        indexPair.second ); }
       bool
       hasEntry( int const firstIndex,
                 int const secondIndex ) const;
       // this returns hasEntry( firstIndex, secondIndex ) of the
       // lowest-scale interpreter.
+      bool
+      hasEntry( std::pair< int, int > const& indexPair ) const
+      { return hasEntry( indexPair.first,
+                         indexPair.second ); }
     };
 
 
@@ -63,13 +76,14 @@ namespace LHPC
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
-                                                      int const indexDigits ) :
+                                                    int const firstIndexDigits,
+                                                int const secondIndexDigits ) :
         IndexedBlockTemplate< ValueClass,
                           InterpreterClass::DenseDoublyIndexed< ValueClass > >(
                                                                      blockName,
                                                              defaultUnsetValue,
                                                                      isVerbose,
-                                                                  indexDigits )
+                           BOL::Vi( firstIndexDigits ).e( secondIndexDigits ) )
     {
       // just an initialization list.
     }

@@ -20,7 +20,8 @@
 #include "../BOLlib/Classes/CommentedTextParser.hpp"
 #include "../BOLlib/Classes/VectorlikeArray.hpp"
 #include "../MassEigenstateCollectionClasses/MassSpectrum.hpp"
-#include "../MassEigenstateCollectionClasses/ExtendedMass.hpp"
+#include "../MassEigenstateCollectionClasses/RunningConstant.hpp"
+#include "../MassEigenstateCollectionClasses/RunningConstantError.hpp"
 #include "../MassEigenstateCollectionClasses/SpectrumUpdater.hpp"
 #include "BlockTypes.hpp"
 
@@ -72,7 +73,10 @@ namespace LHPC
     SpectrumUpdater observingSpectrumUpdater;
     bool ownsFmassBlock;
     SLHA::BaseSlhaBlock* fmassBlockPointer;
-    std::map< int, ExtendedMass > const* fmassMap;
+    std::multimap< int, RunningConstant > const* fmassMap;
+    bool ownsFmasserrBlock;
+    SLHA::BaseSlhaBlock* fmasserrBlockPointer;
+    std::multimap< int, RunningConstantError > const* fmasserrMap;
     bool ownsMassBlock;
     SLHA::BaseSlhaBlock* massBlockPointer;
     std::map< int, double > const* massMap;
@@ -232,6 +236,8 @@ namespace LHPC
     if( !(observerList.empty()) )
     {
       observingSpectrumUpdater.setFmassMap( fmassBlockPointer->getFmassMap() );
+      observingSpectrumUpdater.setFmasserrMap(
+                                      fmasserrBlockPointer->getFmasserrMap() );
       observingSpectrumUpdater.setMassMap( massBlockPointer->getMassMap() );
       updateObservers( observingSpectrumUpdater );
     }

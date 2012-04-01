@@ -46,10 +46,11 @@ namespace LHPC
          * there already.
          */
         ValueClass&
-        operator[]( int const soughtIndex ) { return (*this)( soughtIndex ); }
+        operator[]( int const soughtIndex )
+        { return (*this)( soughtIndex ); }
         ValueClass const&
-        operator[]( int const soughtIndex ) const { return (*this)(
-                                                               soughtIndex ); }
+        operator[]( int const soughtIndex ) const
+        { return (*this)( soughtIndex ); }
         std::map< int, ValueClass >&
         getValueMap();
         std::map< int, ValueClass > const&
@@ -83,7 +84,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed() :
-          IndexedInterpreter< ValueClass >(),
+          IndexedInterpreter< ValueClass >( 1 ),
           valueMap(),
           valueRecorder()
       {
@@ -165,8 +166,8 @@ namespace LHPC
         mapIterator valueFinder( valueMap.begin() );
         while( valueFinder != valueMap.end() )
         {
-          this->stringInterpretation.append( this->indexToPrintingString(
-                                                        valueFinder->first ) );
+          this->indexPrintingVector[ 0 ] = valueFinder->first;
+          this->stringInterpretation.append( this->indicesToPrintingString() );
           this->stringInterpretation.append( this->valueToPrintingString(
                                                        valueFinder->second ) );
           /* negative particle codes can be avoided in any block, I think.

@@ -7,7 +7,7 @@
  *
  *      This file is part of LesHouchesParserClasses, released under the
  *      GNU General Public License. Please see the accompanying
- *      README.LHPC_CPP.txt file for a full list of files, brief documentation
+ *      REFBAGME.LHPC_CPP.txt file for a full list of files, brief documentation
  *      on how to use these classes, and further details on the license.
  */
 
@@ -17,97 +17,133 @@ namespace LHPC
 {
   FlhaOne::FlhaOne( SlhaParser& fileParser,
                     bool const& isVerbose ) :
+      FCINFO( "FCINFO",
+              isVerbose ),
       MODSEL( "MODSEL",
               BOL::UsefulStuff::notANumber,
               isVerbose ),
+      FMODSEL( "FMODSEL",
+               BOL::UsefulStuff::notANumber,
+               isVerbose ),
       SMINPUTS( "SMINPUTS",
                 BOL::UsefulStuff::notANumber,
                 isVerbose ),
-      MINPAR( "MINPAR",
+      VCKMIN( "VCKMIN",
+              0.0,
+              isVerbose ),
+      UPMNSIN( "UPMNSIN",
+               0.0,
+               isVerbose ),
+      VCKM( "VCKM",
+            0.0,
+            isVerbose ),
+      IMVCKM( "IMVCKM",
+            0.0,
+            isVerbose ),
+      UPMNS( "UPMNS",
+            0.0,
+            isVerbose ),
+      IMUPMNS( "IMUPMNS",
+               0.0,
+               isVerbose ),
+      FMASS( "FMASS",
+             RunningConstant(),
+             isVerbose ),
+      FMASSERR( "FMASSERR",
+                RunningConstantError(),
+                isVerbose ),
+      FLIFE( "FLIFE",
+             BOL::UsefulStuff::notANumber,
+             isVerbose ),
+      FLIFEERR( "FLIFEERR",
+                std::pair< double, double >( BOL::UsefulStuff::notANumber,
+                                             BOL::UsefulStuff::notANumber ),
+                isVerbose ),
+      FCONST( "FCONST",
               BOL::UsefulStuff::notANumber,
               isVerbose ),
-      EXTPAR( "EXTPAR",
-              BOL::UsefulStuff::notANumber,
+      FCONSTERR( "FCONSTERR",
+                 std::pair< double, double >( BOL::UsefulStuff::notANumber,
+                                              BOL::UsefulStuff::notANumber ),
+                 isVerbose ),
+      FCONSTRATIO( "FCONSTRATIO",
+                   BOL::UsefulStuff::notANumber,
+             isVerbose ),
+      FCONSTRATIOERR( "FCONSTRATIOERR",
+                     std::pair< double, double >( BOL::UsefulStuff::notANumber,
+                                                BOL::UsefulStuff::notANumber ),
+                      isVerbose ),
+      FBAG( "FBAG",
+            RunningConstant(),
+            isVerbose ),
+      FBAGERR( "FBAGERR",
+               RunningConstantError(),
+               isVerbose ),
+      FWCOEFF( "FWCOEFF",
+               BOL::UsefulStuff::notANumber,
+          isVerbose ),
+      FWCOEFFERR( "FWCOEFFERR",
+                  std::pair< double, double >( BOL::UsefulStuff::notANumber,
+                                               BOL::UsefulStuff::notANumber ),
+                  isVerbose ),
+      IMFWCOEFF( "IMFWCOEFF",
+                 BOL::UsefulStuff::notANumber,
+                 isVerbose ),
+      IMFWCOEFFERR( "IMFWCOEFFERR",
+                    std::pair< double, double >( BOL::UsefulStuff::notANumber,
+                                                BOL::UsefulStuff::notANumber ),
+                    isVerbose ),
+      FOBS( "FOBS",
+            FlavorObservable(),
+            isVerbose ),
+      FOBSERR( "FOBSERR",
+               FlavorObservableError(),
+               isVerbose ),
+      FOBSSM( "FOBSSM",
+              FlavorObservable(),
               isVerbose ),
-      MASS( "MASS",
-            BOL::UsefulStuff::notANumber,
-            isVerbose,
-            9 ),
-      NMIX( "NMIX",
-            0.0,
-            isVerbose ),
-      UMIX( "UMIX",
-            0.0,
-            isVerbose ),
-      VMIX( "VMIX",
-            0.0,
-            isVerbose ),
-      STOPMIX( "STOPMIX",
-               0.0,
-               isVerbose ),
-      SBOTMIX( "SBOTMIX",
-               0.0,
-               isVerbose ),
-      STAUMIX( "STAUMIX",
-               0.0,
-               isVerbose ),
-      ALPHA( "ALPHA",
-             BOL::UsefulStuff::notANumber,
-             isVerbose ),
-      HMIX( "HMIX",
-            BOL::UsefulStuff::notANumber,
-            isVerbose ),
-      GAUGE( "GAUGE",
-             BOL::UsefulStuff::notANumber,
-             isVerbose ),
-      MSOFT( "MSOFT",
-             BOL::UsefulStuff::notANumber,
-             isVerbose ),
-      AU( "AU",
-          0.0,
-          isVerbose ),
-      AD( "AD",
-          0.0,
-          isVerbose ),
-      AE( "AE",
-          0.0,
-          isVerbose ),
-      YU( "YU",
-          0.0,
-          isVerbose ),
-      YD( "YD",
-          0.0,
-          isVerbose ),
-      YE( "YE",
-          0.0,
-          isVerbose ),
-      SPINFO( "SPINFO",
+      FOBSSMERR( "FOBSSMERR",
+                 FlavorObservableError(),
+                 isVerbose ),
+      FPARAM( "FPARAM",
+              FlavorObservable(),
               isVerbose ),
+      FPARAMERR( "FPARAMERR",
+                 FlavorObservableError(),
+                 isVerbose ),
       fileParser( fileParser ),
       isVerbose( isVerbose )
   {
+    fileParser.registerBlock( FCINFO );
     fileParser.registerBlock( MODSEL );
+    fileParser.registerBlock( FMODSEL );
     fileParser.registerBlock( SMINPUTS );
-    fileParser.registerBlock( MINPAR );
-    fileParser.registerBlock( EXTPAR );
-    fileParser.registerBlock( MASS );
-    fileParser.registerBlock( NMIX );
-    fileParser.registerBlock( UMIX );
-    fileParser.registerBlock( VMIX );
-    fileParser.registerBlock( STOPMIX );
-    fileParser.registerBlock( SBOTMIX );
-    fileParser.registerBlock( STAUMIX );
-    fileParser.registerBlock( ALPHA );
-    fileParser.registerBlock( HMIX );
-    fileParser.registerBlock( GAUGE );
-    fileParser.registerBlock( MSOFT );
-    fileParser.registerBlock( AU );
-    fileParser.registerBlock( AD );
-    fileParser.registerBlock( AE );
-    fileParser.registerBlock( YU );
-    fileParser.registerBlock( YD );
-    fileParser.registerBlock( YE );
-    fileParser.registerBlock( SPINFO );
+    fileParser.registerBlock( VCKMIN );
+    fileParser.registerBlock( UPMNSIN );
+    fileParser.registerBlock( VCKM );
+    fileParser.registerBlock( IMVCKM );
+    fileParser.registerBlock( UPMNS );
+    fileParser.registerBlock( IMUPMNS );
+    fileParser.registerBlock( FMASS );
+    fileParser.registerBlock( FMASSERR );
+    fileParser.registerBlock( FLIFE );
+    fileParser.registerBlock( FLIFEERR );
+    fileParser.registerBlock( FCONST );
+    fileParser.registerBlock( FCONSTERR );
+    fileParser.registerBlock( FCONSTRATIO );
+    fileParser.registerBlock( FCONSTRATIOERR );
+    fileParser.registerBlock( FBAG );
+    fileParser.registerBlock( FBAGERR );
+    fileParser.registerBlock( FWCOEFF );
+    fileParser.registerBlock( FWCOEFFERR );
+    fileParser.registerBlock( IMFWCOEFF );
+    fileParser.registerBlock( IMFWCOEFFERR );
+    fileParser.registerBlock( FOBS );
+    fileParser.registerBlock( FOBSERR );
+    fileParser.registerBlock( FOBSSM );
+    fileParser.registerBlock( FOBSSMERR );
+    fileParser.registerBlock( FPARAM );
+    fileParser.registerBlock( FPARAMERR );
   }
 
   FlhaOne::~FlhaOne()

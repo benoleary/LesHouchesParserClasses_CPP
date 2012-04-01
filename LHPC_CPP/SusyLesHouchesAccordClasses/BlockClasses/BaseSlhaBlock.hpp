@@ -19,7 +19,8 @@
 #include "../../BOLlib/Classes/StringParser.hpp"
 #include "../../BOLlib/Classes/PushedToObserver.hpp"
 #include "BaseStringBlock.hpp"
-#include "../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
+#include "../../MassEigenstateCollectionClasses/RunningConstant.hpp"
+#include "../../MassEigenstateCollectionClasses/RunningConstantError.hpp"
 
 namespace LHPC
 {
@@ -50,8 +51,16 @@ namespace LHPC
       isFmassBlock() const;
       // this returns false. only a specific derived class should over-ride it
       // to return true if it is actually an interpreter for an FMASS block.
-      virtual std::multimap< int, ExtendedMass > const*
+      virtual std::multimap< int, RunningConstant > const*
       getFmassMap() const;
+      // this returns NULL. only a specific derived class should over-ride it
+      // to return a non-NULL pointer.
+      virtual bool
+      isFmasserrBlock() const;
+      // this returns false. only a specific derived class should over-ride it
+      // to return true if it is actually an interpreter for an FMASSERR block.
+      virtual std::multimap< int, RunningConstantError > const*
+      getFmasserrMap() const;
       // this returns NULL. only a specific derived class should over-ride it
       // to return a non-NULL pointer.
       virtual bool
@@ -95,8 +104,22 @@ namespace LHPC
       return false;
     }
 
-    inline std::multimap< int, ExtendedMass > const*
+    inline std::multimap< int, RunningConstant > const*
     BaseSlhaBlock::getFmassMap() const
+    {
+      return NULL;
+    }
+
+    inline bool
+    BaseSlhaBlock::isFmasserrBlock() const
+    // this returns false. only a specific derived class should over-ride it
+    // to return true if it is actually an interpreter for an FMASS block.
+    {
+      return false;
+    }
+
+    inline std::multimap< int, RunningConstantError > const*
+    BaseSlhaBlock::getFmasserrMap() const
     {
       return NULL;
     }

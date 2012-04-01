@@ -30,13 +30,13 @@ namespace LHPC
       IndexedBlockTemplate( std::string const& blockName,
                             ValueClass const& defaultUnsetValue,
                             bool const& isVerbose,
-                            int const indexDigits );
+                            std::vector< int > const& indexDigitsVector );
       virtual
       ~IndexedBlockTemplate();
 
 
     protected:
-      int const indexDigits;
+      std::vector< int > const indexDigitsVector;
 
       virtual void
       prepareNewDataBlock();
@@ -54,13 +54,13 @@ namespace LHPC
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
                                                          bool const& isVerbose,
-                                                      int const indexDigits ) :
+                                std::vector< int > const& indexDigitsVector ) :
         SlhaBlock< ValueClass, IndexedParser >( blockName,
                                                 defaultUnsetValue,
                                                 isVerbose ),
-        indexDigits( indexDigits )
+        indexDigitsVector( indexDigitsVector )
     {
-      this->DataBlocks.getFront().setIndexDigits( indexDigits );
+      this->DataBlocks.getFront().setIndexDigits( indexDigitsVector );
     }
 
     template< class ValueClass, class IndexedParser >
@@ -74,7 +74,7 @@ namespace LHPC
     inline void
     IndexedBlockTemplate< ValueClass, IndexedParser >::prepareNewDataBlock()
     {
-      this->DataBlocks.getBack().setIndexDigits( indexDigits );
+      this->DataBlocks.getBack().setIndexDigits( indexDigitsVector );
     }
 
   }  // end of SLHA namespace

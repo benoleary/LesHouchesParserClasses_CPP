@@ -38,7 +38,7 @@ namespace LHPC
         static bool
         lowToHigh( LineData const& firstLineData,
                    LineData const& secondLineData );
-        // this returns true if firstLineData has a massValue lower than or
+        // this returns true if firstLineData has a valueDouble lower than or
         // equal to that of secondLineData.
 
         LineData();
@@ -87,7 +87,7 @@ namespace LHPC
       inline bool
       LineData::lowToHigh( LineData const& firstLineData,
                            LineData const& secondLineData )
-      // this returns true if firstLineData has a massValue lower than or
+      // this returns true if firstLineData has a valueDouble lower than or
       // equal to that of secondLineData.
       {
         if( firstLineData.getMass() > secondLineData.getMass() )

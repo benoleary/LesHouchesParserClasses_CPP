@@ -14,7 +14,10 @@
 #ifndef EXTENDEDMASS_HPP_
 #define EXTENDEDMASS_HPP_
 
+#include <string>
 #include "../BOLlib/Classes/UsefulStuff.hpp"
+#include "RunningConstant.hpp"
+#include "RunningConstantError.hpp"
 
 namespace LHPC
 {
@@ -29,21 +32,34 @@ namespace LHPC
 
     double
     getMass() const;
+    double
+    getMinusUncertainty() const;
+    double
+    getPlusUncertainty() const;
     int
     getScheme() const;
     double
     getScale() const;
     void
     setValues( double const massValue,
+               double const minusUncertainty,
+               double const plusUncertainty,
                int const schemeType,
                double const evaluationScale );
+    void
+    setUncertainties( double const minusUncertainty,
+                      double const plusUncertainty );
 
 
   protected:
     double massValue;
+    double minusUncertainty;
+    double plusUncertainty;
     int schemeType;
     double evaluationScale;
   };
+
+
 
 
 
@@ -67,12 +83,24 @@ namespace LHPC
 
   inline void
   ExtendedMass::setValues( double const massValue,
+                           double const minusUncertainty,
+                           double const plusUncertainty,
                            int const schemeType,
                            double const evaluationScale )
   {
     this->massValue = massValue;
+    this->minusUncertainty = minusUncertainty;
+    this->plusUncertainty = plusUncertainty;
     this->schemeType = schemeType;
     this->evaluationScale = evaluationScale;
+  }
+
+  inline void
+  ExtendedMass::setUncertainties( double const minusUncertainty,
+                                  double const plusUncertainty )
+  {
+    this->minusUncertainty = minusUncertainty;
+    this->plusUncertainty = plusUncertainty;
   }
 
 }

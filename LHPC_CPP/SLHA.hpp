@@ -20,6 +20,7 @@
 #include "SusyLesHouchesAccordClasses/SlhaOne.hpp"
 #include "SusyLesHouchesAccordClasses/SlhaTwo.hpp"
 #include "SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp"
+#include "SusyLesHouchesAccordClasses/FlhaOne.hpp"
 #include "MassEigenstateCollectionClasses/DefaultSpectra.hpp"
 #include "ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp"
 #include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"

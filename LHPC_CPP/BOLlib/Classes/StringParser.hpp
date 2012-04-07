@@ -46,13 +46,25 @@ namespace BOL
                  std::string const prefixForPositiveNumbers = "+",
                  std::string const prefixForNegativeNumbers = "-",
                  char const paddingChar = '0' );
-    /* this returns a reference to returnString after preparing it so that is
-     * the ASCII version of an int in base 10, prefixed with
-     * prefixForPositiveNumbers or prefixForNegativeNumbers depending on
-     * whether it is positive or negative. it makes returnString have at least
-     * minimumNumberOfDigits digit characters, filling it out with
-     * paddingChars after prefixForPositiveNumbers/prefixForNegativeNumbers
-     *  (e.g. intToString( 23, 4, "+", "-" ) returns "+0023").
+    /* this returns a std::string that is the ASCII version of an int in base
+     * 10, prefixed with prefixForPositiveNumbers or prefixForNegativeNumbers
+     * depending on whether it is positive or negative. it makes returnString
+     * have at least minimumNumberOfDigits digit characters, filling it out
+     * with paddingChars after
+     * prefixForPositiveNumbers/prefixForNegativeNumbers
+     * (e.g. intToString( 23, 4, "+", "-" ) returns "+0023").
+     */
+    static std::string
+    intToSpacePaddedString( int inputInt,
+                            int const minimumNumberOfChars,
+                            std::string const prefixForPositiveNumbers = "+",
+                            std::string const prefixForNegativeNumbers = "-" );
+    /* this returns a std::string that is the ASCII version of an int in base
+     * 10, prefixed with prefixForPositiveNumbers or prefixForNegativeNumbers
+     * depending on whether it is positive or negative. it makes returnString
+     * have at least minimumNumberOfChars characters in total, prepending
+     * spaces before prefixForPositiveNumbers/prefixForNegativeNumbers
+     * (e.g. intToString( 23, 5, "+", "-" ) returns "  +23").
      */
     static std::string
     doubleToString( double inputDouble,
@@ -63,8 +75,8 @@ namespace BOL
                     std::string const positiveExponentPrefix = "+",
                     std::string const negativeExponentPrefix = "-",
                     std::string const exponentCharacter = "E" );
-    /* this returns returnString after preparing it so that is the ASCII
-     * version of a double in base 10, in the form specified thusly:
+    /* this returns a std::string that is the ASCII version of a double in base
+     * 10, in the form specified thusly:
      * 1st character: either "-" for negative numbers, or a "+" for
      *                positive numbers (or a string to replace this character),
      * 2nd character: the 1st digit,
@@ -277,6 +289,38 @@ namespace BOL
       ++numberOfDigits;
     }
     return numberOfDigits;
+  }
+
+  inline std::string
+  StringParser::intToSpacePaddedString( int const inputInt,
+                                        int const minimumNumberOfChars,
+                                    std::string const prefixForPositiveNumbers,
+                                   std::string const prefixForNegativeNumbers )
+  /* this returns a std::string that is the ASCII version of an int in base
+   * 10, prefixed with prefixForPositiveNumbers or prefixForNegativeNumbers
+   * depending on whether it is positive or negative. it makes returnString
+   * have at least minimumNumberOfChars characters in total, prepending
+   * spaces before prefixForPositiveNumbers/prefixForNegativeNumbers
+   * (e.g. intToString( 23, 5, "+", "-" ) returns "  +23").
+   */
+  {
+    int
+    numberofSpaces( minimumNumberOfChars - numberOfDigitsInInt( inputInt ) );
+    if( 0 > inputInt )
+    {
+      --numberofSpaces;
+    }
+    std::string returnString( "" );
+    if( 0 < numberofSpaces )
+    {
+      returnString.append( (size_t)numberofSpaces,
+                           ' ' );
+    }
+    returnString.append( intToString( inputInt,
+                                      1,
+                                      prefixForPositiveNumbers,
+                                      prefixForNegativeNumbers ) );
+    return returnString;
   }
 
   inline void

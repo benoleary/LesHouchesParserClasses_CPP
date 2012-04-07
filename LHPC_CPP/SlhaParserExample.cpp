@@ -20,7 +20,8 @@ demonstrateWithRegisteredBlocksAndSpectrum(
                       LHPC::SLHA::DenseDoublyIndexedBlock< double >& nmixBlock,
                                  LHPC::MassSpectrumClass::MSSM& testSpectrum );
 void
-demonstrateWithBlockBundle( LHPC::SlhaTwoWithSpheno& testBlockSet,
+demonstrateWithBlockBundle( LHPC::SlhaTwoWithSpheno& testSlhaSet,
+                            LHPC::FlhaOne& testFlhaSet,
               LHPC::SLHA::DenseDoublyIndexedBlock< double > const& constNmix );
 
 
@@ -123,13 +124,16 @@ main( int argumentCount,
 
     // for demonstration, this has all the blocks specified in SLHA1 & SLHA2, &
     // also includes some SPheno-specific blocks:
-    LHPC::SlhaTwoWithSpheno testBlockSet( testParserForBlockSet,
-                                          isVerbose );
+    LHPC::SlhaTwoWithSpheno testSlhaSet( testParserForBlockSet,
+                                         isVerbose );
+    // for demonstration, this has all the blocks specified in FLHA:
+    LHPC::FlhaOne testFlhaSet( testParserForBlockSet,
+                               isVerbose );
 
     // this is for showing that the const versions of the block member
     // functions work:
     LHPC::SLHA::DenseDoublyIndexedBlock< double > const&
-    constNmix( testBlockSet.NMIX );
+    constNmix( testSlhaSet.NMIX );
 
     std::cout
     << std::endl
@@ -139,7 +143,8 @@ main( int argumentCount,
     // again, this line does all the work!
     testParserForBlockSet.readFile( firstFileName );
 
-    demonstrateWithBlockBundle( testBlockSet,
+    demonstrateWithBlockBundle( testSlhaSet,
+                                testFlhaSet,
                                 constNmix );
 
 
@@ -151,7 +156,8 @@ main( int argumentCount,
     // again, this line does all the work!
     testParserForBlockSet.readFile( secondFileName );
 
-    demonstrateWithBlockBundle( testBlockSet,
+    demonstrateWithBlockBundle( testSlhaSet,
+                                testFlhaSet,
                                 constNmix );
 
 
@@ -230,6 +236,34 @@ demonstrateWithRegisteredBlocksAndSpectrum(
   << "-------------------------" << std::endl
   << nmixBlock.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
+
+  LHPC::MassEigenstate&
+  topQuark( testSpectrum.getTop() );
+
+  std::cout
+  << std::endl
+  << "top masses:"
+  << std::endl << "pole mass (if available): " << topQuark.getAbsoluteMass();
+  std::vector< LHPC::ExtendedMass* > const&
+  topFmasses( topQuark.getAllRecordedMasses() );
+  if( !(topFmasses.empty()) )
+  {
+    std::cout << std::endl << "extended masses:";
+    for( size_t whichFmass( 0 );
+         topFmasses.size() > whichFmass;
+         ++whichFmass )
+    {
+      std::cout
+      << "[ " << ( whichFmass + 1 ) << " ]: "
+      << topFmasses[ whichFmass ]->getMass()
+      << " -" << topFmasses[ whichFmass ]->getMinusUncertainty()
+      << " +" << topFmasses[ whichFmass ]->getPlusUncertainty()
+      << ", scheme " << topFmasses[ whichFmass ]->getScheme()
+      << ", scale " << topFmasses[ whichFmass ]->getScale() << std::endl;
+    }
+  }
+  std::cout << std::endl;
+
 
   LHPC::MassEigenstate&
   spositronL( testSpectrum.getSpositronL() );
@@ -555,20 +589,21 @@ demonstrateWithRegisteredBlocksAndSpectrum(
 }
 
 void
-demonstrateWithBlockBundle( LHPC::SlhaTwoWithSpheno& testBlockSet,
+demonstrateWithBlockBundle( LHPC::SlhaTwoWithSpheno& testSlhaSet,
+                            LHPC::FlhaOne& testFlhaSet,
                LHPC::SLHA::DenseDoublyIndexedBlock< double > const& constNmix )
 {
   std::cout
   << std::endl
-  << "SMINPUTS( 2 ) = " << testBlockSet.SMINPUTS( 2 );
+  << "SMINPUTS( 2 ) = " << testSlhaSet.SMINPUTS( 2 );
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "MASS( 1000024 ) = " << testBlockSet.MASS( 1000024 );
+  << "MASS( 1000024 ) = " << testSlhaSet.MASS( 1000024 );
   std::cout << std::endl;
   std::cout
   << std::endl
-  << "NMIX( 1, 3 ) = " << testBlockSet.NMIX( 1, 3 );
+  << "NMIX( 1, 3 ) = " << testSlhaSet.NMIX( 1, 3 );
   std::cout
   << std::endl
   << "const NMIX( 1, 3 ) = " << constNmix( 1, 3 );
@@ -577,42 +612,105 @@ demonstrateWithBlockBundle( LHPC::SlhaTwoWithSpheno& testBlockSet,
   << std::endl
   << "NMIX between dashed lines: " << std::endl
   << "-------------------------" << std::endl
-  << testBlockSet.NMIX.interpretAsString() << std::endl
+  << testSlhaSet.NMIX.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
   std::cout << std::endl;
   std::cout
   << std::endl
   << "AU between dashed lines: " << std::endl
   << "-------------------------" << std::endl
-  << testBlockSet.AU.interpretAsString() << std::endl
+  << testSlhaSet.AU.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
   std::cout << std::endl;
   std::cout
   << std::endl
   << "ALPHA between dashed lines: " << std::endl
   << "-------------------------" << std::endl
-  << testBlockSet.ALPHA.interpretAsString() << std::endl
+  << testSlhaSet.ALPHA.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
   std::cout << std::endl;
   std::cout
   << std::endl
   << "STOPMIX between dashed lines: " << std::endl
   << "-------------------------" << std::endl
-  << testBlockSet.STOPMIX.interpretAsString() << std::endl
+  << testSlhaSet.STOPMIX.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
   std::cout << std::endl;
   std::cout
   << std::endl
   << "HMIX between dashed lines: " << std::endl
   << "-------------------------" << std::endl
-  << testBlockSet.HMIX.interpretAsString() << std::endl
+  << testSlhaSet.HMIX.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
   std::cout << std::endl;
   std::cout
   << std::endl
   << "MSOFT between dashed lines: " << std::endl
   << "-------------------------" << std::endl
-  << testBlockSet.MSOFT.interpretAsString() << std::endl
+  << testSlhaSet.MSOFT.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "SLHA SMINPUTS between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testSlhaSet.SMINPUTS.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FLHA SMINPUTS between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.SMINPUTS.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FMASS between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FMASS.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FLIFE between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FLIFE.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FLIFEERR between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FLIFEERR.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FPARAM between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FPARAM.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FWCOEF between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FWCOEF.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FOBS between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FOBS.interpretAsString() << std::endl
+  << "-------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout
+  << std::endl
+  << "FOBSERR between dashed lines: " << std::endl
+  << "-------------------------" << std::endl
+  << testFlhaSet.FOBSERR.interpretAsString() << std::endl
   << "-------------------------" << std::endl;
   std::cout << std::endl;
 }

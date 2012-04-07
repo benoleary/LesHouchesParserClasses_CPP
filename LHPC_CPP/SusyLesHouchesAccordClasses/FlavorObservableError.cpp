@@ -68,6 +68,7 @@ namespace LHPC
     firstRemainder.assign( BOL::StringParser::trimFromFrontAndBack(
                                                                secondRemainder,
                               BOL::StringParser::whitespaceAndNewlineChars ) );
+    daughterParticleCodes.clear();
     while( !(firstRemainder.empty()) )
     {
       daughterParticleCodes.push_back( BOL::StringParser::stringToInt(
@@ -102,11 +103,13 @@ namespace LHPC
     returnString( BOL::StringParser::doubleToString( minusUncertainty,
                                                      9,
                                                      3 ) );
-    returnString.append( "   " );
+    returnString.append( FlavorObservable::spacesBetweenCodes,
+                         ' ' );
     returnString.append( BOL::StringParser::doubleToString( plusUncertainty,
                                                             9,
                                                             3 ) );
-    returnString.append( "   " );
+    returnString.append( FlavorObservable::spacesBetweenCodes,
+                         ' ' );
     returnString.append( BOL::StringParser::doubleToString( evaluationScale,
                                                             9,
                                                             3 ) );
@@ -115,12 +118,12 @@ namespace LHPC
          daughterParticleCodes.end() != daughterIterator;
          ++daughterIterator )
     {
-      returnString.append( "   " );
-      returnString.append( BOL::StringParser::intToString( *daughterIterator,
-                                                           9,
-                                                           "",
-                                                           "-",
-                                                           ' ' ) );
+      returnString.append( FlavorObservable::spacesBetweenCodes,
+                           ' ' );
+      returnString.append( BOL::StringParser::intToSpacePaddedString(
+                                                             *daughterIterator,
+                                       FlavorObservable::minimumDigitsForCodes,
+                                                                      "" ) );
     }
     return returnString;
   }

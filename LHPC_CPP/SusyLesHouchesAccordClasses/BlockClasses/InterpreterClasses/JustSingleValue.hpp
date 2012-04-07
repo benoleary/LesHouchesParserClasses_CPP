@@ -106,11 +106,18 @@ namespace LHPC
       JustSingleValue< ValueClass >::getAsString()
       // see base version's description.
       {
-        this->stringInterpretation.assign( "      " );
-        // 6 spaces.
-        this->stringInterpretation.append( this->valueToPrintingString(
+        if( hasEntry() )
+        {
+          this->stringInterpretation.assign( "      " );
+          // 6 spaces.
+          this->stringInterpretation.append( this->valueToPrintingString(
                                                                storedValue ) );
-        this->stringInterpretation.append( "\n" );
+          this->stringInterpretation.append( "\n" );
+        }
+        else
+        {
+          this->stringInterpretation.clear();
+        }
         return this->stringInterpretation;
       }
 

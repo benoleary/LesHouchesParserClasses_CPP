@@ -17,6 +17,7 @@
 #include <string>
 #include "../BOLlib/Classes/UsefulStuff.hpp"
 #include "../BOLlib/Classes/StringParser.hpp"
+#include "FlavorObservable.hpp"
 
 namespace LHPC
 {

@@ -25,6 +25,9 @@ namespace LHPC
   class FlavorObservable
   {
   public:
+    static int const spacesBetweenCodes;
+    static int const minimumDigitsForCodes;
+
     FlavorObservable();
     FlavorObservable( FlavorObservable const& copySource );
     ~FlavorObservable();
@@ -97,81 +100,6 @@ namespace LHPC
     this->valueDouble = valueDouble;
     this->evaluationScale = evaluationScale;
     this->daughterParticleCodes = daughterParticleCodes;
-  }
-
-  inline void
-  FlavorObservable::setFromString( std::string const& valuesString )
-  {
-    std::string firstRemainder;
-    std::string secondRemainder;
-    valueDouble
-    = BOL::StringParser::stringToDouble( BOL::StringParser::firstWordOf(
-                                                                  valuesString,
-                                                               &firstRemainder,
-                              BOL::StringParser::whitespaceAndNewlineChars ) );
-    evaluationScale
-    = BOL::StringParser::stringToDouble( BOL::StringParser::firstWordOf(
-                                                                firstRemainder,
-                                                              &secondRemainder,
-                              BOL::StringParser::whitespaceAndNewlineChars ) );
-    int numberOfDaughterParticles( BOL::StringParser::stringToInt(
-                                                BOL::StringParser::firstWordOf(
-                                                               secondRemainder,
-                                                               &firstRemainder,
-                            BOL::StringParser::whitespaceAndNewlineChars ) ) );
-    secondRemainder.assign( BOL::StringParser::trimFromFrontAndBack(
-                                                                firstRemainder,
-                              BOL::StringParser::whitespaceAndNewlineChars ) );
-    while( !(secondRemainder.empty()) )
-    {
-      daughterParticleCodes.push_back( BOL::StringParser::stringToInt(
-                                                BOL::StringParser::firstWordOf(
-                                                               secondRemainder,
-                                                               &firstRemainder,
-                            BOL::StringParser::whitespaceAndNewlineChars ) ) );
-      secondRemainder.assign( BOL::StringParser::trimFromFrontAndBack(
-                                                                firstRemainder,
-                              BOL::StringParser::whitespaceAndNewlineChars ) );
-    }
-    if( ( 0 < numberOfDaughterParticles )
-        &&
-        ( (size_t)numberOfDaughterParticles != daughterParticleCodes.size() ) )
-    {
-      std::cout
-      << std::endl
-      << "LHPC::warning! An FOBS line declared a different number of daughter"
-      << " particles ( " << numberOfDaughterParticles << " ) to the actual"
-      << " number of daughter particle codes it had ( "
-      << daughterParticleCodes.size()
-      << " )! The declared number is being ignored in favor of the number of"
-      << " codes read in.";
-      std::cout << std::endl;
-    }
-  }
-
-  inline std::string
-  FlavorObservable::getAsString() const
-  {
-    std::string returnString( BOL::StringParser::doubleToString( valueDouble,
-                                                                 9,
-                                                                 3 ) );
-    returnString.append( "   " );
-    returnString.append( BOL::StringParser::doubleToString( evaluationScale,
-                                                            9,
-                                                            3 ) );
-    for( std::list< int >::const_iterator
-         daughterIterator( daughterParticleCodes.begin() );
-         daughterParticleCodes.end() != daughterIterator;
-         ++daughterIterator )
-    {
-      returnString.append( "   " );
-      returnString.append( BOL::StringParser::intToString( *daughterIterator,
-                                                           9,
-                                                           "",
-                                                           "-",
-                                                           ' ' ) );
-    }
-    return returnString;
   }
 
 }

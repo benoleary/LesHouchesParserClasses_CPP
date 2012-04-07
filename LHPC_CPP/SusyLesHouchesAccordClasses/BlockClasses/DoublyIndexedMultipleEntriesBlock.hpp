@@ -43,14 +43,29 @@ namespace LHPC
       ~DoublyIndexedMultipleEntriesBlock();
 
       std::list< ValueClass* >
-      operator()( int const soughtIndex );
+      operator()( std::pair< int, int > const& indexPair );
       // this returns operator() of the lowest-scale interpreter.
       std::list< ValueClass const* >
-      operator()( int const soughtIndex ) const;
+      operator()( std::pair< int, int > const& indexPair ) const;
       // const version of above.
+      std::list< ValueClass* >
+      operator()( int const firstIndex,
+                  int const secondIndex )
+      { return (*this)( std::make_pair( firstIndex,
+                                        secondIndex ) ); }
+      std::list< ValueClass const* >
+      operator()( int const firstIndex,
+                  int const secondIndex ) const
+      { return (*this)( std::make_pair( firstIndex,
+                                        secondIndex ) ); }
       bool
-      hasEntry( int const soughtIndex ) const;
-      // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
+      hasEntry( std::pair< int, int > const& indexPair ) const;
+      // this returns hasEntry( indexPair ) of the lowest-scale interpreter.
+      bool
+      hasEntry( int const firstIndex,
+                int const secondIndex ) const
+      { return hasEntry( std::make_pair( firstIndex,
+                                         secondIndex ) ); }
     };
 
 
@@ -88,28 +103,28 @@ namespace LHPC
     template< class ValueClass >
     inline std::list< ValueClass* >
     DoublyIndexedMultipleEntriesBlock< ValueClass >::operator()(
-                                                        int const soughtIndex )
+                                       std::pair< int, int > const& indexPair )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( indexPair );
     }
 
     template< class ValueClass >
     inline std::list< ValueClass const* >
     DoublyIndexedMultipleEntriesBlock< ValueClass >::operator()(
-                                                  int const soughtIndex ) const
+                                 std::pair< int, int > const& indexPair ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
+      return this->DataBlocks[ this->lowestScaleIndex ]( indexPair );
     }
 
     template< class ValueClass >
     inline bool
     DoublyIndexedMultipleEntriesBlock< ValueClass >::hasEntry(
-                                                  int const soughtIndex ) const
+                                 std::pair< int, int > const& indexPair ) const
     // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestIndex ].hasEntry( soughtIndex );
+      return this->DataBlocks[ this->lowestIndex ].hasEntry( indexPair );
     }
 
   }  // end of SLHA namespace

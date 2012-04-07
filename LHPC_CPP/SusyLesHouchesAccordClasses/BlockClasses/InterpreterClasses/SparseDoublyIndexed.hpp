@@ -70,9 +70,6 @@ namespace LHPC
         clearEntries();
         // derived classes should clear their interpreted values.
 
-        virtual void
-        setSecondIndexDigits( int const indexDigits );
-
 
       protected:
         typedef typename

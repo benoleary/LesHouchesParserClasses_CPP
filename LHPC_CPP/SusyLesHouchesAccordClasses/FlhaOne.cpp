@@ -79,17 +79,17 @@ namespace LHPC
       FBAGERR( "FBAGERR",
                RunningConstantError(),
                isVerbose ),
-      FWCOEFF( "FWCOEFF",
+      FWCOEF( "FWCOEF",
                BOL::UsefulStuff::notANumber,
           isVerbose ),
-      FWCOEFFERR( "FWCOEFFERR",
+      FWCOEFERR( "FWCOEFERR",
                   std::pair< double, double >( BOL::UsefulStuff::notANumber,
                                                BOL::UsefulStuff::notANumber ),
                   isVerbose ),
-      IMFWCOEFF( "IMFWCOEFF",
+      IMFWCOEF( "IMFWCOEF",
                  BOL::UsefulStuff::notANumber,
                  isVerbose ),
-      IMFWCOEFFERR( "IMFWCOEFFERR",
+      IMFWCOEFERR( "IMFWCOEFERR",
                     std::pair< double, double >( BOL::UsefulStuff::notANumber,
                                                 BOL::UsefulStuff::notANumber ),
                     isVerbose ),
@@ -134,10 +134,10 @@ namespace LHPC
     fileParser.registerBlock( FCONSTRATIOERR );
     fileParser.registerBlock( FBAG );
     fileParser.registerBlock( FBAGERR );
-    fileParser.registerBlock( FWCOEFF );
-    fileParser.registerBlock( FWCOEFFERR );
-    fileParser.registerBlock( IMFWCOEFF );
-    fileParser.registerBlock( IMFWCOEFFERR );
+    fileParser.registerBlock( FWCOEF );
+    fileParser.registerBlock( FWCOEFERR );
+    fileParser.registerBlock( IMFWCOEF );
+    fileParser.registerBlock( IMFWCOEFERR );
     fileParser.registerBlock( FOBS );
     fileParser.registerBlock( FOBSERR );
     fileParser.registerBlock( FOBSSM );

@@ -30,13 +30,13 @@ namespace BOL
                              std::string const prefixForPositiveNumbers,
                              std::string const prefixForNegativeNumbers,
                              char const paddingChar )
-  /* this returns a reference to returnString after preparing it so that is
-   * the ASCII version of an int in base 10, prefixed with
-   * prefixForPositiveNumbers or prefixForNegativeNumbers depending on
-   * whether it is positive or negative. it makes returnString have at least
-   * minimumNumberOfDigits digit characters, filling it out with
-   * paddingChars after prefixForPositiveNumbers/prefixForNegativeNumbers
-   *  (e.g. intToString( 23, 4, "+", "-", '0' ) returns "+0023").
+  /* this returns a std::string that is the ASCII version of an int in base
+   * 10, prefixed with prefixForPositiveNumbers or prefixForNegativeNumbers
+   * depending on whether it is positive or negative. it makes returnString
+   * have at least minimumNumberOfDigits digit characters, filling it out
+   * with paddingChars after
+   * prefixForPositiveNumbers/prefixForNegativeNumbers
+   * (e.g. intToString( 23, 4, "+", "-" ) returns "+0023").
    */
   {
     std::string returnString;
@@ -88,8 +88,8 @@ namespace BOL
                                 std::string const positiveExponentPrefix,
                                 std::string const negativeExponentPrefix,
                                 std::string const exponentCharacter )
-  /* this returns returnString after preparing it so that is the ASCII
-   * version of a double in base 10, in the form specified thusly:
+  /* this returns a std::string that is the ASCII version of a double in base
+   * 10, in the form specified thusly:
    * 1st character: either "-" for negative numbers, or a "+" for
    *                positive numbers (or a string to replace this character),
    * 2nd character: the 1st digit,

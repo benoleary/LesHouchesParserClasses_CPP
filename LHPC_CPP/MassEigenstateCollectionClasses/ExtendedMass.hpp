@@ -69,6 +69,18 @@ namespace LHPC
     return massValue;
   }
 
+  inline double
+  ExtendedMass::getMinusUncertainty() const
+  {
+    return minusUncertainty;
+  }
+
+  inline double
+  ExtendedMass::getPlusUncertainty() const
+  {
+    return plusUncertainty;
+  }
+
   inline int
   ExtendedMass::getScheme() const
   {

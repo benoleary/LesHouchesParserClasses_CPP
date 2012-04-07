@@ -58,12 +58,12 @@ namespace LHPC
     FCONSTRATIOERR;
     SLHA::DoublyIndexedMultipleEntriesBlock< RunningConstant > FBAG;
     SLHA::DoublyIndexedMultipleEntriesBlock< RunningConstantError > FBAGERR;
-    SLHA::SparseQuadruplyIndexedBlock< double > FWCOEFF;
+    SLHA::SparseQuadruplyIndexedBlock< double > FWCOEF;
     SLHA::SparseQuadruplyIndexedBlock< std::pair< double, double > >
-    FWCOEFFERR;
-    SLHA::SparseQuadruplyIndexedBlock< double > IMFWCOEFF;
+    FWCOEFERR;
+    SLHA::SparseQuadruplyIndexedBlock< double > IMFWCOEF;
     SLHA::SparseQuadruplyIndexedBlock< std::pair< double, double > >
-    IMFWCOEFFERR;
+    IMFWCOEFERR;
     SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservable > FOBS;
     SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservableError > FOBSERR;
     SLHA::DoublyIndexedMultipleEntriesBlock< FlavorObservable > FOBSSM;

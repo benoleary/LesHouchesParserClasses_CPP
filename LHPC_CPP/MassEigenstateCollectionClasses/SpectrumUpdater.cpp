@@ -17,6 +17,7 @@ namespace LHPC
 {
   SpectrumUpdater::SpectrumUpdater() :
     fmassMap( NULL ),
+    fmasserrMap( NULL ),
     massMap( NULL ),
     isHoldingDecayFlag( false ),
     decayerCode( 0 ),

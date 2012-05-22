@@ -191,6 +191,10 @@
 
 
 CHANGELOG:
+ * 22nd May 2012: version 0.3.1
+ - fixed segmentation fault bug due to improperly initialized pointer in
+   SpectrumUpdater class.
+
  * 7th April 2012: version 0.3.0 released!
  - New templates (SinglyIndexedMultipleEntriesBlock,
    DoublyIndexedMultipleEntriesBlock, TriplyIndexedMultipleEntriesBlock,

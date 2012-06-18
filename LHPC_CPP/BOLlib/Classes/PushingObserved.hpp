@@ -73,7 +73,8 @@ namespace BOL
   template< class PushedClass >
   inline
   PushingObserved< PushedClass >::PushingObserved() :
-      observerList()
+      observerList(),
+      observerIterator()
   {
     // just an initialization list.
   }

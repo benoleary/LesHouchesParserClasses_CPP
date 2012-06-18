@@ -106,7 +106,7 @@ namespace LHPC
                                        std::pair< int, int > const& indexPair )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( indexPair );
+      return this->dataBlocks[ this->lowestScaleIndex ]( indexPair );
     }
 
     template< class ValueClass >
@@ -115,7 +115,7 @@ namespace LHPC
                                  std::pair< int, int > const& indexPair ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( indexPair );
+      return this->dataBlocks[ this->lowestScaleIndex ]( indexPair );
     }
 
     template< class ValueClass >
@@ -124,7 +124,7 @@ namespace LHPC
                                  std::pair< int, int > const& indexPair ) const
     // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestIndex ].hasEntry( indexPair );
+      return this->dataBlocks[ this->lowestIndex ].hasEntry( indexPair );
     }
 
   }  // end of SLHA namespace

@@ -20,7 +20,8 @@ namespace LHPC
     AutomaticEventFilter::AutomaticEventFilter() :
         filteredLines(),
         filterRules(),
-        numberOfRules( 0 )
+        numberOfRules( 0 ),
+        rulesToPass( numberOfRules )
     {
       // just an initialization list.
     }

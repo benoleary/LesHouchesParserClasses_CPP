@@ -41,6 +41,20 @@ namespace LHPC
     static double const zMass;
     static double const wPlusMass;
 
+    // CKM matrix elements, required for dividing up the hadronic decays:
+    static double const CkmUpDown;
+    static double const CkmUpStrange;
+    static double const CkmUpDownSquared;
+    static double const CkmUpStrangeSquared;
+    static double const CkmUpDownSquaredFraction;
+    static double const CkmUpStrangeSquaredFraction;
+    static double const CkmCharmDown;
+    static double const CkmCharmStrange;
+    static double const CkmCharmDownSquared;
+    static double const CkmCharmStrangeSquared;
+    static double const CkmCharmDownSquaredFraction;
+    static double const CkmCharmStrangeSquaredFraction;
+
     // some SM particle decay widths & branching ratios:
     static double const zDecayWidth;
     static double const zToElectronAntielectronBr;
@@ -67,20 +81,6 @@ namespace LHPC
     static double const wPlusToCharmlessPlusXBr;
     static double const wPlusToUpAntidownBr;
     static double const wPlusToUpAntistrangeBr;
-
-    // CKM matrix elements, required for dividing up the hadronic decays:
-    static double const CkmUpDown;
-    static double const CkmUpStrange;
-    static double const CkmUpDownSquared;
-    static double const CkmUpStrangeSquared;
-    static double const CkmUpDownSquaredFraction;
-    static double const CkmUpStrangeSquaredFraction;
-    static double const CkmCharmDown;
-    static double const CkmCharmStrange;
-    static double const CkmCharmDownSquared;
-    static double const CkmCharmStrangeSquared;
-    static double const CkmCharmDownSquaredFraction;
-    static double const CkmCharmStrangeSquaredFraction;
 
     static double const topDecayWidth;
     static double const topToWPlusBottomBr;

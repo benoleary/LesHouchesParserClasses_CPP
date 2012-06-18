@@ -15,7 +15,8 @@
 
 namespace BOL
 {
-  BasicObserver::BasicObserver()
+  BasicObserver::BasicObserver() :
+    stillObservingFlags()
   {
     // does nothing.
   }

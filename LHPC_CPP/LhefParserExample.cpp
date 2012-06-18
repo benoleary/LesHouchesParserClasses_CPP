@@ -134,8 +134,8 @@ int main( int argumentCount,
                                                                        true );
       // this will only take particle lines with transverse momentum *greater*
       // than 300.0 GeV.
-      LHPC::LHEF::FilterOnTransverseMomentum rejecttPtOverOneThousand( 1000.0,
-                                                                       false );
+      LHPC::LHEF::FilterOnTransverseMomentum rejectPtOverOneThousand( 1000.0,
+                                                                      false );
       // this will only take particle lines with transverse momentum *less*
       // than 1000.0 GeV.
       LHPC::LHEF::FilterOnTransverseMomentum acceptPtOverFifty( 50.0,

@@ -23,7 +23,8 @@ namespace LHPC
       currentEvent( this->isVerbose ),
       automaticFilters(),
       fileIsOpen( false ),
-      eventAsString( "" )
+      eventAsString( "" ),
+      eventIsValid( false )
   {
     openFile( eventFileName );
   }

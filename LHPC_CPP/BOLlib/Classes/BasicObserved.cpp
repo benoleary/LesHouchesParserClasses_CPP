@@ -16,7 +16,8 @@
 namespace BOL
 {
   BasicObserved::BasicObserved() :
-      observerList()
+      observerList(),
+      observerIterator()
   {
     // just an initialization list.
   }

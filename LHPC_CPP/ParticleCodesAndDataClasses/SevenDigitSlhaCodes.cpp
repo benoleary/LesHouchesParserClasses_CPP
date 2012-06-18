@@ -42,6 +42,9 @@ namespace LHPC
   int const SevenDigitSlhaCodes::neutrinoThree( -antineutrinoThree );
   int const SevenDigitSlhaCodes::tauAntineutrino( antineutrinoThree );
   int const SevenDigitSlhaCodes::tauNeutrino( -antineutrinoThree );
+  int const SevenDigitSlhaCodes::neutrinoOneMajorana( -antineutrinoOne );
+  int const SevenDigitSlhaCodes::neutrinoTwoMajorana( -antineutrinoTwo );
+  int const SevenDigitSlhaCodes::neutrinoThreeMajorana( -antineutrinoThree );
   int const SevenDigitSlhaCodes::antidownOne( -1 );
   int const SevenDigitSlhaCodes::downOne( -antidownOne );
   int const SevenDigitSlhaCodes::downAntiquark( antidownOne );
@@ -218,6 +221,14 @@ namespace LHPC
   int const SevenDigitSlhaCodes::rpvHiggsScalarThree( sneutrinoOne );
   int const SevenDigitSlhaCodes::rpvHiggsScalarFour( sneutrinoTwo );
   int const SevenDigitSlhaCodes::rpvHiggsScalarFive( sneutrinoThree );
+  int const SevenDigitSlhaCodes::rpvHiggsPseudoscalarOne(
+                                             neutralColorlessPseudoscalarOne );
+  int const
+  SevenDigitSlhaCodes::rpvHiggsPseudoscalarTwo( sneutrinoPseudoscalarOne );
+  int const
+  SevenDigitSlhaCodes::rpvHiggsPseudoscalarThree( sneutrinoPseudoscalarTwo );
+  int const
+  SevenDigitSlhaCodes::rpvHiggsPseudoscalarFour( sneutrinoPseudoscalarThree );
   int const
   SevenDigitSlhaCodes::positiveHiggsOne( positiveColorlessSpinZeroBosonOne );
   int const

@@ -53,6 +53,8 @@ namespace LHPC
         chargedEwsbSpinZeroAndOneBosonPointers(
                                         chargedColorlessSpinZeroBosonPointers )
     {
+      // neutralScalarsAndPseudoscalarPointers should start with the scalar
+      // from a StandardModel instance.
       MassEigenstate* vectorFiller( MassEigenstate::findPointerWithCode(
                                               PDGIX::neutralColorlessScalarOne,
                                                                 pdgCodeMap ) );
@@ -66,10 +68,12 @@ namespace LHPC
       {
         neutralScalarsAndPseudoscalarPointers.push_back( vectorFiller );
       }
-      neutralScalarsAndPseudoscalarPointers.push_back( &neutralColorlessScalarTwo );
+      neutralScalarsAndPseudoscalarPointers.push_back(
+                                                  &neutralColorlessScalarTwo );
       neutralScalarsAndPseudoscalarPointers.push_back(
                                             &neutralColorlessPseudoscalarOne );
-      chargedColorlessSpinZeroBosonPointers[ 1 ] = &negativeColorlessSpinZeroBosonOne;
+      chargedColorlessSpinZeroBosonPointers[ 1 ]
+      = &negativeColorlessSpinZeroBosonOne;
       chargedEwsbSpinZeroAndOneBosonPointers[ 1 ]
       = chargedColorlessSpinZeroBosonPointers[ 1 ];
       vectorFiller = MassEigenstate::findPointerWithCode( PDGIX::wPlusBosonOne,
@@ -86,7 +90,8 @@ namespace LHPC
         chargedEwsbSpinZeroAndOneBosonPointers.push_back(
                                        &(vectorFiller->getChargeConjugate()) );
       }
-      neutralEwsbSpinZeroAndOneBosonPointers = neutralScalarsAndPseudoscalarPointers;
+      neutralEwsbSpinZeroAndOneBosonPointers
+      = neutralScalarsAndPseudoscalarPointers;
       vectorFiller = MassEigenstate::findPointerWithCode( PDGIX::zBosonOne,
                                                           pdgCodeMap );
       if( NULL == vectorFiller )
@@ -100,9 +105,10 @@ namespace LHPC
         neutralEwsbSpinZeroAndOneBosonPointers.push_back( vectorFiller );
       }
       ewsbSpinZeroAndOneBosonPointers = neutralEwsbSpinZeroAndOneBosonPointers;
-      ewsbSpinZeroAndOneBosonPointers.insert( ewsbSpinZeroAndOneBosonPointers.end(),
-                                       chargedEwsbSpinZeroAndOneBosonPointers.begin(),
-                                       chargedEwsbSpinZeroAndOneBosonPointers.end() );
+      ewsbSpinZeroAndOneBosonPointers.insert(
+                                         ewsbSpinZeroAndOneBosonPointers.end(),
+                                chargedEwsbSpinZeroAndOneBosonPointers.begin(),
+                                chargedEwsbSpinZeroAndOneBosonPointers.end() );
     }
 
     MssmExtraEwsbSpinZeroBosonSet::~MssmExtraEwsbSpinZeroBosonSet()

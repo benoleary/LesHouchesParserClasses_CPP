@@ -70,21 +70,6 @@ namespace LHPC
 
 
       template< class ValueType >
-      inline void
-      InterpreterTemplate< ValueType >::setDefaultUnsetValue(
-                                           ValueType const& defaultUnsetValue )
-      {
-        this->defaultUnsetValue = defaultUnsetValue;
-      }
-
-      template< class ValueType >
-      inline void
-      InterpreterTemplate< ValueType >::setVerbosity( bool const& isVerbose )
-      {
-        this->isVerbose = &isVerbose;
-      }
-
-      template< class ValueType >
       inline
       InterpreterTemplate< ValueType >::InterpreterTemplate() :
           BlockInterpreter(),
@@ -105,6 +90,21 @@ namespace LHPC
       InterpreterTemplate< ValueType >::~InterpreterTemplate()
       {
         // does nothing.
+      }
+
+      template< class ValueType >
+      inline void
+      InterpreterTemplate< ValueType >::setDefaultUnsetValue(
+                                           ValueType const& defaultUnsetValue )
+      {
+        this->defaultUnsetValue = defaultUnsetValue;
+      }
+
+      template< class ValueType >
+      inline void
+      InterpreterTemplate< ValueType >::setVerbosity( bool const& isVerbose )
+      {
+        this->isVerbose = &isVerbose;
       }
 
       template< class ValueType >

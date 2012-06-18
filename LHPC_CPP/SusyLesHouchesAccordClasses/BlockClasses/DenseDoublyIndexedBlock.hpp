@@ -102,7 +102,7 @@ namespace LHPC
                                                        int const secondIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+      return this->dataBlocks[ this->lowestScaleIndex ]( firstIndex,
                                                          secondIndex );
     }
 
@@ -112,7 +112,7 @@ namespace LHPC
                                                   int const secondIndex ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+      return this->dataBlocks[ this->lowestScaleIndex ]( firstIndex,
                                                          secondIndex );
     }
 
@@ -123,7 +123,7 @@ namespace LHPC
     // derived classes over-ride this to interpret their data as a
     // std::string.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+      return this->dataBlocks[ this->lowestScaleIndex ]( firstIndex,
                                                          secondIndex );
     }
 

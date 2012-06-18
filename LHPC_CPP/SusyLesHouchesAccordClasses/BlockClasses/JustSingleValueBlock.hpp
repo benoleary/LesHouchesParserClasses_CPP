@@ -77,7 +77,7 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::operator()()
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]();
+      return this->dataBlocks[ this->lowestScaleIndex ]();
     }
 
     template< class ValueClass >
@@ -85,7 +85,7 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::operator()() const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]();
+      return this->dataBlocks[ this->lowestScaleIndex ]();
     }
 
     template< class ValueClass >
@@ -93,7 +93,7 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::hasEntry() const
     // this returns hasEntry() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestIndex ].hasEntry();
+      return this->dataBlocks[ this->lowestIndex ].hasEntry();
     }
 
   }  // end of SLHA namespace

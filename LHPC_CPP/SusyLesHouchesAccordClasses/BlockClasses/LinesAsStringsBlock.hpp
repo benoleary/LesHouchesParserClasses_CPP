@@ -48,7 +48,7 @@ namespace LHPC
     LinesAsStringsBlock::operator()( int const whichLine ) const
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( whichLine );
+      return this->dataBlocks[ this->lowestScaleIndex ]( whichLine );
     }
 
   }  // end of SLHA namespace

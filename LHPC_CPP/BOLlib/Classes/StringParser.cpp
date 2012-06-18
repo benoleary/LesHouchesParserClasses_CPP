@@ -15,11 +15,12 @@
 
 namespace BOL
 {
-  char const StringParser::lowercaseMinusUppercase( 'a' - 'A' );
-  std::stringstream StringParser::stringParsingStream;
   std::string const StringParser::whitespaceChars( " \t" );
   std::string const StringParser::newlineChars( "\n\r" );
   std::string const StringParser::whitespaceAndNewlineChars( " \t\n\r" );
+
+  char const StringParser::lowercaseMinusUppercase( 'a' - 'A' );
+  std::stringstream StringParser::stringParsingStream;
   std::vector< char > StringParser::charBuffer;
   VectorlikeArray< std::string > StringParser::stringVector( 0 );
 

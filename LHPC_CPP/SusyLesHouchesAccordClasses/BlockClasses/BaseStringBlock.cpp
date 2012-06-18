@@ -27,7 +27,8 @@ namespace LHPC
 
       BaseStringBlock::BaseStringBlock() :
           blockAsStringWithHeader( "" ),
-          stringPairArray()
+          stringPairArray(),
+          blockScale( BOL::UsefulStuff::notANumber )
       {
         // just an initialization list.
       }

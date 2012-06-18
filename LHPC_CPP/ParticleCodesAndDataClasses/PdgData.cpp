@@ -33,6 +33,35 @@ namespace LHPC
   double const PdgData::zMass( 91.1876 );
   double const PdgData::wPlusMass( 80.399 );
 
+  double const PdgData::CkmUpDown( 0.97418 );
+  double const PdgData::CkmUpStrange( 0.2255 );
+  double const
+  PdgData::CkmUpDownSquared( PdgData::CkmUpDown * PdgData::CkmUpDown );
+  double const PdgData::CkmUpStrangeSquared( PdgData::CkmUpStrange
+                                             * PdgData::CkmUpStrange );
+  double const
+  PdgData::CkmUpDownSquaredFraction( PdgData::CkmUpDownSquared
+                                     / ( PdgData::CkmUpDownSquared
+                                         + PdgData::CkmUpStrangeSquared ) );
+  double const
+  PdgData::CkmUpStrangeSquaredFraction( PdgData::CkmUpStrangeSquared
+                                        / ( PdgData::CkmUpDownSquared
+                                            + PdgData::CkmUpStrangeSquared ) );
+  double const PdgData::CkmCharmDown( 0.23 );
+  double const PdgData::CkmCharmStrange( 1.04 );
+  double const PdgData::CkmCharmDownSquared( PdgData::CkmCharmDown
+                                             * PdgData::CkmCharmDown );
+  double const PdgData::CkmCharmStrangeSquared( PdgData::CkmCharmStrange
+                                                * PdgData::CkmCharmStrange );
+  double const
+  PdgData::CkmCharmDownSquaredFraction( PdgData::CkmCharmDownSquared
+                                        / ( PdgData::CkmCharmDownSquared
+                                         + PdgData::CkmCharmStrangeSquared ) );
+  double const
+  PdgData::CkmCharmStrangeSquaredFraction( PdgData::CkmCharmStrangeSquared
+                                           / ( PdgData::CkmCharmDownSquared
+                                         + PdgData::CkmCharmStrangeSquared ) );
+
   double const PdgData::zDecayWidth( 2.4952 );
   double const PdgData::zToElectronAntielectronBr( 0.03363 );
   double const PdgData::zToMuonAntimuonBr( 0.03366 );
@@ -65,35 +94,6 @@ namespace LHPC
   double const PdgData::wPlusToNeutrinoAntimuonBr( 0.1057 );
   double const PdgData::wPlusToNeutrinoTauAntileptonBr( 0.1125 );
   double const PdgData::wPlusToHadronsBr( 0.6760 );
-
-  double const PdgData::CkmCharmDown( 0.23 );
-  double const PdgData::CkmCharmStrange( 1.04 );
-  double const PdgData::CkmCharmDownSquared( PdgData::CkmCharmDown
-                                             * PdgData::CkmCharmDown );
-  double const PdgData::CkmCharmStrangeSquared( PdgData::CkmCharmStrange
-                                                * PdgData::CkmCharmStrange );
-  double const
-  PdgData::CkmCharmDownSquaredFraction( PdgData::CkmCharmDownSquared
-                                        / ( PdgData::CkmCharmDownSquared
-                                         + PdgData::CkmCharmStrangeSquared ) );
-  double const
-  PdgData::CkmCharmStrangeSquaredFraction( PdgData::CkmCharmStrangeSquared
-                                           / ( PdgData::CkmCharmDownSquared
-                                         + PdgData::CkmCharmStrangeSquared ) );
-  double const PdgData::CkmUpDown( 0.97418 );
-  double const PdgData::CkmUpStrange( 0.2255 );
-  double const
-  PdgData::CkmUpDownSquared( PdgData::CkmUpDown * PdgData::CkmUpDown );
-  double const PdgData::CkmUpStrangeSquared( PdgData::CkmUpStrange
-                                             * PdgData::CkmUpStrange );
-  double const
-  PdgData::CkmUpDownSquaredFraction( PdgData::CkmUpDownSquared
-                                     / ( PdgData::CkmUpDownSquared
-                                         + PdgData::CkmUpStrangeSquared ) );
-  double const
-  PdgData::CkmUpStrangeSquaredFraction( PdgData::CkmUpStrangeSquared
-                                        / ( PdgData::CkmUpDownSquared
-                                            + PdgData::CkmUpStrangeSquared ) );
 
   /* this code assumes that the BRs of the W^+ into charm + antidown &
    * charm + antistrange account for all the BR of the charm + X,

@@ -60,7 +60,7 @@ namespace LHPC
                                                 isVerbose ),
         indexDigitsVector( indexDigitsVector )
     {
-      this->DataBlocks.getFront().setIndexDigits( indexDigitsVector );
+      this->dataBlocks.getFront().setIndexDigits( indexDigitsVector );
     }
 
     template< class ValueClass, class IndexedParser >
@@ -74,7 +74,7 @@ namespace LHPC
     inline void
     IndexedBlockTemplate< ValueClass, IndexedParser >::prepareNewDataBlock()
     {
-      this->DataBlocks.getBack().setIndexDigits( indexDigitsVector );
+      this->dataBlocks.getBack().setIndexDigits( indexDigitsVector );
     }
 
   }  // end of SLHA namespace

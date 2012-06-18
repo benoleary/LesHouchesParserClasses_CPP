@@ -125,7 +125,7 @@ namespace LHPC
                                 std::pair< int, int > > const& indexQuadruple )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( indexQuadruple );
+      return this->dataBlocks[ this->lowestScaleIndex ]( indexQuadruple );
     }
 
     template< class ValueClass >
@@ -135,7 +135,7 @@ namespace LHPC
                           std::pair< int, int > > const& indexQuadruple ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( indexQuadruple );
+      return this->dataBlocks[ this->lowestScaleIndex ]( indexQuadruple );
     }
 
     template< class ValueClass >
@@ -146,7 +146,7 @@ namespace LHPC
     // derived classes over-ride this to interpret their data as a
     // std::string.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( indexQuadruple );
+      return this->dataBlocks[ this->lowestScaleIndex ]( indexQuadruple );
     }
 
   }  // end of SLHA namespace

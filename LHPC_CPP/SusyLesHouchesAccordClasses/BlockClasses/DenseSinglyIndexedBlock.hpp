@@ -83,7 +83,7 @@ namespace LHPC
     DenseSinglyIndexedBlock< ValueClass >::operator()( int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
+      return this->dataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -92,7 +92,7 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
+      return this->dataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -103,7 +103,7 @@ namespace LHPC
     // std::string.
     {
       return
-      this->DataBlocks[ this->lowestScaleIndex ].hasEntry( soughtIndex );
+      this->dataBlocks[ this->lowestScaleIndex ].hasEntry( soughtIndex );
     }
 
   }  // end of SLHA namespace

@@ -98,7 +98,7 @@ namespace LHPC
                                                        int const thirdIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+      return this->dataBlocks[ this->lowestScaleIndex ]( firstIndex,
                                                          secondIndex,
                                                          thirdIndex );
     }
@@ -110,7 +110,7 @@ namespace LHPC
                                                    int const thirdIndex ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( firstIndex,
+      return this->dataBlocks[ this->lowestScaleIndex ]( firstIndex,
                                                          secondIndex,
                                                          thirdIndex );
     }
@@ -123,7 +123,7 @@ namespace LHPC
     // this returns hasEntry( firstIndex, secondIndex, thirdIndex ) of the
     // lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ].hasEntry( firstIndex,
+      return this->dataBlocks[ this->lowestScaleIndex ].hasEntry( firstIndex,
                                                                   secondIndex,
                                                                   thirdIndex );
     }

@@ -31,7 +31,6 @@ namespace LHPC
                        isVerbose )
   {
     fileParser.registerBlock( SPHENOINFO );
-    fileParser.registerBlock( SPHENOINFO );
     fileParser.registerBlock( SPHENOINPUT );
     fileParser.registerBlock( SPHENOCROSSSECTIONS );
     fileParser.registerBlock( SPHENOLOWENERGY );

@@ -131,14 +131,14 @@ namespace LHPC
        */
       virtual void
       respondToPush( BlockClass::BaseStringBlock const& pushedValue );
-      // this adds a new BlockParser to DataBlocks & tells it to interpret
+      // this adds a new BlockParser to dataBlocks & tells it to interpret
       // pushedValue. it also sorts out scale indices.
 
 
     protected:
       bool const& isVerbose;
       ValueClass const defaultUnsetValue;
-      BOL::VectorlikeArray< BlockParser > DataBlocks;
+      BOL::VectorlikeArray< BlockParser > dataBlocks;
       int lowestScaleIndex;
       bool hasHadPushSinceLastReset;
       std::list< std::pair< int, double > > scaleOrderedIndices;
@@ -164,15 +164,15 @@ namespace LHPC
         BaseSlhaBlock( blockName ),
         isVerbose( isVerbose ),
         defaultUnsetValue( defaultUnsetValue ),
-        DataBlocks( 1 ),
+        dataBlocks( 1 ),
         lowestScaleIndex( 0 ),
         hasHadPushSinceLastReset( true ),
         scaleOrderedIndices(),
         scaleIndexIterator(),
         stringInterpretation( "" )
     {
-      DataBlocks.getFront().setDefaultUnsetValue( defaultUnsetValue );
-      DataBlocks.getFront().setVerbosity( isVerbose );
+      dataBlocks.getFront().setDefaultUnsetValue( defaultUnsetValue );
+      dataBlocks.getFront().setVerbosity( isVerbose );
     }
 
     template< class ValueClass, class BlockParser >
@@ -194,11 +194,11 @@ namespace LHPC
     {
       if( 0 == whichScaleIndex )
       {
-        return DataBlocks[ lowestScaleIndex ];
+        return dataBlocks[ lowestScaleIndex ];
       }
       else
       {
-        return DataBlocks[ (--whichScaleIndex) ];
+        return dataBlocks[ (--whichScaleIndex) ];
       }
     }
 
@@ -210,11 +210,11 @@ namespace LHPC
     {
       if( 0 == whichScaleIndex )
       {
-        return DataBlocks[ lowestScaleIndex ];
+        return dataBlocks[ lowestScaleIndex ];
       }
       else
       {
-        return DataBlocks[ (--whichScaleIndex) ];
+        return dataBlocks[ (--whichScaleIndex) ];
       }
     }
 
@@ -225,7 +225,7 @@ namespace LHPC
     {
       if( hasHadPushSinceLastReset )
       {
-        return DataBlocks.getSize();
+        return dataBlocks.getSize();
       }
       else
       {
@@ -298,7 +298,7 @@ namespace LHPC
     {
       stringInterpretation.clear();
       for( int scaleIndex( 0 );
-           DataBlocks.getSize() > scaleIndex;
+           dataBlocks.getSize() > scaleIndex;
            ++scaleIndex )
       {
         stringInterpretation.append(
@@ -307,15 +307,15 @@ namespace LHPC
         stringInterpretation.append( blockName );
         if( onlyShowScalesGreaterThanZero
             ||
-            ( 0.0 > DataBlocks[ scaleIndex ].getScale() ) )
+            ( 0.0 > dataBlocks[ scaleIndex ].getScale() ) )
         {
           stringInterpretation.append( " Q= " );
           stringInterpretation.append(
                               BlockInterpreter::slhaDoubleMaker.doubleToString(
-                                       DataBlocks[ scaleIndex ].getScale() ) );
+                                       dataBlocks[ scaleIndex ].getScale() ) );
         }
         stringInterpretation.append( "\n" );
-        stringInterpretation.append( DataBlocks[ scaleIndex ].getAsString() );
+        stringInterpretation.append( dataBlocks[ scaleIndex ].getAsString() );
       }
       return stringInterpretation;
     }
@@ -328,7 +328,7 @@ namespace LHPC
      * has interpreted or had assigned.
      */
     {
-      DataBlocks.setSize( 1 ).getBack().clearEntries();
+      dataBlocks.setSize( 1 ).getBack().clearEntries();
       scaleOrderedIndices.clear();
       hasHadPushSinceLastReset = false;
     }
@@ -337,28 +337,28 @@ namespace LHPC
     inline void
     SlhaBlock< ValueClass, BlockParser >::respondToPush(
                                BlockClass::BaseStringBlock const& pushedValue )
-    // this adds a new BlockParser to DataBlocks & tells it to interpret
+    // this adds a new BlockParser to dataBlocks & tells it to interpret
     // pushedValue. it also sorts out scale indices.
     {
       if( hasHadPushSinceLastReset )
       {
-        DataBlocks.newEnd().setDefaultUnsetValue( defaultUnsetValue );
-        DataBlocks.getBack().setVerbosity( isVerbose );
+        dataBlocks.newEnd().setDefaultUnsetValue( defaultUnsetValue );
+        dataBlocks.getBack().setVerbosity( isVerbose );
         prepareNewDataBlock();
-        DataBlocks.getBack().interpretStringBlock( pushedValue );
+        dataBlocks.getBack().interpretStringBlock( pushedValue );
         if( pushedValue.getScale()
-            < DataBlocks[ lowestScaleIndex ].getScale() )
+            < dataBlocks[ lowestScaleIndex ].getScale() )
           /* since hasHadPushSinceLastReset is true, lowestScaleIndex is a
-           * valid index for DataBlocks, so the comparison is valid, & if true,
+           * valid index for dataBlocks, so the comparison is valid, & if true,
            *  lowestScaleIndex is set correctly.
            */
         {
-          lowestScaleIndex = DataBlocks.getLastIndex();
+          lowestScaleIndex = dataBlocks.getLastIndex();
         }
       }
       else
       {
-        DataBlocks[ 0 ].interpretStringBlock( pushedValue );
+        dataBlocks[ 0 ].interpretStringBlock( pushedValue );
       }
       hasHadPushSinceLastReset = true;
       scaleIndexIterator = scaleOrderedIndices.begin();
@@ -371,7 +371,7 @@ namespace LHPC
       // now scaleIndexIterator should either be at the index with scale just
       // above blockScale, or at the end of the list.
       scaleOrderedIndices.insert( scaleIndexIterator,
-                           std::pair< int, double >( DataBlocks.getLastIndex(),
+                           std::pair< int, double >( dataBlocks.getLastIndex(),
                                                     pushedValue.getScale() ) );
     }
 

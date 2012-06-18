@@ -33,6 +33,9 @@ namespace LHPC
         lineAsNumbersAsStrings( 6 ),
         recordingSucceeded( false ),
         headerLine( "" ),
+        motherLineNumber( 0 ),
+        primaryMotherLinePointer( NULL ),
+        secondaryMotherLinePointer( NULL ),
         isVerbose( isVerbose ),
         eventAsString( "" )
     {
@@ -53,6 +56,9 @@ namespace LHPC
         lineAsNumbersAsStrings( 6 ),
         recordingSucceeded( copySource.recordingSucceeded ),
         headerLine( "" ),
+        motherLineNumber( 0 ),
+        primaryMotherLinePointer( NULL ),
+        secondaryMotherLinePointer( NULL ),
         isVerbose( trueForVerbosity ),
         eventAsString( copySource.eventAsString )
     {

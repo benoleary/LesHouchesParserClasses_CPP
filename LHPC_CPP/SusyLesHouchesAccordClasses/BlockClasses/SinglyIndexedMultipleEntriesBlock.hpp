@@ -92,7 +92,8 @@ namespace LHPC
                                                                      isVerbose,
                                                          std::vector< int >( 1,
                                                                indexDigits ) ),
-        isFmassBlockFlag( false )
+        isFmassBlockFlag( false ),
+        isFmasserrBlockFlag( false )
     {
       if( this->nameMatches( "FMASS" ) )
       {
@@ -119,7 +120,7 @@ namespace LHPC
                                                         int const soughtIndex )
     // this returns operator() of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
+      return this->dataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -128,7 +129,7 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // const version of above.
     {
-      return this->DataBlocks[ this->lowestScaleIndex ]( soughtIndex );
+      return this->dataBlocks[ this->lowestScaleIndex ]( soughtIndex );
     }
 
     template< class ValueClass >
@@ -137,7 +138,7 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     {
-      return this->DataBlocks[ this->lowestIndex ].hasEntry( soughtIndex );
+      return this->dataBlocks[ this->lowestIndex ].hasEntry( soughtIndex );
     }
 
     template< class ValueClass >
@@ -165,7 +166,7 @@ namespace LHPC
     {
       if( isFmassBlockFlag )
       {
-        return &(this->DataBlocks[ this->lowestScaleIndex ].getValueMap());
+        return &(this->dataBlocks[ this->lowestScaleIndex ].getValueMap());
       }
       else
       {
@@ -199,7 +200,7 @@ namespace LHPC
     {
       if( isFmasserrBlockFlag )
       {
-        return &(this->DataBlocks[ this->lowestScaleIndex ].getValueMap());
+        return &(this->dataBlocks[ this->lowestScaleIndex ].getValueMap());
       }
       else
       {

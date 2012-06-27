@@ -12,7 +12,7 @@
  */
 
 #include "LHEF.hpp"
-#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
+//#include "ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp"
 
 class exampleRule : public LHPC::LHEF::FilterRule
 {

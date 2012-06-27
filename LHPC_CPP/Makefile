@@ -38,6 +38,7 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  $(LHEFDIR)/FilterRuleClasses/ParticleCode.cpp \
  $(LHEFDIR)/FilterRuleClasses/PseudorapidityCut.cpp \
  $(LHEFDIR)/FilterRuleClasses/TransverseMomentumCut.cpp \
+ LargeHadronColliderOlympicsClasses/ObjectLine.cpp \
  MassEigenstateCollectionClasses/ExtendedMass.cpp \
  MassEigenstateCollectionClasses/MassEigenstate.cpp \
  MassEigenstateCollectionClasses/MassSpectrum.cpp \

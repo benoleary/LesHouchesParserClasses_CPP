@@ -66,7 +66,7 @@ namespace LHPC
       std::string const
       getAsStringWithTags() const;
 
-      // stuff for setting up the lhefEvent:
+      // stuff for setting up the LhefEvent:
       bool
       recordEvent( std::string const& eventAsString );
       /* this interprets a string as the data it is meant to correspond to, &

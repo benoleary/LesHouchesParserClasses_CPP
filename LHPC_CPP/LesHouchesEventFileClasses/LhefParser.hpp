@@ -29,17 +29,10 @@ namespace LHPC
   class LhefParser
   {
   public:
-    LhefParser( std::string const& eventFileName,
+    LhefParser( std::string const eventFileName = "",
                 bool const isVerbose = true );
     ~LhefParser();
 
-    bool
-    readNextEvent();
-    // this reads in the next event in the event file, & returns true if
-    // successful.
-    LHEF::LhefEvent const&
-    getEvent() const;
-    // this returns the last parsed event.
     LhefParser&
     registerFilter( LHEF::AutomaticEventFilter& filterToUpdate );
     // this adds a pointer to filterToUpdate to automaticFilters so that its
@@ -52,6 +45,13 @@ namespace LHPC
     eventReadSuccessfully();
     // this returns true if the last event that was read was also successfully
     // interpreted.
+    bool
+    readNextEvent();
+    // this reads in the next event in the event file, & returns true if
+    // successful.
+    LHEF::LhefEvent const&
+    getEvent() const;
+    // this returns the last parsed event.
 
 
   protected:
@@ -67,6 +67,33 @@ namespace LHPC
 
 
 
+
+  inline LhefParser&
+  LhefParser::registerFilter( LHEF::AutomaticEventFilter& filterToUpdate )
+  // this adds a pointer to filterToUpdate to automaticFilters so that its
+  // updateForNewEvent(...) gets called at the end of readNextEvent().
+  {
+    automaticFilters.push_back( &filterToUpdate );
+    return *this;
+  }
+
+  inline bool
+  LhefParser::openFile( std::string const& eventFileName )
+  // this opens the file with the given name as the source of its events &
+  // returns true, unless the file could not be opened.
+  {
+    fileParser.openFile( eventFileName );
+    fileIsOpen = fileParser.wasSuccessful();
+    return fileIsOpen;
+  }
+
+  inline bool
+  LhefParser::eventReadSuccessfully()
+  // this returns true if the last event that was read was also successfully
+  // interpreted.
+  {
+    return eventIsValid;
+  }
 
   inline bool
   LhefParser::readNextEvent()
@@ -100,33 +127,6 @@ namespace LHPC
   // this returns the last parsed event.
   {
     return currentEvent;
-  }
-
-  inline LhefParser&
-  LhefParser::registerFilter( LHEF::AutomaticEventFilter& filterToUpdate )
-  // this adds a pointer to filterToUpdate to automaticFilters so that its
-  // updateForNewEvent(...) gets called at the end of readNextEvent().
-  {
-    automaticFilters.push_back( &filterToUpdate );
-    return *this;
-  }
-
-  inline bool
-  LhefParser::openFile( std::string const& eventFileName )
-  // this opens the file with the given name as the source of its events &
-  // returns true, unless the file could not be opened.
-  {
-    fileParser.openFile( eventFileName );
-    fileIsOpen = fileParser.wasSuccessful();
-    return fileIsOpen;
-  }
-
-  inline bool
-  LhefParser::eventReadSuccessfully()
-  // this returns true if the last event that was read was also successfully
-  // interpreted.
-  {
-    return eventIsValid;
   }
 
 }

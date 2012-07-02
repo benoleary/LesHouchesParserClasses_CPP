@@ -31,7 +31,7 @@ namespace BOL
     CommentedTextParser( std::string const& commentMarker,
                          bool const& isVerbose );
     CommentedTextParser(
-                      VectorlikeArray< std::string > const& commentMarkerSet,
+                        VectorlikeArray< std::string > const& commentMarkerSet,
                          bool const& isVerbose );
     virtual
     ~CommentedTextParser();

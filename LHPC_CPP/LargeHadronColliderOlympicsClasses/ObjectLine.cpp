@@ -43,7 +43,7 @@ namespace LHPC
     }
 
 
-    void
+    ObjectLine const*
     ObjectLine::recordLine( int const lineNumber,
                      BOL::VectorlikeArray< std::string > const& lineAsStrings )
     // this interprets a string as the data it is meant to correspond to. it
@@ -70,6 +70,7 @@ namespace LHPC
         valueVector[ whichElement ]
         = BOL::StringParser::stringToDouble( lineAsStrings[ whichElement ] );
       }
+      return this;
     }
 
   }

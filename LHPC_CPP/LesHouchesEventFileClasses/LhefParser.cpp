@@ -15,7 +15,7 @@
 
 namespace LHPC
 {
-  LhefParser::LhefParser( std::string const& eventFileName,
+  LhefParser::LhefParser( std::string const eventFileName,
                           bool const isVerbose ) :
       isVerbose( isVerbose ),
       fileParser( "event",
@@ -26,7 +26,10 @@ namespace LHPC
       eventAsString( "" ),
       eventIsValid( false )
   {
-    openFile( eventFileName );
+    if( !(eventFileName.empty()) )
+    {
+      openFile( eventFileName );
+    }
   }
 
   LhefParser::~LhefParser()

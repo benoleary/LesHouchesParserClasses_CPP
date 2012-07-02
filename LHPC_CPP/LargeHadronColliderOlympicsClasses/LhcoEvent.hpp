@@ -19,6 +19,15 @@ namespace LHPC
     class LhcoEvent
     {
     public:
+      enum objectType
+      {
+        photonObject = 0,
+        electronObject = 1,
+        muonObject = 2,
+        tauObject = 3,
+        jetObject = 4,
+        missingEnergyObject = 6
+      };
       LhcoEvent( bool const& isVerbose );
       LhcoEvent( LhcoEvent const& copySource );
       ~LhcoEvent();
@@ -30,9 +39,7 @@ namespace LHPC
       int
       getTriggerWord() const;
       ObjectLine const&
-      getLine( int const whichLine ) const;
-      ObjectLine const&
-      operator[]( int const whichLine ) const{ return getLine( whichLine ); }
+      operator[]( int const whichLine ) const;
       std::list< ObjectLine const* > const&
       getPhotons() const;
       std::list< ObjectLine const* > const&
@@ -69,9 +76,8 @@ namespace LHPC
       static bool const trueForVerbosity;
       static std::string const eventCommentLine;
       static int const charactersForEventNumber;
+      static int const charactersForTriggerWord;
 
-      int numberOfObjects;
-      // the number of objects listed in the event.
       int eventNumber;
       // the number of the event, given in line 0.
       int triggerWord;
@@ -83,20 +89,26 @@ namespace LHPC
 
       BOL::VectorlikeArray< ObjectLine > objectLines;
 
-      std::list< ObjectLine const* > photonLines;
-      std::list< ObjectLine const* > electronLines;
-      std::list< ObjectLine const* > muonLines;
-      std::list< ObjectLine const* > tauLines;
-      std::list< ObjectLine const* > jetLines;
       ObjectLine const* missingEnergyLinePointer;
-      std::list< ObjectLine const* > missingEnergyLines;
-      std::list< ObjectLine const* > emptyList;
+      std::vector< std::list< ObjectLine const* > > objectLists;
 
       bool const& isVerbose;
       std::string eventAsString;
-      ObjectLine interpretingObjectLine;
+      ObjectLine const* interpretingObjectLine;
       // this is for parsing the data line:
       BOL::VectorlikeArray< std::string > lineParser;
+
+      std::list< ObjectLine const* >&
+      getObjectList( unsigned int const whichType );
+      // the type of object:
+      // 0: photon
+      // 1: electron
+      // 2: muon
+      // 3: hadronically-decaying tau lepton
+      // 4: jet
+      // 5: not defined
+      // 6: missing transverse energy
+      // anything else that appears is also undefined.
     };
 
 
@@ -106,7 +118,7 @@ namespace LHPC
     inline int
     LhcoEvent::getNumberOfObjects() const
     {
-      return numberOfObjects;
+      return objectLines.getSize();
     }
 
     inline int
@@ -122,7 +134,7 @@ namespace LHPC
     }
 
     inline ObjectLine const&
-    LhcoEvent::getLine( int const whichLine ) const
+    LhcoEvent::operator[]( int const whichLine ) const
     {
       return objectLines[ ( whichLine - 1 ) ];
     }
@@ -130,31 +142,31 @@ namespace LHPC
     inline std::list< ObjectLine const* > const&
     LhcoEvent::getPhotons() const
     {
-      return photonLines;
+      return objectLists[ (unsigned int)photonObject ];
     }
 
     inline std::list< ObjectLine const* > const&
     LhcoEvent::getElectrons() const
     {
-      return electronLines;
+      return objectLists[ (unsigned int)electronObject ];
     }
 
     inline std::list< ObjectLine const* > const&
     LhcoEvent::getMuons() const
     {
-      return muonLines;
+      return objectLists[ (unsigned int)muonObject ];
     }
 
     inline std::list< ObjectLine const* > const&
     LhcoEvent::getTaus() const
     {
-      return tauLines;
+      return objectLists[ (unsigned int)tauObject ];
     }
 
     inline std::list< ObjectLine const* > const&
     LhcoEvent::getJets() const
     {
-      return jetLines;
+      return objectLists[ (unsigned int)jetObject ];
     }
 
     inline ObjectLine const*
@@ -166,30 +178,7 @@ namespace LHPC
     inline std::list< ObjectLine const* > const&
     LhcoEvent::getObjectsOfType( int const whichType ) const
     {
-      if( 1 == whichType )
-      {
-        return getPhotons();
-      }
-      else if( 2 == whichType )
-      {
-        return getElectrons();
-      }
-      else if( 3 == whichType )
-      {
-        return getMuons();
-      }
-      else if( 4 == whichType )
-      {
-        return getJets();
-      }
-      else if( 6 == whichType )
-      {
-        return getMissingEnergy();
-      }
-      else
-      {
-        return emptyList;
-      }
+      return objectLists[ whichType ];
     }
 
     inline std::string const&
@@ -204,6 +193,13 @@ namespace LHPC
     // into eventNumber & triggerWord, & prepares eventAsString.
     {
       objectLines.clearEntries();
+      for( int whichList( objectLists.size() - 1 );
+           0 <= whichList;
+           --whichList )
+      {
+        objectLists[ whichList ].clear();
+      }
+      missingEnergyLinePointer = NULL;
       eventNumber = nextEventNumber;
       triggerWord = nextTriggerWord;
       eventAsString.assign( eventCommentLine );
@@ -215,6 +211,25 @@ namespace LHPC
       eventAsString.append( BOL::StringParser::intToSpacePaddedString(
                                                                nextTriggerWord,
                                                   charactersForTriggerWord ) );
+    }
+
+    inline std::list< ObjectLine const* >&
+    LhcoEvent::getObjectList( unsigned int const whichType )
+    // the type of object:
+    // 0: photon
+    // 1: electron
+    // 2: muon
+    // 3: hadronically-decaying tau lepton
+    // 4: jet
+    // 5: not defined
+    // 6: missing transverse energy
+    // anything else that appears is also undefined.
+    {
+      if( objectLists.size() <= whichType )
+      {
+        objectLists.resize( whichType + 1 );
+      }
+      return objectLists[ whichType ];
     }
 
   }

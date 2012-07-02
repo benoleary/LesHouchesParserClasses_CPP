@@ -559,3 +559,15 @@ Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.d
 Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.o
 
 Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/subdir.mk
+
+Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.d
+
+Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.o
+
+Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.d
+
+Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.o
+
+Release/LHPC_CPP/LhcoParserExample.d
+
+Release/LHPC_CPP/LhcoParserExample.o

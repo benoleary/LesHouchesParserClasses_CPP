@@ -79,7 +79,7 @@ namespace LHPC
       getColumnTen() const;
       double
       getColumnEleven() const;
-      void
+      ObjectLine const*
       recordLine( int const lineNumber,
                   BOL::VectorlikeArray< std::string > const& lineAsStrings );
 

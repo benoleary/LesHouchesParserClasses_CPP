@@ -20,72 +20,47 @@ namespace LHPC
     int const LhcoEvent::charactersForTriggerWord( 6 );
 
     LhcoEvent::LhcoEvent( bool const& isVerbose ) :
-        numberOfObjects( 0 ),
         eventNumber( 0 ),
         triggerWord( 0 ),
+        nextEventNumber( 0 ),
+        nextTriggerWord( 0 ),
         objectLines(),
-        photonLines(),
-        electronLines(),
-        muonLines(),
-        tauLines(),
-        jetLines(),
         missingEnergyLinePointer( NULL ),
-        missingEnergyLines(),
-        emptyList(),
+        objectLists( (unsigned int)missingEnergyObject + 1 ),
         isVerbose( isVerbose ),
         eventAsString( "" ),
-        interpretingObjectLine()
+        interpretingObjectLine( NULL ),
+        lineParser()
     {
       // just an initialization list.
     }
 
     LhcoEvent::LhcoEvent( LhcoEvent const& copySource ) :
-        numberOfObjects( copySource.numberOfObjects ),
         eventNumber( copySource.eventNumber ),
         triggerWord( copySource.triggerWord ),
+        nextEventNumber( copySource.nextEventNumber ),
+        nextTriggerWord( copySource.nextTriggerWord ),
         objectLines( copySource.objectLines,
                      &ObjectLine::copyObjectLine ),
-        photonLines(),
-        electronLines(),
-        muonLines(),
-        tauLines(),
-        jetLines(),
         missingEnergyLinePointer( NULL ),
-        missingEnergyLines(),
-        emptyList(),
+        objectLists( copySource.objectLists.size() ),
         isVerbose( trueForVerbosity ),
         eventAsString( "" ),
-        interpretingObjectLine()
+        interpretingObjectLine( NULL ),
+        lineParser()
     {
       for( int whichLine( 0 );
            objectLines.getLastIndex() >= whichLine;
            ++whichLine )
       {
-        if( 0 == objectLines[ whichLine ].getObjectType() )
-        {
-          photonLines.push_back( objectLines.getPointer( whichLine ) );
-        }
-        else if( 1 == objectLines[ whichLine ].getObjectType() )
-        {
-          electronLines.push_back( objectLines.getPointer( whichLine ) );
-        }
-        else if( 2 == objectLines[ whichLine ].getObjectType() )
-        {
-          muonLines.push_back( objectLines.getPointer( whichLine ) );
-        }
-        else if( 3 == objectLines[ whichLine ].getObjectType() )
-        {
-          tauLines.push_back( objectLines.getPointer( whichLine ) );
-        }
-        else if( 4 == objectLines[ whichLine ].getObjectType() )
-        {
-          jetLines.push_back( objectLines.getPointer( whichLine ) );
-        }
-        else if( 6 == objectLines[ whichLine ].getObjectType() )
-        {
-          missingEnergyLinePointer = objectLines.getPointer( whichLine );
-          missingEnergyLines.push_back( missingEnergyLinePointer );
-        }
+        interpretingObjectLine = objectLines.getPointer( whichLine );
+        getObjectList( interpretingObjectLine->getObjectType()
+                                         ).push_back( interpretingObjectLine );
+      }
+      if( !(getObjectList( (unsigned int)missingEnergyObject ).empty()) )
+      {
+        missingEnergyLinePointer
+        = getObjectList( (unsigned int)missingEnergyObject ).front();
       }
     }
 
@@ -101,7 +76,8 @@ namespace LHPC
     // a new ObjectLine if appropriate, noting its pointer in the appropriate
     // std::list. if lineAsString is the start of a new event (as the line
     // begins with 0, which is also what this function will return), it
-    // prepares nextEventNumber & nextTriggerWord based on this line.
+    // prepares nextEventNumber & nextTriggerWord based on this line. -1 is
+    // returned in the case of invalid input.
     {
       eventAsString.append( "\n" );
       eventAsString.append( lineAsString );
@@ -122,172 +98,40 @@ namespace LHPC
           << "LHPC::warning! \"" << lineAsString
           << "\" is not a valid LHCO line!";
           std::cout << std::endl;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
-        setAsInvalid();
-        return false;
+        eventNumber = -1;
       }
       else
       {
-        // 1st the header line is set up:
-        headerLine.assign( eventAsLines.getFront() );
-        lineAsNumbersAsStrings.clearEntries();
-        BOL::StringParser::parseByChar( headerLine,
-                                        lineAsNumbersAsStrings,
-                                        BOL::StringParser::whitespaceChars );
+        eventNumber
+        = BOL::StringParser::stringToInt( lineParser[ 0 ] );
 
-        if( 6 != lineAsNumbersAsStrings.getSize() )
-          // if the wrong number of data was given (a header line & at least 1
-          // particle line are required)...
+        if( 0 == eventNumber )
         {
-          if( isVerbose )
-          {
-            std::cout
-            << std::endl
-            << "LHPC::warning! recording event " << eventNumberInFile
-            << " as invalid because " << lineAsNumbersAsStrings.getSize()
-            << " numbers were found for the header line, instead of exactly 6"
-            << " numbers, as required.";
-            std::cout << std::endl;
-          }
-          setAsInvalid();
-          return false;
+          nextEventNumber
+          = BOL::StringParser::stringToInt( lineParser[ 1 ] );
+          nextTriggerWord
+          = BOL::StringParser::stringToInt( lineParser[ 2 ] );
         }
         else
         {
-          numberOfParticles
-          = BOL::StringParser::stringToInt( lineAsNumbersAsStrings[ 0 ] );
-          if( numberOfParticles != ( eventAsLines.getSize() - 1 ) )
-            // if the header is wrong about how many particle lines there
-            // are...
+          interpretingObjectLine
+          = objectLines.newEnd().recordLine( eventNumber,
+                                             lineParser );
+          if( (int)missingEnergyObject
+              == interpretingObjectLine->getObjectType() )
           {
-            if( isVerbose )
-            {
-              std::cout
-              << std::endl
-              << "LHPC::warning! recording event " << eventNumberInFile
-              << " as invalid because the header line declared "
-              << numberOfParticles << " particles in the event, but "
-              << ( eventAsLines.getSize() - 1 ) << " lines were found for the"
-              << " particles.";
-              std::cout << std::endl;
-            }
-            setAsInvalid();
-            return false;
+            missingEnergyLinePointer = interpretingObjectLine;
           }
-          else
-          {
-            eventId
-            = BOL::StringParser::stringToInt( lineAsNumbersAsStrings[ 1 ] );
-            eventWeight
-            = BOL::StringParser::stringToDouble( lineAsNumbersAsStrings[ 2 ] );
-            eventScale
-            = BOL::StringParser::stringToDouble( lineAsNumbersAsStrings[ 3 ] );
-            alphaQed
-            = BOL::StringParser::stringToDouble( lineAsNumbersAsStrings[ 4 ] );
-            alphaQcd
-            = BOL::StringParser::stringToDouble( lineAsNumbersAsStrings[ 5 ] );
-
-            // then the ParticleLines are set up:
-            particleLines.setSize( numberOfParticles );
-            recordingSucceeded = true;
-            for( int lineCount( 1 );
-                 ( recordingSucceeded
-                 &&
-                 ( lineCount <= numberOfParticles ) );
-                 ++lineCount )
-            {
-              recordingSucceeded
-              = particleLines[ lineCount - 1 ].recordLine( lineCount,
-                                               eventAsLines[ lineCount ] );
-              if( !recordingSucceeded
-                  &&
-                  isVerbose )
-              {
-                BOL::StringParser::parseByChar( eventAsLines[ lineCount ],
-                                                lineAsNumbersAsStrings,
-                                          BOL::StringParser::whitespaceChars );
-                std::cout
-                << std::endl
-                << "LHPC::warning! recording event " << eventNumberInFile
-                << " as invalid because particle line " << lineCount
-                << " consisted of " << lineAsNumbersAsStrings.getSize()
-                << " numbers rather than the required 13 numbers.";
-                std::cout << std::endl;
-              }
-            }
-            if( !recordingSucceeded )
-            {
-              // the warning about an invalid event is given in the loop rather
-              // than here so that it can state which line was problematic.
-              setAsInvalid();
-              return false;
-            }
-            else
-            {
-              setUpPointersBetweenParticleLines();
-              return true;
-            }
-            // end of if-else to finally set up the ParticleLines after
-            // checking that they all recorded properly.
-          }
-          // end of if-else checking that the number of particles in the header
-          // matches the number of lines for particles in the event.
-        }  // end of if-else checking that the header is correctly formed.
+          getObjectList( interpretingObjectLine->getObjectType()
+                                         ).push_back( interpretingObjectLine );
+        }
       }
-      // end of if-else checking that there were enough lines to form an event.
+      // end of if-else checking that there were enough numbers to form a
+      // valid line.
+      return eventNumber;
     }
 
-    lineParser.clearEntries();
-    BOL::StringParser::parseByChar( lineAsString,
-                                    lineParser,
-                                    BOL::StringParser::whitespaceChars );
-    if( 9 > lineParser.getSize() )
-      // if too few numbers were given...
-    {
-      lineNumber = (int)BOL::UsefulStuff::notANumber;
-      objectType = (int)BOL::UsefulStuff::notANumber;
-      valueVector.assign( 11,
-                          BOL::UsefulStuff::notANumber );
-      return false;
-    }
-    else
-    {
-      valueVector.assign( lineParser.getSize(),
-                          BOL::UsefulStuff::notANumber );
-      lineNumber = BOL::StringParser::stringToInt( lineParser[ 0 ] );
-      valueVector[ 0 ] = (double)lineNumber;
-      objectType = BOL::StringParser::stringToInt( lineParser[ 1 ] );
-      valueVector[ 1 ] = (double)objectType;
-      for( int whichElement( 2 );
-           lineParser.getLastIndex() >= whichElement;
-           ++whichElement )
-      {
-        valueVector[ whichElement ]
-        = BOL::StringParser::stringToDouble( lineParser[ whichElement ] );
-      }
-      return true;
-    }
   }
 
 }

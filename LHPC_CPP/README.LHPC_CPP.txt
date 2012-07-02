@@ -33,15 +33,17 @@
  format. It also parses Flavor Les Houches Accord (FLHA) files, though with
  less functionality. This LHPC_CPP set of files is the version written in C++.
 
- There are 2 main parts to LHPC: the LHEF parser and associated structures; and
- the SLHA parser and associated structures. There is also code to automatically
- plot SLHA spectra using the SLHA parser, though this requires the use of
- external programs: gnuplot, latex, dvips, and ps2eps (or ps2epsi).
+ There are 3 main parts to LHPC: the LHCO parser and associated structures; the
+ LHEF parser and associated structures; and the SLHA parser and associated
+ structures. There is also code to automatically plot SLHA spectra using the
+ SLHA parser, though this requires the use of external programs: gnuplot,
+ latex, dvips, and ps2eps (or ps2epsi).
 
  Running make on the makefile included will compile the library
- (LHPC_CPP/libLHPC_CPP.a) and 3 executables (LhpcSpectrumPlotter.exe,
- LhefParserExample.exe, and SlhaParserExample.exe). The executables can be run
- with test input files in the LHPC_CPP/testing directory.
+ (LHPC_CPP/libLHPC_CPP.a) and 4 executables (LhpcSpectrumPlotter.exe,
+ LhefParserExample.exe, LhcoParserExample.exe, and SlhaParserExample.exe). The
+ executables can be run with test input files in the
+ LHPC_CPP/testing directory.
 
 
 
@@ -56,10 +58,44 @@
 
  * C++ library code
  
- I have written LhefParserExample.cpp and SlhaParserExample.cpp as examples
- for how to use the codes. I hope that they are commented well enough to be
- understandable. Some basic knowledge of C++ (such as knowing what templates
- are) is required.
+ I have written LhcoParserExample.cpp, LhefParserExample.cpp and
+ SlhaParserExample.cpp as examples for how to use the codes. I hope that they
+ are commented well enough to be understandable. Some basic knowledge of C++
+ (such as knowing what templates are) is required.
+
+
+** LHPC::LhcoParser
+   - this class is for reading in events from a file in the LHCO format.
+   
+ The essential functionality of this class is already covered by MadAnalysis 5.
+ The LhcoParser class was written independently of MadAnalysis, and provides
+ the functionality of reading LHCO files directly into C++ code.
+ 
+ The intended use of LhcoParser is that an instance of the class is constructed
+ with the name of the LHCO-format file that it should open, then
+ readNextEvent() is called for as long as necessary. The readNextEvent()
+ function returns false when the file can no longer be read, which in normal
+ circumstances is when the end of the file has been reached.
+ 
+ The LhcoParser holds a single event at a time, as a LHPC::LHCO::LhcoEvent,
+ which holds the information from the 1st line of the event directly and the
+ objects information as a set of LHPC::LHCO::ObjectLine instances, which each
+ hold the information of a single line describing an object and its momentum
+ from the event.
+
+ One can read LhcoEvent.hpp and ObjectLine.hpp for the full information on
+ these classes, but I expect that, for an example LhcoEvent called
+ exampleEvent, exampleEvent.getObjectsOfType( int const whichType ) to get
+ std::list< ObjectLine const* >s of all the objects of a given type in the
+ event, and exampleEvent[ whichLine ] to get the line number whichLine (the
+ first line is 1, not 0) would be the most used functions. I expect that, for
+ each example
+ ObjectLine called exampleLine, exampleLine.getTransverseMomentum() and the
+ other named functions, or equivalently exampleLine[ whichEntry ], to get the
+ whichEntry-th number of the line (starting with 0 for the object number,
+ followed by its type at [ 1 ], pseudorapidity at [ 2 ] and so on) would be the
+ most-used functions.
+ 
 
 
 ** LHPC::LhefParser
@@ -74,7 +110,7 @@
  
  The intended use of LhefParser is that an instance of the class is constructed
  with the name of the LHEF-format file that it should open, then
- readNextEvent() is called for as long as necessary. the readNextEvent()
+ readNextEvent() is called for as long as necessary. The readNextEvent()
  function returns false when the file can no longer be read, which in normal
  circumstances is when the end of the file has been reached, though reading
  stops as soon as an event is found which is not in the valid format, either by
@@ -97,12 +133,12 @@
  the event, and exampleEvent[ whichLine ] (or exampleEvent.getLine( whichLine )
  equivalently) to get the line number whichLine (the first line is 1, not 0)
  would be the most used functions. I expect that, for each example
- articleLine called exampleLine,
+ ParticleLine called exampleLine,
  exampleLine.getXMomentum()/.getYMomentum()/.getZMomentum()/.getEnergy(), or
  equivalently exampleLine.IPUP( 1 )/.IPUP( 2 )/.IPUP( 3 )/.IPUP( 4 ), to get
  the particle's momentum, and exampleLine.getPrimaryMotherLineNumber, or
  equivalently exampleLine.MOTHUP( 1 ), to get the primary mother particle line
- number to find the source of this particle would be the most used functions.
+ number to find the source of this particle would be the most-used functions.
  
  The further functionality mentioned above is pretty much two aspects: the
  minor convenience of the ParticleLines having direct pointers to their
@@ -191,6 +227,9 @@
 
 
 CHANGELOG:
+ * 2nd July 2012: version 0.4.0 released!
+ - add LHCO-parsing functionality.
+   
  * 22nd May 2012: version 0.3.1
  - fixed segmentation fault bug due to improperly initialized pointer in
    SpectrumUpdater class.

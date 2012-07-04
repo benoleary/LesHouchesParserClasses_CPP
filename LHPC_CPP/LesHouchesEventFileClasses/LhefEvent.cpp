@@ -28,7 +28,7 @@ namespace LHPC
         alphaQed( BOL::UsefulStuff::notANumber ),
         alphaQcd( BOL::UsefulStuff::notANumber ),
         particleLines(),
-        eventNumberInFile( 1 ),
+        eventNumberInFile( 0 ),
         eventAsLines( 5 ),
         lineAsNumbersAsStrings( 6 ),
         recordingSucceeded( false ),

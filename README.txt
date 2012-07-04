@@ -227,6 +227,13 @@
 
 
 CHANGELOG:
+ * 4th July 2012: version 0.4.1
+ - fixed LhefEvent counting events from 2 instead of from 1
+ - added ObjectLine ordering functions for LHCO:
+   ObjectLine::isOrderedByTransverseMomentumLowToHigh( ... ) and
+   ObjectLine::isOrderedByTransverseMomentumHighToLow( ... ), suitable for
+   being used with std::list::sort( ... ).
+ 
  * 2nd July 2012: version 0.4.0 released!
  - add LHCO-parsing functionality.
    

@@ -29,6 +29,18 @@ namespace LHPC
     public:
       static ObjectLine*
       copyObjectLine( ObjectLine const& copySource );
+      static bool
+      isOrderedByTransverseMomentumLowToHigh(
+                                             ObjectLine const& firstObjectLine,
+                                          ObjectLine const& secondObjectLine );
+      // this returns true if firstObjectLine.getTransverseMomentum() is lower
+      // than or equal to secondObjectLine.getTransverseMomentum().
+      static bool
+      isOrderedByTransverseMomentumHighToLow(
+                                             ObjectLine const& firstObjectLine,
+                                          ObjectLine const& secondObjectLine );
+      // this returns true if firstObjectLine.getTransverseMomentum() is
+      // greater than or equal to secondObjectLine.getTransverseMomentum().
 
       ObjectLine();
       ObjectLine( ObjectLine const& copySource );
@@ -125,6 +137,42 @@ namespace LHPC
     ObjectLine::copyObjectLine( ObjectLine const& copySource )
     {
       return new ObjectLine( copySource );
+    }
+
+    inline bool
+    ObjectLine::isOrderedByTransverseMomentumLowToHigh(
+                                             ObjectLine const& firstObjectLine,
+                                           ObjectLine const& secondObjectLine )
+    // this returns true if firstObjectLine.getTransverseMomentum() is lower
+    // than or equal to secondObjectLine.getTransverseMomentum().
+    {
+      if( firstObjectLine.getTransverseMomentum()
+          > secondObjectLine.getTransverseMomentum() )
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+
+    inline bool
+    ObjectLine::isOrderedByTransverseMomentumHighToLow(
+                                             ObjectLine const& firstObjectLine,
+                                           ObjectLine const& secondObjectLine )
+    // this returns true if firstObjectLine.getTransverseMomentum() is
+    // greater than or equal to secondObjectLine.getTransverseMomentum().
+    {
+      if( secondObjectLine.getTransverseMomentum()
+          > firstObjectLine.getTransverseMomentum() )
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
     }
 
     inline double

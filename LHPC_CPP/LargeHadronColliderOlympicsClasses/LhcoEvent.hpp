@@ -9,6 +9,7 @@
 #define LHCOEVENT_HPP_
 
 #include <list>
+#include <vector>
 #include "ObjectLine.hpp"
 
 
@@ -88,6 +89,7 @@ namespace LHPC
       // triggerWord for the next event.
 
       BOL::VectorlikeArray< ObjectLine > objectLines;
+      int objectLineNumber;
 
       ObjectLine const* missingEnergyLinePointer;
       std::vector< std::list< ObjectLine const* > > objectLists;

@@ -40,7 +40,7 @@ namespace LHPC
     bool isVerbose;
     BOL::CommentedTextParser fileParser;
     LHCO::LhcoEvent currentEvent;
-    bool fileIsOpen;
+    bool fileIsOpenAndNotYetAtEndOfFile;
     std::string currentLine;
     int lineNumber;
 
@@ -62,16 +62,16 @@ namespace LHPC
   // returns true, unless the file could not be opened. it also reads in up to
   // the 1st event (preparing currentEvent with the 1st "line 0" of an event).
   {
-    fileIsOpen = fileParser.openFile( eventFileName );
-    if( fileIsOpen )
+    fileIsOpenAndNotYetAtEndOfFile = fileParser.openFile( eventFileName );
+    if( fileIsOpenAndNotYetAtEndOfFile )
     {
-      fileIsOpen = lookForFirstEvent();
-      if( fileIsOpen )
+      fileIsOpenAndNotYetAtEndOfFile = lookForFirstEvent();
+      if( fileIsOpenAndNotYetAtEndOfFile )
       {
         lineNumber = currentEvent.recordLine( currentLine );
       }
     }
-    return fileIsOpen;
+    return fileIsOpenAndNotYetAtEndOfFile;
   }
 
   inline LHCO::LhcoEvent const&
@@ -88,16 +88,16 @@ namespace LHPC
   // following it. it returns true if it found such a line, which it also
   // assigns to currentLine.
   {
-    if( fileIsOpen )
+    if( fileIsOpenAndNotYetAtEndOfFile )
     {
       bool notYetFoundFirstLineOfAnEvent( true );
-      while( fileIsOpen
+      while( fileIsOpenAndNotYetAtEndOfFile
              &&
              notYetFoundFirstLineOfAnEvent )
       {
-        fileIsOpen
+        fileIsOpenAndNotYetAtEndOfFile
         = fileParser.readNextNonEmptyLineOfFileWithoutComment( currentLine );
-        if( fileIsOpen )
+        if( fileIsOpenAndNotYetAtEndOfFile )
         {
           notYetFoundFirstLineOfAnEvent
           = ( 0.0 != BOL::StringParser::stringToDouble( currentLine ) );
@@ -107,7 +107,7 @@ namespace LHPC
       // this loop ends as soon as a line starting with 0 was found, or if the
       // end of the file was reached.
     }
-    return fileIsOpen;
+    return fileIsOpenAndNotYetAtEndOfFile;
   }
 
 }

@@ -146,15 +146,8 @@ namespace LHPC
     // this returns true if firstObjectLine.getTransverseMomentum() is lower
     // than or equal to secondObjectLine.getTransverseMomentum().
     {
-      if( firstObjectLine.getTransverseMomentum()
-          > secondObjectLine.getTransverseMomentum() )
-      {
-        return false;
-      }
-      else
-      {
-        return true;
-      }
+      return ( firstObjectLine.getTransverseMomentum()
+               <= secondObjectLine.getTransverseMomentum() );
     }
 
     inline bool
@@ -164,15 +157,8 @@ namespace LHPC
     // this returns true if firstObjectLine.getTransverseMomentum() is
     // greater than or equal to secondObjectLine.getTransverseMomentum().
     {
-      if( secondObjectLine.getTransverseMomentum()
-          > firstObjectLine.getTransverseMomentum() )
-      {
-        return false;
-      }
-      else
-      {
-        return true;
-      }
+      return ( secondObjectLine.getTransverseMomentum()
+               <= firstObjectLine.getTransverseMomentum() );
     }
 
     inline double

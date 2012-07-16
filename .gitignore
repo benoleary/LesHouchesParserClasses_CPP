@@ -571,3 +571,23 @@ Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.o
 Release/LHPC_CPP/LhcoParserExample.d
 
 Release/LHPC_CPP/LhcoParserExample.o
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.d
+
+.settings/language.settings.xml
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.o
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.d
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.o
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.d
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.o
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/subdir.mk
+
+Debug/LHPC_CPP/LhcoParserExample.d
+
+Debug/LHPC_CPP/LhcoParserExample.o

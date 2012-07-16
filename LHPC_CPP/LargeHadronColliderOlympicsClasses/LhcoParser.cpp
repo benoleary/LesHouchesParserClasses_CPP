@@ -15,7 +15,7 @@ namespace LHPC
       fileParser( "#",
                   this->isVerbose ),
       currentEvent( this->isVerbose ),
-      fileIsOpen( false ),
+      fileIsOpenAndNotYetAtEndOfFile( false ),
       currentLine( "" ),
       lineNumber( -1 )
   {
@@ -36,19 +36,19 @@ namespace LHPC
   // this reads in the next event in the event file, & returns true if
   // successful.
   {
-    if( fileIsOpen )
+    if( fileIsOpenAndNotYetAtEndOfFile )
     {
       currentEvent.prepareForNextEvent();
       lineNumber = -1;
       // this is so that the following while loop doesn't terminate until the
       // *next* "line 0", which indicates the start of the next event.
-      while( fileIsOpen
+      while( fileIsOpenAndNotYetAtEndOfFile
              &&
              ( 0 != lineNumber ) )
       {
-        fileIsOpen
+        fileIsOpenAndNotYetAtEndOfFile
         = fileParser.readNextNonEmptyLineOfFileWithoutComment( currentLine );
-        if( fileIsOpen )
+        if( fileIsOpenAndNotYetAtEndOfFile )
         {
           lineNumber = currentEvent.recordLine( currentLine );
           if( ( 0 > lineNumber )
@@ -66,7 +66,7 @@ namespace LHPC
       // at this point, either a new "line 0" has been found, priming the next
       // event, or the last line of the file has been read. if the file has
       // been read to the end, it is closed:
-      if( !fileIsOpen )
+      if( !fileIsOpenAndNotYetAtEndOfFile )
       {
         fileParser.closeFile();
       }

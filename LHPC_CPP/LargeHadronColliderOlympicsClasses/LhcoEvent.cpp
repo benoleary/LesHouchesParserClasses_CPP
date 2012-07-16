@@ -25,6 +25,7 @@ namespace LHPC
         nextEventNumber( 0 ),
         nextTriggerWord( 0 ),
         objectLines(),
+        objectLineNumber( -1 ),
         missingEnergyLinePointer( NULL ),
         objectLists( (unsigned int)missingEnergyObject + 1 ),
         isVerbose( isVerbose ),
@@ -42,6 +43,7 @@ namespace LHPC
         nextTriggerWord( copySource.nextTriggerWord ),
         objectLines( copySource.objectLines,
                      &ObjectLine::copyObjectLine ),
+        objectLineNumber( -1 ),
         missingEnergyLinePointer( NULL ),
         objectLists( copySource.objectLists.size() ),
         isVerbose( trueForVerbosity ),
@@ -99,14 +101,14 @@ namespace LHPC
           << "\" is not a valid LHCO line!";
           std::cout << std::endl;
         }
-        eventNumber = -1;
+        objectLineNumber = -1;
       }
       else
       {
-        eventNumber
+        objectLineNumber
         = BOL::StringParser::stringToInt( lineParser[ 0 ] );
 
-        if( 0 == eventNumber )
+        if( 0 == objectLineNumber )
         {
           nextEventNumber
           = BOL::StringParser::stringToInt( lineParser[ 1 ] );
@@ -116,7 +118,7 @@ namespace LHPC
         else
         {
           interpretingObjectLine
-          = objectLines.newEnd().recordLine( eventNumber,
+          = objectLines.newEnd().recordLine( objectLineNumber,
                                              lineParser );
           if( (int)missingEnergyObject
               == interpretingObjectLine->getObjectType() )
@@ -129,7 +131,7 @@ namespace LHPC
       }
       // end of if-else checking that there were enough numbers to form a
       // valid line.
-      return eventNumber;
+      return objectLineNumber;
     }
 
   }

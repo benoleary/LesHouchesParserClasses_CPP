@@ -227,6 +227,10 @@
 
 
 CHANGELOG:
+ * 16th July 2012: version 0.4.2
+ - fixed LhcoEvent erroneously overwriting event number with number of last
+   object line.
+ 
  * 4th July 2012: version 0.4.1
  - fixed LhefEvent counting events from 2 instead of from 1
  - added ObjectLine ordering functions for LHCO:

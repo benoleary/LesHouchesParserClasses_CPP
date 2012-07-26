@@ -227,6 +227,10 @@
 
 
 CHANGELOG:
+ * 26th July 2012: version 0.4.3
+ - added LHPC::FourMomentum class to provide basic conversion of ObjectLines
+   to four-momenta (also for ParticleLines).
+   
  * 16th July 2012: version 0.4.2
  - fixed LhcoEvent erroneously overwriting event number with number of last
    object line.

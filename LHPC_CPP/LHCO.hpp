@@ -15,5 +15,6 @@
 #define LHCO_HPP_
 
 #include "LargeHadronColliderOlympicsClasses/LhcoParser.hpp"
+#include "LargeHadronColliderOlympicsClasses/FourMomentum.hpp"
 
 #endif /* LHCO_HPP_ */

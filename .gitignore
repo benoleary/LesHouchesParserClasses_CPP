@@ -591,3 +591,11 @@ Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/subdir.mk
 Debug/LHPC_CPP/LhcoParserExample.d
 
 Debug/LHPC_CPP/LhcoParserExample.o
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.d
+
+Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.o
+
+Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.d
+
+Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.o

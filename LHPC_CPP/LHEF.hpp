@@ -15,5 +15,6 @@
 #define LHEF_HPP_
 
 #include "LesHouchesEventFileClasses/LhefParser.hpp"
+#include "LargeHadronColliderOlympicsClasses/FourMomentum.hpp"
 
 #endif /* LHEF_HPP_ */

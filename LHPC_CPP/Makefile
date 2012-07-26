@@ -38,6 +38,7 @@ SOURCES=BOLlib/Classes/AsciiXmlParser.cpp \
  $(LHEFDIR)/FilterRuleClasses/ParticleCode.cpp \
  $(LHEFDIR)/FilterRuleClasses/PseudorapidityCut.cpp \
  $(LHEFDIR)/FilterRuleClasses/TransverseMomentumCut.cpp \
+ LargeHadronColliderOlympicsClasses/FourMomentum.cpp \
  LargeHadronColliderOlympicsClasses/LhcoEvent.cpp \
  LargeHadronColliderOlympicsClasses/LhcoParser.cpp \
  LargeHadronColliderOlympicsClasses/ObjectLine.cpp \

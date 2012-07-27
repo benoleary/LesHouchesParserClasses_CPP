@@ -31,14 +31,14 @@ namespace LHPC
       copyObjectLine( ObjectLine const& copySource );
       static bool
       isOrderedByTransverseMomentumLowToHigh(
-                                             ObjectLine const& firstObjectLine,
-                                          ObjectLine const& secondObjectLine );
+                                             ObjectLine const* firstObjectLine,
+                                          ObjectLine const* secondObjectLine );
       // this returns true if firstObjectLine.getTransverseMomentum() is lower
       // than or equal to secondObjectLine.getTransverseMomentum().
       static bool
       isOrderedByTransverseMomentumHighToLow(
-                                             ObjectLine const& firstObjectLine,
-                                          ObjectLine const& secondObjectLine );
+                                             ObjectLine const* firstObjectLine,
+                                          ObjectLine const* secondObjectLine );
       // this returns true if firstObjectLine.getTransverseMomentum() is
       // greater than or equal to secondObjectLine.getTransverseMomentum().
 
@@ -141,24 +141,24 @@ namespace LHPC
 
     inline bool
     ObjectLine::isOrderedByTransverseMomentumLowToHigh(
-                                             ObjectLine const& firstObjectLine,
-                                           ObjectLine const& secondObjectLine )
+                                             ObjectLine const* firstObjectLine,
+                                           ObjectLine const* secondObjectLine )
     // this returns true if firstObjectLine.getTransverseMomentum() is lower
     // than or equal to secondObjectLine.getTransverseMomentum().
     {
-      return ( firstObjectLine.getTransverseMomentum()
-               <= secondObjectLine.getTransverseMomentum() );
+      return ( firstObjectLine->getTransverseMomentum()
+               <= secondObjectLine->getTransverseMomentum() );
     }
 
     inline bool
     ObjectLine::isOrderedByTransverseMomentumHighToLow(
-                                             ObjectLine const& firstObjectLine,
-                                           ObjectLine const& secondObjectLine )
+                                             ObjectLine const* firstObjectLine,
+                                           ObjectLine const* secondObjectLine )
     // this returns true if firstObjectLine.getTransverseMomentum() is
     // greater than or equal to secondObjectLine.getTransverseMomentum().
     {
-      return ( secondObjectLine.getTransverseMomentum()
-               <= firstObjectLine.getTransverseMomentum() );
+      return ( secondObjectLine->getTransverseMomentum()
+               <= firstObjectLine->getTransverseMomentum() );
     }
 
     inline double

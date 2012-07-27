@@ -13,7 +13,7 @@
 SHELL=/bin/sh
 
 CC=g++
-CCFLAGS= -Wall
+CCFLAGS= -Wall -O3
 CCOBJFLAGS= -c
 CCEXEFLAGS=
 LDFLAGS= -L./ -lLHPC_CPP

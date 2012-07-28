@@ -94,6 +94,26 @@ namespace LHPC
       ObjectLine const*
       recordLine( int const lineNumber,
                   BOL::VectorlikeArray< std::string > const& lineAsStrings );
+      double
+      getAzimuthalDistanceTo( ObjectLine const& comparisonObject ) const;
+      // this returns the value of the azimuthal angle difference, in the range
+      // -pi to +pi, with the sign indicating the direction of comparisonObject
+      // from this ObjectLine, e.g. a positive value means that
+      // comparisonObject is anticlockwise from this ObjectLine.
+      double
+      getPseudorapidityDistanceTo( ObjectLine const& comparisonObject ) const;
+      // this returns the value of the pseudorapidity difference with the sign
+      // indicating the direction of comparisonObject from this ObjectLine.
+      double
+      getPseudorapidityAngularDistanceSquaredTo(
+                                    ObjectLine const& comparisonObject ) const;
+      // this returns the sum of the squares of the azimuthal and
+      // pseudorapidity differences.
+      double
+      getPseudorapidityAngularDistanceTo(
+                                    ObjectLine const& comparisonObject ) const;
+      // this returns the square root of the sum of the squares of the
+      // azimuthal and pseudorapidity differences.
 
 
     protected:
@@ -231,6 +251,60 @@ namespace LHPC
     ObjectLine::getColumnEleven() const
     {
       return valueVector[ 10 ];
+    }
+
+    inline double
+    ObjectLine::getAzimuthalDistanceTo(
+                                     ObjectLine const& comparisonObject ) const
+    // this returns the value of the azimuthal angle difference, in the range
+    // -pi to +pi, with the sign indicating the direction of comparisonObject
+    // from this ObjectLine, e.g. a positive value means that
+    // comparisonObject is anticlockwise from this ObjectLine.
+    {
+      double angularSeparation( comparisonObject.getAzimuthalAngle()
+                                - getAzimuthalAngle() );
+      while( M_PI <= angularSeparation )
+      {
+        angularSeparation -= BOL::UsefulStuff::twicePi;
+      }
+      while( -(M_PI) >= angularSeparation )
+      {
+        angularSeparation += BOL::UsefulStuff::twicePi;
+      }
+      return angularSeparation;
+    }
+
+    inline double
+    ObjectLine::getPseudorapidityDistanceTo(
+                                     ObjectLine const& comparisonObject ) const
+    // this returns the value of the pseudorapidity difference with the sign
+    // indicating the direction of comparisonObject from this ObjectLine.
+    {
+      return ( comparisonObject.getPseudorapidity()
+               - getPseudorapidity() );
+    }
+
+    inline double
+    ObjectLine::getPseudorapidityAngularDistanceSquaredTo(
+                                     ObjectLine const& comparisonObject ) const
+    // this returns the sum of the squares of the azimuthal and pseudorapidity
+    // differences.
+    {
+      double azimuthalDistance( getAzimuthalDistanceTo( comparisonObject ) );
+      double pseudorapidityDistance(
+                             getPseudorapidityDistanceTo( comparisonObject ) );
+      return ( ( azimuthalDistance * azimuthalDistance )
+               + ( pseudorapidityDistance * pseudorapidityDistance ) );
+    }
+
+    inline double
+    ObjectLine::getPseudorapidityAngularDistanceTo(
+                                     ObjectLine const& comparisonObject ) const
+    // this returns the square root of the sum of the squares of the
+    // azimuthal and pseudorapidity differences.
+    {
+      return
+      sqrt( getPseudorapidityAngularDistanceSquaredTo( comparisonObject ) );
     }
 
   }

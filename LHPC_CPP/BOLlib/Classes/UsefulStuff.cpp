@@ -17,6 +17,7 @@ namespace BOL
 {
   double const UsefulStuff::notANumber( NAN );
   std::string const UsefulStuff::nanString( "NaN (\"Not a Number\")" );
+  double const UsefulStuff::twicePi( 2.0 * M_PI );
 
   bool UsefulStuff::randomSeedNotYetSet( true );
 

@@ -26,6 +26,7 @@ namespace BOL
   public:
     static double const notANumber;
     static std::string const nanString;
+    static double const twicePi;
 
     static bool
     doublesCloseEnough( double const firstDouble,

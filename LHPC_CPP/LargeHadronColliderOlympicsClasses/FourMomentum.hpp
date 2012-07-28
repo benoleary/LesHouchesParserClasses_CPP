@@ -32,12 +32,20 @@ namespace LHPC
     FourMomentum( LHCO::ObjectLine const& copySource );
     ~FourMomentum();
 
-    FourMomentum&
+    void
     assignFrom( FourMomentum const& copySource );
-    FourMomentum&
+    void
+    operator=( FourMomentum const& copySource ){ assignFrom( copySource ); }
+    void
     assignFrom( LHEF::ParticleLine const& copySource );
-    FourMomentum&
+    void
+    operator=( LHEF::ParticleLine const& copySource ){ assignFrom(
+                                                                copySource ); }
+    void
     assignFrom( LHCO::ObjectLine const& copySource );
+    void
+    operator=( LHCO::ObjectLine const& copySource ){ assignFrom(
+                                                                copySource ); }
     double&
     operator[]( int const whichComponent );
     double const&
@@ -86,24 +94,22 @@ namespace LHPC
 
 
 
-  inline FourMomentum&
+  inline void
   FourMomentum::assignFrom( FourMomentum const& copySource )
   {
     momentumComponents = copySource.momentumComponents;
-    return *this;
   }
 
-  inline FourMomentum&
+  inline void
   FourMomentum::assignFrom( LHEF::ParticleLine const& copySource )
   {
     momentumComponents[ (int)tComponent ] = copySource.getEnergy();
     momentumComponents[ (int)xComponent ] = copySource.getXMomentum();
     momentumComponents[ (int)yComponent ] = copySource.getYMomentum();
     momentumComponents[ (int)zComponent ] = copySource.getZMomentum();
-    return *this;
   }
 
-  inline FourMomentum&
+  inline void
   FourMomentum::assignFrom( LHCO::ObjectLine const& copySource )
   {
     momentumComponents[ (int)xComponent ]
@@ -118,7 +124,6 @@ namespace LHPC
     momentumComponents[ (int)tComponent ]
     = sqrt( ( copySource.getInvariantMass() * copySource.getInvariantMass() )
             - getSpatialMagnitudeSquared() );
-    return *this;
   }
 
   inline double&

@@ -16,6 +16,13 @@ namespace LHPC
     // just an initialization list.
   }
 
+  FourMomentum::FourMomentum( FourMomentum const& copySource ) :
+    momentumComponents( 4,
+                        BOL::UsefulStuff::notANumber )
+{
+  assignFrom( copySource );
+}
+
   FourMomentum::FourMomentum( LHEF::ParticleLine const& copySource ) :
       momentumComponents( 4,
                           BOL::UsefulStuff::notANumber )

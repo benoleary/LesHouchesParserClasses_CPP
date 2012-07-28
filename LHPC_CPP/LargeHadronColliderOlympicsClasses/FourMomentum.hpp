@@ -123,7 +123,7 @@ namespace LHPC
         * sinh( copySource.getPseudorapidity() ) );
     momentumComponents[ (int)tComponent ]
     = sqrt( ( copySource.getInvariantMass() * copySource.getInvariantMass() )
-            - getSpatialMagnitudeSquared() );
+            + getSpatialMagnitudeSquared() );
   }
 
   inline double&

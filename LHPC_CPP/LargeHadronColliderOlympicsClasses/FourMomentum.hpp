@@ -245,7 +245,7 @@ namespace LHPC
   {
     return ( ( momentumComponents[ (int)tComponent ]
                * momentumComponents[ (int)tComponent ] )
-             - getSpatialMagnitude() );
+             - getSpatialMagnitudeSquared() );
   }
 
   inline double

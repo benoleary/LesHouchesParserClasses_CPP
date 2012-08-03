@@ -8,6 +8,8 @@
 #ifndef FOURMOMENTUM_HPP_
 #define FOURMOMENTUM_HPP_
 
+#include <list>
+#include <vector>
 #include "ObjectLine.hpp"
 #include "../LesHouchesEventFileClasses/ParticleLine.hpp"
 
@@ -27,9 +29,17 @@ namespace LHPC
     };
 
     FourMomentum();
+    FourMomentum( double const initialEnergy,
+                  double const initialXMomentum,
+                  double const initialYMomentum,
+                  double const initialZMomentum );
     FourMomentum( FourMomentum const& copySource );
     FourMomentum( LHEF::ParticleLine const& copySource );
     FourMomentum( LHCO::ObjectLine const& copySource );
+    FourMomentum( std::vector< LHEF::ParticleLine const* > const& copySource );
+    FourMomentum( std::list< LHEF::ParticleLine const* > const& copySource );
+    FourMomentum( std::vector< LHCO::ObjectLine const* > const& copySource );
+    FourMomentum( std::list< LHCO::ObjectLine const* > const& copySource );
     ~FourMomentum();
 
     void

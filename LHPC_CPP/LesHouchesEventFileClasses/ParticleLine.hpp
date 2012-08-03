@@ -34,6 +34,9 @@ namespace LHPC
       static ParticleLine&
       sumMomentaAsLine( ParticleLine& lineToBecomeSum,
                         std::list< ParticleLine const* >& linesToSum );
+      // this returns a ParticleLine that has NaNs and NULLs for all entries
+      // apart from the 4-momentum entries, which are set to the appropriate
+      // sums of the entries from the ParticleLines pointed at by the list.
       static double
       transverseMomentumSquaredOfVectorSum(
                                 std::list< ParticleLine const* >& linesToSum );

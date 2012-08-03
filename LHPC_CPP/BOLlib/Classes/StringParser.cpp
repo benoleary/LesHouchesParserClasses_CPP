@@ -315,11 +315,11 @@ namespace BOL
     // strings in delimitersOfSubstring which were found in stringToParse.
     if( std::string::npos == delimiterPosition )
     {
-      return stringToParse;
       if( NULL != remainderString )
       {
         remainderString->assign( "" );
       }
+      return stringToParse;
     }
     else
     {

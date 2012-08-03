@@ -599,3 +599,13 @@ Debug/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.o
 Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.d
 
 Release/LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.o
+
+LHPC_CPP/LhcoParserExample.exe
+
+LHPC_CPP/LhefParserExample.exe
+
+LHPC_CPP/LhpcSpectrumPlotter.exe
+
+LHPC_CPP/SlhaParserExample.exe
+
+LHPC_CPP/libLHPC_CPP.a

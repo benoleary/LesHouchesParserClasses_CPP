@@ -227,6 +227,34 @@
 
 
 CHANGELOG:
+ * 7th August 2012: version 0.4.9
+ - added FourMomentum setters.
+ - added FourMomentum::toString() for printing the FourMomentum in Cartesian
+   co-ordinates.
+ - added FourMomentum constructors that take pairs and sum the momenta.
+ 
+ * 3rd August 2012: version 0.4.8
+ - fixed StringParser bug (where remainder string was not being updated).
+ - added FourMomentum constructors that take vectors or lists and sum the
+   momenta.
+ 
+ * 30th July 2012: version 0.4.7
+ - fixed bug where FourMomentum::getInvariantMassSquared() and hence also
+   FourMomentum::getInvariantMass() were incorrect.
+ 
+ * 28th July 2012: version 0.4.6
+ - fixed wrong formula for converting an ObjectLine into a FourMomentum.
+ 
+ * 28th July 2012: version 0.4.5
+ - changed FourMomentum assignment functions to not return anything.
+ - added angular distance functions to ObjectLine:
+   getAzimuthalDistanceTo( ObjectLine const& comparisonObject ) const
+   getPseudorapidityDistanceTo( ObjectLine const& comparisonObject ) const
+   getPseudorapidityAngularDistanceSquaredTo(
+                                     ObjectLine const& comparisonObject ) const
+   getPseudorapidityAngularDistanceTo(
+                                     ObjectLine const& comparisonObject ) const
+ 
  * 27th July 2012: version 0.4.4
  - changed ObjectLine::isOrderedByTransverseMomentumLowToHigh( ... ) and
    ObjectLine::isOrderedByTransverseMomentumHighToLow( ... ) to take pointers,
@@ -327,6 +355,14 @@ The C++ files of LesHouchesParserClasses are:
  LHPC_CPP/BOLlib/Classes/UsefulStuff.hpp
  LHPC_CPP/BOLlib/Classes/UsefulStuff.cpp
  LHPC_CPP/BOLlib/Classes/VectorlikeArray.hpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.hpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.cpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.hpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.cpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.hpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.cpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.hpp
+ LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.cpp
  LHPC_CPP/LesHouchesEventFileClasses/AutomaticEventFilter.hpp
  LHPC_CPP/LesHouchesEventFileClasses/AutomaticEventFilter.cpp
  LHPC_CPP/LesHouchesEventFileClasses/DefaultFilterRules.hpp

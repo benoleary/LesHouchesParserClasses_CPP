@@ -108,7 +108,7 @@ namespace LHPC
     double
     getInvariantMass() const;
     std::string
-    ToString() const;
+    toString() const;
 
 
   protected:
@@ -280,7 +280,7 @@ namespace LHPC
   }
 
   inline std::string
-  FourMomentum::ToString() const
+  FourMomentum::toString() const
   {
     std::stringstream stringBuilder;
     stringBuilder

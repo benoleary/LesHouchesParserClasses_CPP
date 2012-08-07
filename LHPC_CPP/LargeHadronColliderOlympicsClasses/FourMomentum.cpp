@@ -49,7 +49,18 @@ namespace LHPC
   }
 
   FourMomentum::FourMomentum(
-                 std::vector< LHEF::ParticleLine const* > const& copySource ) :
+                   std::pair< LhefPointer, LhefPointer > const& copySource ) :
+      momentumComponents( 4,
+                          0.0 )
+  {
+    assignFrom( *(copySource.first) );
+    momentumComponents[ (int)tComponent ] += copySource.second->getEnergy();
+    momentumComponents[ (int)xComponent ] += copySource.second->getXMomentum();
+    momentumComponents[ (int)yComponent ] += copySource.second->getYMomentum();
+    momentumComponents[ (int)zComponent ] += copySource.second->getZMomentum();
+  }
+
+  FourMomentum::FourMomentum( std::vector< LhefPointer > const& copySource ) :
       momentumComponents( 4,
                           0.0 )
   {
@@ -68,12 +79,11 @@ namespace LHPC
     }
   }
 
-  FourMomentum::FourMomentum(
-                   std::list< LHEF::ParticleLine const* > const& copySource ) :
+  FourMomentum::FourMomentum( std::list< LhefPointer > const& copySource ) :
       momentumComponents( 4,
                           0.0 )
   {
-    for( std::list< LHEF::ParticleLine const* >::const_iterator
+    for( std::list< LhefPointer >::const_iterator
          whichLine( copySource.begin() );
          copySource.end() != whichLine;
          ++whichLine )
@@ -86,7 +96,19 @@ namespace LHPC
   }
 
   FourMomentum::FourMomentum(
-                   std::vector< LHCO::ObjectLine const* > const& copySource ) :
+                    std::pair< LhcoPointer, LhcoPointer > const& copySource ) :
+      momentumComponents( 4,
+                          0.0 )
+  {
+    assignFrom( *(copySource.first) );
+    FourMomentum copyMomentum( *(copySource.second) );
+    momentumComponents[ (int)tComponent ] += copyMomentum.getT();
+    momentumComponents[ (int)xComponent ] += copyMomentum.getX();
+    momentumComponents[ (int)yComponent ] += copyMomentum.getY();
+    momentumComponents[ (int)zComponent ] += copyMomentum.getZ();
+  }
+
+  FourMomentum::FourMomentum( std::vector< LhcoPointer > const& copySource ) :
       momentumComponents( 4,
                           0.0 )
   {
@@ -103,13 +125,12 @@ namespace LHPC
     }
   }
 
-  FourMomentum::FourMomentum(
-                     std::list< LHCO::ObjectLine const* > const& copySource ) :
+  FourMomentum::FourMomentum( std::list< LhcoPointer > const& copySource ) :
       momentumComponents( 4,
                           0.0 )
   {
     FourMomentum copyMomentum;
-    for( std::list< LHCO::ObjectLine const* >::const_iterator
+    for( std::list< LhcoPointer >::const_iterator
          whichLine( copySource.begin() );
          copySource.end() != whichLine;
          ++whichLine )

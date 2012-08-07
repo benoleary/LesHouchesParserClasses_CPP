@@ -10,6 +10,7 @@
 
 #include <list>
 #include <vector>
+#include <sstream>
 #include "ObjectLine.hpp"
 #include "../LesHouchesEventFileClasses/ParticleLine.hpp"
 
@@ -20,6 +21,8 @@ namespace LHPC
   class FourMomentum
   {
   public:
+    typedef LHEF::ParticleLine const* LhefPointer;
+    typedef LHCO::ObjectLine const* LhcoPointer;
     enum VectorComponent
     {
       tComponent = 0,
@@ -36,10 +39,12 @@ namespace LHPC
     FourMomentum( FourMomentum const& copySource );
     FourMomentum( LHEF::ParticleLine const& copySource );
     FourMomentum( LHCO::ObjectLine const& copySource );
-    FourMomentum( std::vector< LHEF::ParticleLine const* > const& copySource );
-    FourMomentum( std::list< LHEF::ParticleLine const* > const& copySource );
-    FourMomentum( std::vector< LHCO::ObjectLine const* > const& copySource );
-    FourMomentum( std::list< LHCO::ObjectLine const* > const& copySource );
+    FourMomentum( std::pair< LhefPointer, LhefPointer > const& copySource );
+    FourMomentum( std::vector< LhefPointer > const& copySource );
+    FourMomentum( std::list< LhefPointer > const& copySource );
+    FourMomentum( std::pair< LhcoPointer, LhcoPointer > const& copySource );
+    FourMomentum( std::vector< LhcoPointer > const& copySource );
+    FourMomentum( std::list< LhcoPointer > const& copySource );
     ~FourMomentum();
 
     void
@@ -76,12 +81,20 @@ namespace LHPC
     operator*( FourMomentum const& sourceFourMomentum );
     double
     getT() const{ return (*this)[ (int)tComponent ]; }
+    void
+    setT( double const inputValue ){ (*this)[ (int)tComponent ] = inputValue; }
     double
     getX() const{ return (*this)[ (int)xComponent ]; }
+    void
+    setX( double const inputValue ){ (*this)[ (int)xComponent ] = inputValue; }
     double
     getY() const{ return (*this)[ (int)yComponent ]; }
+    void
+    setY( double const inputValue ){ (*this)[ (int)yComponent ] = inputValue; }
     double
     getZ() const{ return (*this)[ (int)zComponent ]; }
+    void
+    setZ( double const inputValue ){ (*this)[ (int)zComponent ] = inputValue; }
     double
     getTransverseMagnitudeSquared() const;
     double
@@ -94,6 +107,8 @@ namespace LHPC
     getInvariantMassSquared() const;
     double
     getInvariantMass() const;
+    std::string
+    ToString() const;
 
 
   protected:
@@ -262,6 +277,16 @@ namespace LHPC
   FourMomentum::getInvariantMass() const
   {
     return sqrt( getInvariantMassSquared() );
+  }
+
+  inline std::string
+  FourMomentum::ToString() const
+  {
+    std::stringstream stringBuilder;
+    stringBuilder
+    << "( " << getT() << ", " << getX() << ", " << getY() << ", " << getZ()
+    << " )";
+    return stringBuilder.str();
   }
 
 } /* namespace LHPC */

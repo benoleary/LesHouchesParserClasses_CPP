@@ -15,7 +15,6 @@
 #define INDEXEDBLOCKTEMPLATE_HPP_
 
 #include "../SlhaBlock.hpp"
-#include "InterpreterClasses/SparseSinglyIndexed.hpp"
 
 namespace LHPC
 {

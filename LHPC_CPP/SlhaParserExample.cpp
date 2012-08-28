@@ -161,6 +161,37 @@ main( int argumentCount,
                                 constNmix );
 
 
+    LHPC::SLHA::SparseManyIndexedBlock< double > alternativeNmix( "NMIX",
+                                                                  2,
+                                                                  -10.0,
+                                                                  isVerbose );
+    testParser.registerBlock( alternativeNmix );
+    // again, this line does all the work, now reading in data to
+    // alternativeNmix as well.
+    testParser.readFile( firstFileName );
+    std::vector< int > indexVector( 2,
+                                    0 );
+    indexVector[ 0 ] = 4;
+    indexVector[ 1 ] = 3;
+    std::cout
+    << std::endl
+    << "alternative NMIX block accessed with the vector { 4, 3 } = "
+    << alternativeNmix( indexVector );
+    std::cout << std::endl;
+    indexVector[ 0 ] = 1;
+    indexVector[ 1 ] = 1;
+    std::cout
+    << std::endl
+    << "alternative NMIX accessed with the vector { 1, 1 } = "
+    << alternativeNmix( indexVector );
+    std::cout << std::endl;
+    std::cout
+    << std::endl
+    << "alternative NMIX accessed with the string \"3, 2\" = "
+    << alternativeNmix( "3, 2" );
+    std::cout << std::endl;
+
+
     std::cout
     << std::endl
     << "ended successfully, I hope.";

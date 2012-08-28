@@ -120,7 +120,7 @@ namespace LHPC
     // derived classes over-ride this to interpret their data as a
     // std::string.
     {
-      return this->dataBlocks[ this->lowestScaleIndex ]( indexPair );
+      return this->dataBlocks[ this->lowestScaleIndex ].hasEntry( indexPair );
     }
 
   }  // end of SLHA namespace

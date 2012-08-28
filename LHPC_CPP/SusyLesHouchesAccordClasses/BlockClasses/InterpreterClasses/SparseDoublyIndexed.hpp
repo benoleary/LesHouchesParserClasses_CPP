@@ -91,7 +91,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       SparseDoublyIndexed< ValueClass >::SparseDoublyIndexed() :
-          IndexedInterpreter< ValueClass >( 2 ),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           mapKey( 0,
                   0 ),

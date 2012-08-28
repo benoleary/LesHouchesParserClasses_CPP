@@ -78,10 +78,10 @@ namespace LHPC
                   int const secondIndex,
                   int const thirdIndex,
                   int const fourthIndex ) const
-        { return (*this)( hasEntry( std::make_pair( firstIndex,
-                                                    secondIndex ),
-                                    std::make_pair( thirdIndex,
-                                                    fourthIndex ) ) ); }
+        { return (*this)( hasEntry( std::make_pair( std::make_pair( firstIndex,
+                                                                 secondIndex ),
+                                                    std::make_pair( thirdIndex,
+                                                        fourthIndex ) ) ) ) ; }
         virtual std::string const&
         getAsString();
         // see base version's description.
@@ -110,7 +110,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       SparseQuadruplyIndexed< ValueClass >::SparseQuadruplyIndexed() :
-          IndexedInterpreter< ValueClass >( 4 ),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           mapKey( std::pair< int, int >( 0,
                                          0 ),

@@ -80,7 +80,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseSinglyIndexed< ValueClass >::DenseSinglyIndexed() :
-          IndexedInterpreter< ValueClass >( 1 ),
+          IndexedInterpreter< ValueClass >(),
           valueVector(),
           recordingIndex( 0 )
       {

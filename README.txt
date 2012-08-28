@@ -227,6 +227,15 @@
 
 
 CHANGELOG:
+ * 28th August 2012: version 0.5.0
+ - added SparseManyIndexBlock and SparseManyIndex template classes that take
+   std::vectors of ints (or convert strings of integers) for map keys.
+ - fixed SparseQuadruplyIndexedBlock not actually working (template classes do
+   not get compiled by the makefile by default)
+ - fixed DenseDoublyIndexedBlock, SparseDoublyIndexedBlock, and
+   SparseQuadruplyIndexedBlock, which were returning an implicit cast of the
+   result of operator() to a bool for hasEntry().
+ 
  * 7th August 2012: version 0.4.9
  - added FourMomentum setters.
  - added FourMomentum::toString() for printing the FourMomentum in Cartesian

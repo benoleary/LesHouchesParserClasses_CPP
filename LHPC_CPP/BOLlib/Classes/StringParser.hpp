@@ -110,6 +110,12 @@ namespace BOL
     stringToInt( std::string const& stringToInterpret );
     static double
     stringToDouble( std::string const& stringToInterpret );
+    static std::vector< int >
+    stringToIntVector( std::string stringToInterpret );
+    /* this interprets a string of int separated by commas or semicolons, with
+     * optional whitespace, or just separated by whitespace, as a vector of
+     * ints.
+     */
     static bool
     charIsIn( char const queryChar,
               std::string const& charSet );
@@ -417,6 +423,29 @@ namespace BOL
     double returnValue;
     getStringParsingStream( stringToInterpret ) >> returnValue;
     return returnValue;
+  }
+
+  inline std::vector< int >
+  StringParser::stringToIntVector( std::string stringToInterpret )
+  {
+    substituteCharacterWith( stringToInterpret,
+                             ',',
+                             ' ' );
+    substituteCharacterWith( stringToInterpret,
+                             ';',
+                             ' ' );
+    std::vector< int > returnVector;
+    std::stringstream&
+    streamToParse( getStringParsingStream( trimFromFrontAndBack(
+                                                             stringToInterpret,
+                                                         whitespaceChars ) ) );
+    int parsedInt;
+    while( streamToParse.good() )
+    {
+      streamToParse >> parsedInt;
+      returnVector.push_back( parsedInt );
+    }
+    return returnVector;
   }
 
   inline bool

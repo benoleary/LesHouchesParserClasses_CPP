@@ -92,7 +92,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseTriplyIndexed< ValueClass >::DenseTriplyIndexed() :
-          IndexedInterpreter< ValueClass >( 3 ),
+          IndexedInterpreter< ValueClass >(),
           valueMatrixArray(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),

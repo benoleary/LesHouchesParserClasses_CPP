@@ -84,7 +84,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       SparseSinglyIndexed< ValueClass >::SparseSinglyIndexed() :
-          IndexedInterpreter< ValueClass >( 1 ),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           valueRecorder()
       {

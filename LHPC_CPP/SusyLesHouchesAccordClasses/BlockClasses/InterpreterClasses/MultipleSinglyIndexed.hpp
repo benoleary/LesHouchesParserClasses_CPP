@@ -82,7 +82,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       MultipleSinglyIndexed< ValueClass >::MultipleSinglyIndexed() :
-          IndexedInterpreter< ValueClass >( 1 ),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           valueRecorder()
       {

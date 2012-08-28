@@ -96,7 +96,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       DenseDoublyIndexed< ValueClass >::DenseDoublyIndexed() :
-          IndexedInterpreter< ValueClass >( 2 ),
+          IndexedInterpreter< ValueClass >(),
           valueMatrix(),
           firstRecordingIndex( 0 ),
           secondRecordingIndex( 0 ),

@@ -16,7 +16,7 @@
 
 #include "../../MassEigenstateCollectionClasses/ExtendedMass.hpp"
 #include "IndexedBlockTemplate.hpp"
-#include "InterpreterClasses/MultipleDoublyIndexed.hpp"
+#include "InterpreterClasses/MultipleTriplyIndexed.hpp"
 
 namespace LHPC
 {

@@ -104,7 +104,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       MultipleTriplyIndexed< ValueClass >::MultipleTriplyIndexed() :
-          IndexedInterpreter< ValueClass >( 3 ),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           valueRecorder()
       {

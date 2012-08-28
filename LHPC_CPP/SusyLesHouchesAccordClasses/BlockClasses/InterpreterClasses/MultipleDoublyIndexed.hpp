@@ -92,7 +92,7 @@ namespace LHPC
       template< class ValueClass >
       inline
       MultipleDoublyIndexed< ValueClass >::MultipleDoublyIndexed() :
-          IndexedInterpreter< ValueClass >( 2 ),
+          IndexedInterpreter< ValueClass >(),
           valueMap(),
           valueRecorder()
       {

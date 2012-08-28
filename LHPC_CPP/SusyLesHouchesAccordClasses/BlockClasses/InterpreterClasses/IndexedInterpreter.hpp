@@ -28,7 +28,7 @@ namespace LHPC
       class IndexedInterpreter : public InterpreterTemplate< ValueClass >
       {
       public:
-        IndexedInterpreter( int const numberOfIndices );
+        IndexedInterpreter();
         virtual
         ~IndexedInterpreter();
 
@@ -37,7 +37,6 @@ namespace LHPC
 
 
       protected:
-        int const numberOfIndices;
         std::vector< int > indexDigitsVector;
         // this is the number of characters to print before the value,
         // including the characters used to print the index, for each index.
@@ -60,14 +59,10 @@ namespace LHPC
 
       template< class ValueClass >
       inline
-      IndexedInterpreter< ValueClass >::IndexedInterpreter(
-                                                  int const numberOfIndices ) :
+      IndexedInterpreter< ValueClass >::IndexedInterpreter() :
           InterpreterTemplate< ValueClass >(),
-          numberOfIndices( numberOfIndices ),
-          indexDigitsVector( numberOfIndices,
-                             0 ),
-          indexPrintingVector( numberOfIndices,
-                               0 ),
+          indexDigitsVector(),
+          indexPrintingVector(),
           indexPrintingString( "" ),
           indexHoldingString( "" ),
           indexPadding( 0 )
@@ -89,6 +84,8 @@ namespace LHPC
                                   std::vector< int > const& indexDigitsVector )
       {
         this->indexDigitsVector = indexDigitsVector;
+        this->indexPrintingVector.assign( indexDigitsVector.size(),
+                                          0 );
       }
 
       template< class ValueClass >
@@ -100,8 +97,8 @@ namespace LHPC
        */
       {
         indexPrintingString.clear();
-        for( int whichIndex( 0 );
-             numberOfIndices > whichIndex;
+        for( unsigned int whichIndex( 0 );
+             this->indexDigitsVector.size() > whichIndex;
              ++whichIndex )
         {
           indexHoldingString.assign(

@@ -439,11 +439,11 @@ namespace BOL
     streamToParse( getStringParsingStream( trimFromFrontAndBack(
                                                              stringToInterpret,
                                                          whitespaceChars ) ) );
-    int parsedInt;
+    double parsedIntAsDouble;
     while( streamToParse.good() )
     {
-      streamToParse >> parsedInt;
-      returnVector.push_back( parsedInt );
+      streamToParse >> parsedIntAsDouble;
+      returnVector.push_back( (int)parsedIntAsDouble );
     }
     return returnVector;
   }

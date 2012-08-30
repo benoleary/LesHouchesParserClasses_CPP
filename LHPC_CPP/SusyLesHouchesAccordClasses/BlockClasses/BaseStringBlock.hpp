@@ -15,6 +15,7 @@
 #define BASEBLOCKASSTRINGS_HPP_
 
 #include <string>
+#include <list>
 #include "../../BOLlib/Classes/VectorlikeArray.hpp"
 
 namespace LHPC
@@ -46,8 +47,8 @@ namespace LHPC
          * indexForUpperScale are set to 1, fractionFromLowerScale is set to
          * NaN, & true is returned.
          * if there are 2 or more copies of the block, indexForLowerScale &
-         * indexForUpperScale are set as described below, fractionFromLowerScale
-         * is set to be
+         * indexForUpperScale are set as described below,
+         * fractionFromLowerScale is set to be
          * ( ( soughtScale - [ scale of copy with lower scale ] )
          *   / [ difference of copy scales ] ), & true is returned.
          * fractionFromLowerScale will thus be between 0.0 & 1.0 if there are
@@ -60,13 +61,13 @@ namespace LHPC
          * necessarily be smaller in value than indexForUpperScale.
          * indexForLowerScale & indexForUpperScale are set as follows:
          * if soughtScale is lower than the lowest scale of the copies,
-         * indexForLowerScale is set to the index of the copy with lowest scale,
-         * & indexForUpperScale is set to the index of the copy with the next
-         * lowest scale.
+         * indexForLowerScale is set to the index of the copy with lowest
+         * scale, & indexForUpperScale is set to the index of the copy with the
+         * next lowest scale.
          * if soughtScale is higher than the highest scale of the copies,
-         * indexForUpperScale is set to the index of the copy with highest scale,
-         * & indexForLowerScale is set to the index of the copy with the next
-         * highest scale.
+         * indexForUpperScale is set to the index of the copy with highest
+         * scale, & indexForLowerScale is set to the index of the copy with the
+         * next highest scale.
          * otherwise, indexForLowerScale is set to the index of the copy with
          * highest scale which is still lower than soughtScale, &
          * indexForUpperScale is set to the index of the copy with lowest scale

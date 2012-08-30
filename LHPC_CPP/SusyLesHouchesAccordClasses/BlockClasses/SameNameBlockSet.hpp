@@ -14,6 +14,8 @@
 #ifndef SAMENAMEBLOCKSET_HPP_
 #define SAMENAMEBLOCKSET_HPP_
 
+#include <string>
+#include <list>
 #include "../../BOLlib/Classes/VectorlikeArray.hpp"
 #include "../../BOLlib/Classes/StringParser.hpp"
 #include "../../BOLlib/Classes/PushingObserved.hpp"

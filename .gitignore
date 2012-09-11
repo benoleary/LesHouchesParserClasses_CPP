@@ -609,3 +609,5 @@ LHPC_CPP/LhpcSpectrumPlotter.exe
 LHPC_CPP/SlhaParserExample.exe
 
 LHPC_CPP/libLHPC_CPP.a
+
+.DS_Store

@@ -1,5 +1,5 @@
 /*****************************************************************************\
- * README.txt                                                       *
+ * README.LHPC_CPP.txt                                                       *
  *                                                                           *
  *  Created on: Jan 27, 2012                                                 *
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)                      *

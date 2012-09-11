@@ -353,149 +353,169 @@ CHANGELOG:
 
 
 The C++ files of LesHouchesParserClasses are:
- LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.hpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/FourMomentum.cpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.hpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoEvent.cpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.hpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/LhcoParser.cpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.hpp
- LHPC_CPP/LargeHadronColliderOlympicsClasses/ObjectLine.cpp
- LHPC_CPP/LesHouchesEventFileClasses/AutomaticEventFilter.hpp
- LHPC_CPP/LesHouchesEventFileClasses/AutomaticEventFilter.cpp
- LHPC_CPP/LesHouchesEventFileClasses/DefaultFilterRules.hpp
- LHPC_CPP/LesHouchesEventFileClasses/FilterRule.hpp
- LHPC_CPP/LesHouchesEventFileClasses/FilterRule.cpp
- LHPC_CPP/LesHouchesEventFileClasses/InterfaceToClhepLorentzVectorClass.hpp
- LHPC_CPP/LesHouchesEventFileClasses/LhefEvent.hpp
- LHPC_CPP/LesHouchesEventFileClasses/LhefEvent.cpp
- LHPC_CPP/LesHouchesEventFileClasses/LhefParser.hpp
- LHPC_CPP/LesHouchesEventFileClasses/LhefParser.cpp
- LHPC_CPP/LesHouchesEventFileClasses/ParticleLine.hpp
- LHPC_CPP/LesHouchesEventFileClasses/ParticleLine.cpp
- 8 files in LHPC_CPP/LesHouchesEventFileClasses/FilterRuleClasses/:
+
+ <> headers in LHPC/include/:
+ LargeHadronColliderOlympicsClasses/FourMomentum.hpp
+ LargeHadronColliderOlympicsClasses/LhcoEvent.hpp
+ LargeHadronColliderOlympicsClasses/LhcoParser.hpp
+ LargeHadronColliderOlympicsClasses/ObjectLine.hpp
+ LesHouchesEventFileClasses/AutomaticEventFilter.hpp
+ LesHouchesEventFileClasses/FilterRule.hpp
+ LesHouchesEventFileClasses/FilterRuleClasses.hpp
+ LesHouchesEventFileClasses/InterfaceToClhepLorentzVectorClass.hpp
+ LesHouchesEventFileClasses/LhefEvent.hpp
+ LesHouchesEventFileClasses/LhefParser.hpp
+ LesHouchesEventFileClasses/ParticleLine.hpp
+ within LesHouchesEventFileClasses/FilterRuleClasses/:
    - InitialOrIntermediateOrFinalState.hpp
-   - InitialOrIntermediateOrFinalState.cpp
    - ParticleCode.hpp
-   - ParticleCode.cpp
    - PseudorapidityCut.hpp
-   - PseudorapidityCut.cpp
    - TransverseMomentumCut.hpp
-   - TransverseMomentumCut.cpp
- LHPC_CPP/MassEigenstateCollectionClasses/DefaultSpectra.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/ExtendedMass.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/ExtendedMass.cpp
- LHPC_CPP/MassEigenstateCollectionClasses/MapAndVectorAndBools.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/MassEigenstate.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/MassEigenstate.cpp
- LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrum.cpp
- LHPC_CPP/MassEigenstateCollectionClasses/PointersWithValue.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/SpectrumUpdater.cpp
- LHPC_CPP/MassEigenstateCollectionClasses/RunningConstant.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/RunningConstant.cpp
- LHPC_CPP/MassEigenstateCollectionClasses/RunningConstantError.hpp
- LHPC_CPP/MassEigenstateCollectionClasses/RunningConstantError.cpp
- 7 files and a subdirectory in
- LHPC_CPP/MassEigenstateCollectionClasses/MassSpectrumClasses/:
+ MassEigenstateCollectionClasses/DefaultSpectra.hpp
+ MassEigenstateCollectionClasses/ExtendedMass.hpp
+ MassEigenstateCollectionClasses/MapAndVectorAndBools.hpp
+ MassEigenstateCollectionClasses/MassEigenstate.hpp
+ MassEigenstateCollectionClasses/MassSpectrum.hpp
+ MassEigenstateCollectionClasses/MassSpectrumClasses.hpp
+ MassEigenstateCollectionClasses/PointersWithValue.hpp
+ MassEigenstateCollectionClasses/RunningConstant.hpp
+ MassEigenstateCollectionClasses/RunningConstantError.hpp
+ MassEigenstateCollectionClasses/SpectrumUpdater.hpp
+ within MassEigenstateCollectionClasses/MassSpectrumClasses/:
  - CodesAndDataForMassEigenstates.hpp
  - MinimalSupersymmetricStandardModel.hpp
- - MinimalSupersymmetricStandardModel.cpp
  - NextToMinimalSupersymmetricStandardModel.hpp
- - NextToMinimalSupersymmetricStandardModel.cpp
+ - ParticleSpectrumSubsetClasses.hpp
  - StandardModel.hpp
- - StandardModel.cpp
- - ParticleSpectrumSubsetClasses/ with 18 files:
-   - ChargedSleptonsOneToSix.hpp
-   - ChargedSleptonsOneToSix.cpp
-   - CharginosOneToTwo.hpp
-   - CharginosOneToTwo.cpp
-   - GluinoOneGeneration.hpp
-   - GluinoOneGeneration.cpp
-   - MssmExtraEwsbSpinZeroBosonSet.hpp
-   - MssmExtraEwsbSpinZeroBosonSet.cpp
-   - NeutralinosOneToFive.hpp
-   - NeutralinosOneToFive.cpp
-   - NeutralinosOneToFour.hpp
-   - NeutralinosOneToFour.cpp
-   - NmssmExtraEwsbSpinZeroBosonSet.hpp
-   - NmssmExtraEwsbSpinZeroBosonSet.cpp
-   - SneutrinosOneToThree.hpp
-   - SneutrinosOneToThree.cpp
-   - SquarksOneToSix.hpp
-   - SquarksOneToSix.cpp
- LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp
- LHPC_CPP/ParticleCodesAndDataClasses/NineDigitSlhaCodes.cpp
- LHPC_CPP/ParticleCodesAndDataClasses/PdgData.hpp
- LHPC_CPP/ParticleCodesAndDataClasses/PdgData.cpp
- LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp
- LHPC_CPP/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp
- LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.hpp
- LHPC_CPP/SlhaSpectrumPlottingClasses/LineData.cpp
- LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
- LHPC_CPP/SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockTypes.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservable.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservable.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservableError.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/FlavorObservableError.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/FlhaOne.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaBlock.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaOne.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaParser.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwo.cpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
- LHPC_CPP/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
- 19 files in
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/:
+ - ParticleSpectrumSubsetClasses/ChargedSleptonsOneToSix.hpp
+ - ParticleSpectrumSubsetClasses/CharginosOneToTwo.hpp
+ - ParticleSpectrumSubsetClasses/GluinoOneGeneration.hpp
+ - ParticleSpectrumSubsetClasses/MssmExtraEwsbSpinZeroBosonSet.hpp
+ - ParticleSpectrumSubsetClasses/NeutralinosOneToFive.hpp
+ - ParticleSpectrumSubsetClasses/NeutralinosOneToFour.hpp
+ - ParticleSpectrumSubsetClasses/NmssmExtraEwsbSpinZeroBosonSet.hpp
+ - ParticleSpectrumSubsetClasses/SneutrinosOneToThree.hpp
+ - ParticleSpectrumSubsetClasses/SquarksOneToSix.hpp
+ ParticleCodesAndDataClasses/NineDigitSlhaCodes.hpp
+ ParticleCodesAndDataClasses/PdgData.hpp
+ ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp
+ SlhaSpectrumPlottingClasses/LineData.hpp
+ SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
+ SusyLesHouchesAccordClasses/BlockClasses.hpp
+ SusyLesHouchesAccordClasses/BlockTypes.hpp
+ SusyLesHouchesAccordClasses/FlavorObservable.hpp
+ SusyLesHouchesAccordClasses/FlavorObservableError.hpp
+ SusyLesHouchesAccordClasses/FlhaOne.hpp
+ SusyLesHouchesAccordClasses/SlhaBlock.hpp
+ SusyLesHouchesAccordClasses/SlhaOne.hpp
+ SusyLesHouchesAccordClasses/SlhaParser.hpp
+ SusyLesHouchesAccordClasses/SlhaTwo.hpp
+ SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp
+ within SusyLesHouchesAccordClasses/BlockClasses/:
    - BaseSlhaBlock.hpp
-   - BaseSlhaBlock.cpp
    - BaseStringBlock.hpp
-   - BaseStringBlock.cpp
    - DenseDoublyIndexedBlock.hpp
    - DenseSinglyIndexedBlock.hpp
    - DenseTriplyIndexedBlock.hpp
    - DoublyIndexedMultipleEntriesBlock.hpp
    - IndexedBlockTemplate.hpp
+   - InterpreterClasses.hpp
    - JustSingleValueBlock.hpp
    - LinesAsStringsBlock.hpp
-   - LinesAsStringsBlock.cpp
    - SameNameBlockSet.hpp
-   - SameNameBlockSet.cpp
    - SinglyIndexedMultipleEntriesBlock.hpp
    - SparseDoublyIndexedBlock.hpp
-   - SparseSinglyIndexedBlock.hpp
    - SparseQuadruplyIndexedBlock.hpp
+   - SparseSinglyIndexedBlock.hpp
    - TriplyIndexedMultipleEntriesBlock.hpp
- 16 files in
- LHPC_CPP/SusyLesHouchesAccordClasses/BlockClasses/InterpreterClasses/:
-   - BlockInterpreter.hpp
-   - BlockInterpreter.cpp
-   - DenseDoublyIndexed.hpp
-   - DenseSinglyIndexed.hpp
-   - DenseTriplyIndexed.hpp
-   - IndexedInterpreter.hpp
-   - InterpreterTemplate.hpp
-   - JustSingleValue.hpp
-   - LinesAsStrings.hpp
-   - LinesAsStrings.cpp
-   - MultipleDoublyIndexed.hpp
-   - MultipleSinglyIndexed.hpp
-   - MultipleTriplyIndexed.hpp
-   - SparseDoublyIndexed.hpp
-   - SparseSinglyIndexed.hpp
-   - SparseQuadruplyIndexed.hpp
- LHPC_CPP/LHEF.hpp
- LHPC_CPP/LhefParserExample.cpp
- LHPC_CPP/LhpcSpectrumPlotter.cpp
- LHPC_CPP/SLHA.hpp
- LHPC_CPP/SlhaParserExample.cpp
+   - InterpreterClasses/BlockInterpreter.hpp
+   - InterpreterClasses/DenseDoublyIndexed.hpp
+   - InterpreterClasses/DenseSinglyIndexed.hpp
+   - InterpreterClasses/DenseTriplyIndexed.hpp
+   - InterpreterClasses/IndexedInterpreter.hpp
+   - InterpreterClasses/InterpreterTemplate.hpp
+   - InterpreterClasses/JustSingleValue.hpp
+   - InterpreterClasses/LinesAsStrings.hpp
+   - InterpreterClasses/MultipleDoublyIndexed.hpp
+   - InterpreterClasses/MultipleSinglyIndexed.hpp
+   - InterpreterClasses/MultipleTriplyIndexed.hpp
+   - InterpreterClasses/SparseDoublyIndexed.hpp
+   - InterpreterClasses/SparseQuadruplyIndexed.hpp
+   - InterpreterClasses/SparseSinglyIndexed.hpp
+ LHCO.hpp
+ LHEF.hpp
+ MassEigenstateCollectionClasses.hpp
+ PDG.hpp
+ SLHA.hpp
+ 
+ <> source files in LHPC/source/:
+ LargeHadronColliderOlympicsClasses/FourMomentum.cpp
+ LargeHadronColliderOlympicsClasses/LhcoEvent.cpp
+ LargeHadronColliderOlympicsClasses/LhcoParser.cpp
+ LargeHadronColliderOlympicsClasses/ObjectLine.cpp
+ LesHouchesEventFileClasses/AutomaticEventFilter.cpp
+ LesHouchesEventFileClasses/FilterRule.cpp
+ LesHouchesEventFileClasses/LhefEvent.cpp
+ LesHouchesEventFileClasses/LhefParser.cpp
+ LesHouchesEventFileClasses/ParticleLine.cpp
+ within LesHouchesEventFileClasses/FilterRuleClasses/:
+   - InitialOrIntermediateOrFinalState.cpp
+   - ParticleCode.cpp
+   - PseudorapidityCut.cpp
+   - TransverseMomentumCut.cpp
+ MassEigenstateCollectionClasses/ExtendedMass.cpp
+ MassEigenstateCollectionClasses/MassEigenstate.cpp
+ MassEigenstateCollectionClasses/MassSpectrum.cpp
+ MassEigenstateCollectionClasses/RunningConstant.cpp
+ MassEigenstateCollectionClasses/RunningConstantError.cpp
+ MassEigenstateCollectionClasses/SpectrumUpdater.cpp
+ within MassEigenstateCollectionClasses/MassSpectrumClasses/:
+ - MinimalSupersymmetricStandardModel.cpp
+ - NextToMinimalSupersymmetricStandardModel.cpp
+ - StandardModel.cpp
+ - ParticleSpectrumSubsetClasses/ChargedSleptonsOneToSix.cpp
+ - ParticleSpectrumSubsetClasses/CharginosOneToTwo.cpp
+ - ParticleSpectrumSubsetClasses/GluinoOneGeneration.cpp
+ - ParticleSpectrumSubsetClasses/MssmExtraEwsbSpinZeroBosonSet.cpp
+ - ParticleSpectrumSubsetClasses/NeutralinosOneToFive.cpp
+ - ParticleSpectrumSubsetClasses/NeutralinosOneToFour.cpp
+ - ParticleSpectrumSubsetClasses/NmssmExtraEwsbSpinZeroBosonSet.cpp
+ - ParticleSpectrumSubsetClasses/SneutrinosOneToThree.cpp
+ - ParticleSpectrumSubsetClasses/SquarksOneToSix.cpp
+ ParticleCodesAndDataClasses/NineDigitSlhaCodes.cpp
+ ParticleCodesAndDataClasses/PdgData.cpp
+ ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp
+ SlhaSpectrumPlottingClasses/LineData.cpp
+ SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
+ SusyLesHouchesAccordClasses/FlavorObservable.cpp
+ SusyLesHouchesAccordClasses/FlavorObservableError.cpp
+ SusyLesHouchesAccordClasses/FlhaOne.cpp
+ SusyLesHouchesAccordClasses/SlhaOne.cpp
+ SusyLesHouchesAccordClasses/SlhaParser.cpp
+ SusyLesHouchesAccordClasses/SlhaTwo.cpp
+ SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp
+ within SusyLesHouchesAccordClasses/BlockClasses/:
+   - BaseSlhaBlock.cpp
+   - BaseStringBlock.cpp
+   - LinesAsStringsBlock.cpp
+   - SameNameBlockSet.cpp
+   - InterpreterClasses/BlockInterpreter.cpp
+   - InterpreterClasses/LinesAsStrings.cpp
+ LhcoParserExample.cpp
+ LhefParserExample.cpp
+ LhpcSpectrumPlotter.cpp
+ SlhaParserExample.cpp
+ 
+ <> and also:
  LHPC_CPP/Makefile
  and README.LHPC_CPP.txt which describes the package (copied as README.txt).
- The files of BOLlib are also included, and are described in BOLlib/README.txt.
+ The files of BOLlib are also included, and are described in
+ BOLlib/README.BOLlib.txt.
+ The makefile creates four executables in LHPC/bin/:
+ LhcoParserExample.exe, a demonstration of the LHCO parser
+ LhefParserExample.exe, a demonstration of the LHEF parser
+ LhpcSpectrumPlotter.exe, a program that uses gnuplot to plot a mass spectrum
+                          from an SLHA file
+ SlhaParserExample.exe, a demonstration of the SLHA parser.
+ 
  

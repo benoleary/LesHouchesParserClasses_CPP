@@ -196,10 +196,12 @@ main( int argumentCount,
     std::cout
     << std::endl
     << "simplistic interpreter, \"" << firstFileName << "\":";
+    std::cout << std::endl;
     std::string blockNameAndIndices( "GAUGE[ 3 ]" );
     std::cout
     << "\"" << blockNameAndIndices << "\" => \""
     << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
     blockNameAndIndices.assign( "NMIX[ 1, 3 ]" );
     std::cout
     << "\"" << blockNameAndIndices << "\" => \""
@@ -221,6 +223,11 @@ main( int argumentCount,
       << std::endl
       << "successfully read \"" << secondFileName << "\"";
       std::cout << std::endl;
+      blockNameAndIndices.assign( "GAUGE[ 3 ]" );
+      std::cout
+      << "\"" << blockNameAndIndices << "\" => \""
+      << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
       blockNameAndIndices.assign( "NMIX[ 1, 3 ]" );
       std::cout
       << "\"" << blockNameAndIndices << "\" => \""
@@ -235,6 +242,11 @@ main( int argumentCount,
       std::cout
       << "\"" << blockNameAndIndices << "\" => \""
       << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
+      std::cout
+      << "\"" << blockNameAndIndices
+      << "\" as a double (rather than as a string) => "
+      << slhaSimplisticInterpreter.getDouble( blockNameAndIndices );
       std::cout << std::endl;
     }
 

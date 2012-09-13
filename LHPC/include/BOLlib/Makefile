@@ -21,19 +21,23 @@ SOURCES=source/ArgumentParser.cpp \
  source/UsefulStuff.cpp \
  source/WaitingOnSubprocessExecutor.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-LIBRARYFILE=lib/libBOLlib.a
+LIBDIR=./lib/
+LIBRARYFILE=$(LIBDIR)/libBOLlib.a
 
 all: $(OBJECTS) $(LIBRARYFILE)
 
-lib: $(OBJECTS) $(LIBRARYFILE)
+library: $(OBJECTS) $(LIBRARYFILE)
 	\rm -rf $(OBJECTS)
 	
-.PHONY: all lib clean
+.PHONY: all library clean
 
 $(OBJECTS): %.o: %.cpp
 	$(CC) $(CFLAGS) $< -o $@
 	
-$(LIBRARYFILE): $(OBJECTS)
+$(LIBDIR):
+	mkdir $@
+	
+$(LIBRARYFILE): $(LIBDIR) $(OBJECTS)
 	$(AR) $(AFLAGS) $@ $(OBJECTS)
 
 clean:

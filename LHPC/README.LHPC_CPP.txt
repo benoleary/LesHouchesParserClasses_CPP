@@ -241,6 +241,8 @@ CHANGELOG:
  * 13th September 2012: version 0.6.2
  - updated BOLlib to include ArgumentParser class.
  - added LHPC::SlhaSimplisticInterpreter class.
+ - fixed makefiles to correctly make lib and bin directories if they are
+   missing.
  - corrected READMEs again.
  
  * 10th September 2012: version 0.6.1

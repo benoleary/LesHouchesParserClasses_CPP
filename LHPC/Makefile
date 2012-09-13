@@ -74,44 +74,53 @@ SOURCES=source/LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  $(SLHADIR)/BlockClasses/InterpreterClasses/LinesAsStrings.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 BOLLIBFILE=include/BOLlib/lib/libBOLlib.a
-LIBRARYFILE=lib/libLHPC.a
+LIBDIR=./lib/
+LIBRARYFILE=$(LIBDIR)/libLHPC.a
+BINDIR=./bin/
 PLOTTERCPP= source/LhpcSpectrumPlotter.cpp
-PLOTTERGEXE=bin/LhpcSpectrumPlotter.exe
+PLOTTERGEXE=$(BINDIR)/LhpcSpectrumPlotter.exe
 LHCOEGCPP= source/LhcoParserExample.cpp
-LHCOEGEXE=bin/LhcoParserExample.exe
+LHCOEGEXE=$(BINDIR)/LhcoParserExample.exe
 LHEFEGCPP= source/LhefParserExample.cpp
-LHEFEGEXE=bin/LhefParserExample.exe
+LHEFEGEXE=$(BINDIR)/LhefParserExample.exe
 SLHAEGCPP= source/SlhaParserExample.cpp
-SLHAEGEXE=bin/SlhaParserExample.exe
+SLHAEGEXE=$(BINDIR)/SlhaParserExample.exe
 EXES=$(PLOTTERGEXE) $(LHCOEGEXE) $(LHEFEGEXE) $(SLHAEGEXE)
 
 all: $(BOLLIBFILE) $(OBJECTS) $(LIBRARYFILE) $(EXES)
 
-lib: $(OBJECTS) $(LIBRARYFILE)
+library: $(OBJECTS) $(LIBRARYFILE)
 	\rm -rf $(OBJECTS)
 	
-.PHONY: all lib clean
+.PHONY: all library clean
 
 $(BOLLIBFILE):
-	$(MAKE) -C ./include/BOLlib/ lib
+	$(MAKE) -C ./include/BOLlib/ library
 
 $(OBJECTS): %.o: %.cpp $(BOLLIBFILE)
 	$(CC) $(CCOBJFLAGS) $< -o $@
+	
+$(LIBDIR):
+	mkdir $@
 
-$(LIBRARYFILE): $(BOLLIBFILE) $(OBJECTS)
+$(LIBRARYFILE): $(LIBDIR) $(BOLLIBFILE) $(OBJECTS)
 	$(AR) $(ARFLAGS) $@ $(OBJECTS)
+	
+$(BINDIR):
+	mkdir $@
 
-$(PLOTTERGEXE): $(LIBRARYFILE)
+$(PLOTTERGEXE): $(BINDIR) $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) -o $@ $(PLOTTERCPP) $(LDFLAGS)
 
-$(LHCOEGEXE): $(LIBRARYFILE)
+$(LHCOEGEXE): $(BINDIR) $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) -o $@ $(LHCOEGCPP) $(LDFLAGS)
 
-$(LHEFEGEXE): $(LIBRARYFILE)
+$(LHEFEGEXE): $(BINDIR) $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) -o $@ $(LHEFEGCPP) $(LDFLAGS)
 
-$(SLHAEGEXE): $(LIBRARYFILE)
+$(SLHAEGEXE): $(BINDIR) $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) -o $@ $(SLHAEGCPP) $(LDFLAGS)
 
 clean:
+	$(MAKE) -C ./include/BOLlib/ clean
 	\rm -f $(OBJECTS) $(LIBRARYFILE) $(EXES)

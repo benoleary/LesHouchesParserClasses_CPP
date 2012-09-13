@@ -43,7 +43,7 @@ namespace LHPC
     std::string indicesString( "" );
     std::string blockName( BOL::StringParser::substringToFirst(
                                                            blockNameAndIndices,
-                                            BOL::StringParser::whitespaceChars,
+                                                                " ",
                                                             &indicesString ) );
     std::vector< int >
     indicesVector( BOL::StringParser::stringToIntVector( indicesString ) );
@@ -55,6 +55,7 @@ namespace LHPC
          0 < whichLine;
          --whichLine )
     {
+      blockLine.clearEntries();
       BOL::StringParser::parseByChar( blockAsStrings[ whichLine ].first,
                                       blockLine,
                                       BOL::StringParser::whitespaceChars );

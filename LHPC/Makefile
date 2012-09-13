@@ -63,6 +63,7 @@ SOURCES=source/LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  source/SusyLesHouchesAccordClasses/FlhaOne.cpp \
  source/SusyLesHouchesAccordClasses/SlhaOne.cpp \
  source/SusyLesHouchesAccordClasses/SlhaParser.cpp \
+ source/SusyLesHouchesAccordClasses/SlhaSimplisticInterpreter.cpp \
  source/SusyLesHouchesAccordClasses/SlhaTwo.cpp \
  source/SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.cpp \
  source/SusyLesHouchesAccordClasses/BlockClasses/BaseSlhaBlock.cpp \

@@ -40,18 +40,18 @@
  latex, dvips, and ps2eps (or ps2epsi).
 
  Running make on the makefile included will compile the library
- (LHPC_CPP/libLHPC_CPP.a) and 4 executables (LhpcSpectrumPlotter.exe,
- LhefParserExample.exe, LhcoParserExample.exe, and SlhaParserExample.exe). The
- executables can be run with test input files in the
- LHPC_CPP/testing directory.
+ (LHPC/lib/libLHPC_CPP.a) and 4 executables (LHPC/bin/LhpcSpectrumPlotter.exe,
+ LHPC/bin/LhefParserExample.exe, LHPC/bin/LhcoParserExample.exe, and
+ LHPC/bin/SlhaParserExample.exe). The executables can be run with test input
+ files in the LHPC/bin/testing directory.
 
 
 
 ** SLHA spectrum plotter
- As mentioned above, unning make will produce LhpcSpectrumPlotter.exe, which
+ As mentioned above, running make will produce LhpcSpectrumPlotter.exe, which
  can be run without any arguments to show further information on how to use it.
  Please ensure that the paths in the control block are correct! The paths in
- the examples in LHPC_CPP/testing use the paths that seem to me to be the
+ the examples in LHPC/bin/testing use the paths that seem to me to be the
  'standard' Linux paths.
 
 
@@ -73,7 +73,7 @@
  
  The intended use of LhcoParser is that an instance of the class is constructed
  with the name of the LHCO-format file that it should open, then
- readNextEvent() is called for as long as necessary. The readNextEvent()
+  readNextEvent() is called for as long as necessary. The readNextEvent()
  function returns false when the file can no longer be read, which in normal
  circumstances is when the end of the file has been reached.
  
@@ -89,12 +89,11 @@
  std::list< ObjectLine const* >s of all the objects of a given type in the
  event, and exampleEvent[ whichLine ] to get the line number whichLine (the
  first line is 1, not 0) would be the most used functions. I expect that, for
- each example
- ObjectLine called exampleLine, exampleLine.getTransverseMomentum() and the
- other named functions, or equivalently exampleLine[ whichEntry ], to get the
- whichEntry-th number of the line (starting with 0 for the object number,
- followed by its type at [ 1 ], pseudorapidity at [ 2 ] and so on) would be the
- most-used functions.
+ each example ObjectLine called exampleLine,
+ exampleLine.getTransverseMomentum() and the other named functions, or
+ equivalently exampleLine[ whichEntry ], to get the whichEntry-th number of the
+ line (starting with 0 for the object number, followed by its type at [ 1 ],
+ pseudorapidity at [ 2 ] and so on) would be the most-used functions.
  
 
 
@@ -183,14 +182,20 @@
  constructed, and then instances of derived classes of the SlhaBlock class are
  constructed and then registered with the parser with the
  registerBlock( LHPC::SLHA::BaseSlhaBlock const& ) function (but nobody
- should have to deal with the base BaseSlhaBlock class directly). There are
- bundles of blocks that automatically register their blocks with the SlhaParser
- given to the bundle's constructor, which cover the blocks described in SLHA1
- and SLHA2. An instance of LHPC::SlhaOne has all the blocks in SLHA1, and an
- instance of SlhaTwo has all the blocks mentioned in SLHA1 and in SLHA2. The
- entries in the blocks are then filled when readFile( std::string const& ) is
- called. The entries are accessed with operator() (various derived classes use
- different numbers of arguments for this) for the copy of their block with
+ should have to deal with the base BaseSlhaBlock class directly).
+ 
+ Registered blocks are filled with data by the next call of
+ SlhaParser::readFile( std::string const& slhaFileName ). (Blocks registered
+ with a parser that has already read in a file will *not* fill their data until
+ the next time a file is read in.)
+ 
+ There are bundles of blocks that automatically register their blocks with the
+ SlhaParser given to the bundle's constructor, which cover the blocks described
+ in SLHA1 and SLHA2. An instance of LHPC::SlhaOne has all the blocks in SLHA1,
+ and an instance of SlhaTwo has all the blocks mentioned in SLHA1 and in SLHA2.
+ The entries in the blocks are then filled when readFile( std::string const& )
+ is called. The entries are accessed with operator() (various derived classes
+ use different numbers of arguments for this) for the copy of their block with
  lowest scale value ("Q"), or the interpreter for a given copy can be accessed
  with operator[], which returns interpreters for the blocks in the order in
  which they were read, starting from 1 (asking for entry 0 returns the
@@ -200,7 +205,7 @@
 
  The function SlhaBlock::hasRecordedScale( double const, int&, int&, double& )
  is the best compromise that I could come up with for finding blocks for a
- given scale. see the comments of the function for how to use it.
+ given scale. See the comments of the function for how to use it.
  I had intended to provide flexible searching of the blocks as strings to
  accommodate non-standard blocks, but this is still on the to-do list.
  
@@ -208,7 +213,7 @@
  the SlhaParser (by the registerSpectrum( MassSpectrum& ) function). A
  registered MassSpectrum instance has its MassEigenstate data members filled
  with masses recorded from the MASS or FMASS blocks that are read from the SLHA
- file, and with decays filled from the decays of the file. the particle codes
+ file, and with decays filled from the decays of the file. The particle codes
  of the decays are interpreted so that accessing the decays gets references to
  other MassEigenstates, to simplify following cascade decays for example. It
  includes the distinction between particles and antiparticles (e.g. say a heavy
@@ -224,9 +229,23 @@
  branching ratios, as they appeared on the Particle Data Group website
  http://pdg.lbl.gov/ on the 16th of March, 2012. The masses and decays are
  overwritten by any data found in parsed SLHA files.
+ 
+ There is also a LHPC::SlhaSimplisticInterpreter class. An instance of this
+ class opens an SLHA file, and tries to match strings as block names followed
+ by indices, and returns the string following matched indices in the block, if
+ any are found. It is, however, quite inefficient compared to the above, since
+ it involves lots of string interpretation with every search.
 
 
 CHANGELOG:
+ * 13th September 2012: version 0.6.2
+ - updated BOLlib to include ArgumentParser class.
+ - added LHPC::SlhaSimplisticInterpreter class.
+ - corrected READMEs again.
+ 
+ * 10th September 2012: version 0.6.1
+ - corrected READMEs.
+ 
  * 10th September 2012: version 0.6.0
  - reorganized directory structure to be more in line with GNU standards.
  - BOLlib is separate standalone release, but included.

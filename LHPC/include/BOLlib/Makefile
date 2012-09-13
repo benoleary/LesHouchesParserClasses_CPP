@@ -9,7 +9,8 @@ CFLAGS=-c -O3 -Wall -I./include/
 LDFLAGS=
 AR=ar
 AFLAGS=rcs
-SOURCES=source/AsciiXmlParser.cpp \
+SOURCES=source/ArgumentParser.cpp \
+ source/AsciiXmlParser.cpp \
  source/BalancedPartitionCandidate.cpp \
  source/BasicObserved.cpp \
  source/BasicObserver.cpp \

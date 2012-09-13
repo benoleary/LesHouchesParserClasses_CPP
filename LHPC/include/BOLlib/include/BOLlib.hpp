@@ -16,6 +16,7 @@
 #ifndef BOLLIB_HPP_
 #define BOLLIB_HPP_
 
+#include "ArgumentParser.hpp"
 #include "AsciiXmlParser.hpp"
 #include "BalancedPartitionCandidate.hpp"
 #include "BalancedPartitioner.hpp"

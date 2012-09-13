@@ -39,6 +39,7 @@ CHANGELOG:
  - first release!
 
 The C++ files of LesHouchesParserClasses are:
+ include/ArgumentParser.hpp
  include/AsciiXmlParser.hpp
  include/BasicObserved.hpp
  include/BasicObserver.hpp
@@ -49,8 +50,9 @@ The C++ files of LesHouchesParserClasses are:
  include/StringParser.hpp
  include/UsefulStuff.hpp
  include/VectorlikeArray.hpp
- source/BasicObserved.cpp
+ source/ArgumentParser.cpp
  source/AsciiXmlParser.cpp
+ source/BasicObserved.cpp
  source/BasicObserver.cpp
  source/CommentedTextParser.cpp
  source/StringParser.cpp

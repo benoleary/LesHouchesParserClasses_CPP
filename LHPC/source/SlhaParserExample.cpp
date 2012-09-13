@@ -192,6 +192,52 @@ main( int argumentCount,
     std::cout << std::endl;
 
 
+    LHPC::SlhaSimplisticInterpreter slhaSimplisticInterpreter( firstFileName );
+    std::cout
+    << std::endl
+    << "simplistic interpreter, \"" << firstFileName << "\":";
+    std::string blockNameAndIndices( "GAUGE[ 3 ]" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    blockNameAndIndices.assign( "NMIX[ 1, 3 ]" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
+    blockNameAndIndices.assign( "NMIX[ 2 2 ]" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
+    blockNameAndIndices.assign( "NMIX(4;3)" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
+    if( slhaSimplisticInterpreter.readFile( secondFileName ) )
+    {
+      std::cout
+      << std::endl
+      << "successfully read \"" << secondFileName << "\"";
+      std::cout << std::endl;
+      blockNameAndIndices.assign( "NMIX[ 1, 3 ]" );
+      std::cout
+      << "\"" << blockNameAndIndices << "\" => \""
+      << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
+      blockNameAndIndices.assign( "NMIX[ 2 2 ]" );
+      std::cout
+      << "\"" << blockNameAndIndices << "\" => \""
+      << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
+      blockNameAndIndices.assign( "NMIX(4;3)" );
+      std::cout
+      << "\"" << blockNameAndIndices << "\" => \""
+      << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
+    }
+
     std::cout
     << std::endl
     << "ended successfully, I hope.";

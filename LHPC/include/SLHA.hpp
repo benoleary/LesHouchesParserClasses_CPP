@@ -17,6 +17,7 @@
 #include "SusyLesHouchesAccordClasses/SlhaBlock.hpp"
 #include "SusyLesHouchesAccordClasses/BlockTypes.hpp"
 #include "SusyLesHouchesAccordClasses/SlhaParser.hpp"
+#include "SusyLesHouchesAccordClasses/SlhaSimplisticInterpreter.hpp"
 #include "SusyLesHouchesAccordClasses/SlhaOne.hpp"
 #include "SusyLesHouchesAccordClasses/SlhaTwo.hpp"
 #include "SusyLesHouchesAccordClasses/SlhaTwoWithSpheno.hpp"

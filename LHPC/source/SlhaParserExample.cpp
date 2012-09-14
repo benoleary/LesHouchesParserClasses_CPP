@@ -202,12 +202,22 @@ main( int argumentCount,
     << "\"" << blockNameAndIndices << "\" => \""
     << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
     std::cout << std::endl;
+    blockNameAndIndices.assign( "MASS[ 1.000021E+06 ]" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
     blockNameAndIndices.assign( "NMIX[ 1, 3 ]" );
     std::cout
     << "\"" << blockNameAndIndices << "\" => \""
     << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
     std::cout << std::endl;
-    blockNameAndIndices.assign( "NMIX[ 2 2 ]" );
+    blockNameAndIndices.assign( "NMIX[3][3]" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
+    blockNameAndIndices.assign( "NMIX[ 2 2. ]" );
     std::cout
     << "\"" << blockNameAndIndices << "\" => \""
     << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
@@ -228,12 +238,22 @@ main( int argumentCount,
       << "\"" << blockNameAndIndices << "\" => \""
       << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
       std::cout << std::endl;
+      blockNameAndIndices.assign( "MASS[ 1.000021E+06 ]" );
+      std::cout
+      << "\"" << blockNameAndIndices << "\" => \""
+      << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
       blockNameAndIndices.assign( "NMIX[ 1, 3 ]" );
       std::cout
       << "\"" << blockNameAndIndices << "\" => \""
       << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
       std::cout << std::endl;
-      blockNameAndIndices.assign( "NMIX[ 2 2 ]" );
+      blockNameAndIndices.assign( "NMIX[3][3]" );
+      std::cout
+      << "\"" << blockNameAndIndices << "\" => \""
+      << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+      std::cout << std::endl;
+      blockNameAndIndices.assign( "NMIX[ 2 2. ]" );
       std::cout
       << "\"" << blockNameAndIndices << "\" => \""
       << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";

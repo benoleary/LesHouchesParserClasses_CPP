@@ -238,6 +238,11 @@
 
 
 CHANGELOG:
+ * 14th September 2012: version 0.6.3
+ - updated SlhaParserExample to demonstrate that SlhaSimplisticInterpreter can
+   take strings of indices in floating-point format and also indices can be
+   each in their own brackets as well as being separated by commas.
+ 
  * 13th September 2012: version 0.6.2
  - updated BOLlib to include ArgumentParser class.
  - added LHPC::SlhaSimplisticInterpreter class.

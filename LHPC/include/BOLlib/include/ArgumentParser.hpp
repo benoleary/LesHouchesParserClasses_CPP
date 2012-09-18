@@ -27,10 +27,16 @@ namespace BOL
     ~ArgumentParser();
 
     std::string
-    getArgument( std::string const& argumentName ) const;
+    fromLiteral( std::string const& argumentName ) const;
     // this looks for argumentName as a substring (from the starting char) of
     // any of the elements of argumentStrings, & returns the rest of the 1st
     // matching string (or an empty string if no match was found).
+    std::string
+    fromTag( std::string const& argumentName ) const;
+    // this looks for "--" + argumentName + "=" as a substring (from the
+    // starting char) of any of the elements of argumentStrings, & returns the
+    // rest of the 1st matching string (or an empty string if no match was
+    // found).
 
 
   protected:
@@ -42,7 +48,7 @@ namespace BOL
 
 
   inline std::string
-  ArgumentParser::getArgument( std::string const& argumentName ) const
+  ArgumentParser::fromLiteral( std::string const& argumentName ) const
   // this looks for argumentName as a substring (from the starting char) of
   // any of the elements of argumentStrings, & returns the rest of the 1st
   // matching string (or an empty string if no match was found).
@@ -64,6 +70,19 @@ namespace BOL
       }
     }
     return returnString;
+  }
+
+  inline std::string
+  ArgumentParser::fromTag( std::string const& argumentName ) const
+  // this looks for "--" + argumentName + "=" as a substring (from the
+  // starting char) of any of the elements of argumentStrings, & returns the
+  // rest of the 1st matching string (or an empty string if no match was
+  // found).
+  {
+    std::string tagString( "--" );
+    tagString.append( argumentName );
+    tagString.append( "=" );
+    return fromLiteral( tagString );
   }
 
 } /* namespace BOL */

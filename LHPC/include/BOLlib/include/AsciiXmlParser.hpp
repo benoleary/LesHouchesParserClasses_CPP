@@ -251,6 +251,7 @@ namespace BOL
     soughtTagLength = soughtTag.size();
     findNextElement();
     soughtTag.assign( defaultTag );
+    soughtTagLength = soughtTag.size();
     return fullElementContentAsFound;
   }
 

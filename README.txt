@@ -238,6 +238,10 @@
 
 
 CHANGELOG:
+ * 19th September 2012: version 0.6.5
+ - BOLlib updated to 0.2.1 (fixing new bug introduced into AsciiXmlParser
+   by previous bugfix).
+
  * 19th September 2012: version 0.6.4
  - changed verbosity bool references to just bools, having decided that the
    ability to switch off verbosity mid-execution isn't worthwhile.

@@ -35,6 +35,11 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 19th September 2012: version 0.2.1
+ - fixed bug in AsciiXmlParser where searching for the default tag subsequent
+   to looking for a non-default tag would fail unless the last non-default tag
+   was the same length as the default tag.
+
  * 19th September 2012: version 0.2.0
  - fixed bug in AsciiXmlParser where searching for tags subsequent to the 1st
    would fail unless they were the same length as the 1st tag.
@@ -43,6 +48,7 @@ CHANGELOG:
  - enhanced functionality of ArgumentParser class, so that it now searches for
    tags in command-line arguments and then in an input XML file and then
    resorts to defaults.
+
  * 10th September 2012: version 0.1.0
  - first release!
 

@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
 #include "SlhaParser.hpp"
 #include "BOLlib/include/BOLlib.hpp"
 
@@ -29,6 +30,8 @@ namespace LHPC
 
     std::string
     operator()( std::string blockNameAndIndices );
+    std::string
+    withMap( std::string blockNameAndIndices );
     double
     getDouble( std::string blockNameAndIndices );
     int
@@ -41,6 +44,8 @@ namespace LHPC
   protected:
     SlhaParser slhaParser;
     std::stringstream stringParser;
+    std::map< std::string, std::string > keyedResults;
+    std::map< std::string, std::string >::iterator mapIterator;
 
     std::stringstream&
     getStringParser( std::string const& newStringForParser );
@@ -49,6 +54,42 @@ namespace LHPC
 
 
 
+  inline std::string
+  SlhaSimplisticInterpreter::withMap( std::string blockNameAndIndices )
+  {
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "SlhaSimplisticInterpreter::withMap( \"" << blockNameAndIndices
+    << "\" ) called. keyedResults.size() = " << keyedResults.size();
+    std::cout << std::endl;/**/
+
+    mapIterator = keyedResults.find( blockNameAndIndices );
+    if( keyedResults.end() == mapIterator )
+    {
+      // debugging:
+      /**/std::cout << std::endl << "debugging:"
+      << std::endl
+      << "did not find \"" << blockNameAndIndices
+      << "\" in keyedResults, adding it now.";
+      std::cout << std::endl;/**/
+
+      mapIterator = keyedResults.insert( keyedResults.begin(),
+                                         std::pair< std::string, std::string >(
+                                                           blockNameAndIndices,
+                                            (*this)( blockNameAndIndices ) ) );
+    }
+
+    // debugging:
+    /**/std::cout << std::endl << "debugging:"
+    << std::endl
+    << "SlhaSimplisticInterpreter::withMap( \"" << blockNameAndIndices
+    << "\" ) about to return \"" << mapIterator->second
+    << "\". keyedResults.size() = " << keyedResults.size();
+    std::cout << std::endl;/**/
+
+    return mapIterator->second;
+  }
 
   inline double
   SlhaSimplisticInterpreter::getDouble( std::string blockNameAndIndices )
@@ -70,6 +111,7 @@ namespace LHPC
   SlhaSimplisticInterpreter::readFile( std::string const& slhaFileName )
   // this opens the file with name given by slhaFileName with slhaParser.
   {
+    keyedResults.clear();
     return slhaParser.readFile( slhaFileName );
   }
 

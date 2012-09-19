@@ -27,7 +27,7 @@ namespace BOL
   public:
     WaitingOnSubprocessExecutor(
                          std::string const& executableStringIncludingArguments,
-                                 bool const& isVerbose,
+                                 bool const isVerbose,
                                  int const patienceTicks = 10000 );
     ~WaitingOnSubprocessExecutor();
 
@@ -52,7 +52,7 @@ namespace BOL
     int processId;
     // this is for checking whether the process is the parent or the forked
     // child subprocess.
-    bool const& isVerbose;
+    bool const isVerbose;
     // this is to allow the suppression of the generated reports.
     VectorlikeArray< std::string > executableNameAndArguments;
     char const** argumentListAsArray;

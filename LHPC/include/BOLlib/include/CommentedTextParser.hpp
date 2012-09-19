@@ -28,10 +28,10 @@ namespace BOL
   {
   public:
     CommentedTextParser( std::string const& commentMarker,
-                         bool const& isVerbose );
+                         bool const isVerbose );
     CommentedTextParser(
                       VectorlikeArray< std::string > const& commentMarkerSet,
-                         bool const& isVerbose );
+                         bool const isVerbose );
     virtual
     ~CommentedTextParser();
 
@@ -78,7 +78,7 @@ namespace BOL
   protected:
     static std::string const trimmingChars;
 
-    bool const& isVerbose;
+    bool const isVerbose;
     VectorlikeArray< std::string > commentMarkerSet;
     VectorlikeArray< std::pair< std::string, std::string > > parsedText;
     std::pair< std::string, std::string > parsedLine;

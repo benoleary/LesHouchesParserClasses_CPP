@@ -51,6 +51,7 @@ namespace LHPC
     SLHA::BlockClass::BaseStringBlock const&
     blockAsStrings( (*slhaParser.getBlockAsStrings( blockName ))[ 0 ] );
     BOL::VectorlikeArray< std::string > blockLine;
+
     for( int whichLine( blockAsStrings.getNumberOfBodyLines() );
          0 < whichLine;
          --whichLine )
@@ -81,6 +82,10 @@ namespace LHPC
              blockLine.getSize() > whichReturnWord;
              ++whichReturnWord )
         {
+          if( 0 < whichReturnWord )
+          {
+            returnString.append( "   " );
+          }
           returnString.append( blockLine[ whichReturnWord ] );
         }
         break;

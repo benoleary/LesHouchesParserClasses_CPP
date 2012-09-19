@@ -17,7 +17,7 @@ namespace BOL
   std::string const CommentedTextParser::trimmingChars( " \t\r" );
 
   CommentedTextParser::CommentedTextParser( std::string const& commentMarker,
-                                            bool const& isVerbose ) :
+                                            bool const isVerbose ) :
       isVerbose( isVerbose ),
       commentMarkerSet( 1 ),
       parsedText(),
@@ -33,7 +33,7 @@ namespace BOL
 
   CommentedTextParser::CommentedTextParser(
                         VectorlikeArray< std::string > const& commentMarkerSet,
-                                            bool const& isVerbose ) :
+                                            bool const isVerbose ) :
       isVerbose( isVerbose ),
       commentMarkerSet( commentMarkerSet ),
       parsedText(),

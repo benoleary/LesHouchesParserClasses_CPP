@@ -281,6 +281,32 @@ namespace BOL
     }
   }
 
+  std::vector< int >
+  StringParser::stringToIntVector( std::string stringToInterpret )
+  {
+    substituteCharacterWith( stringToInterpret,
+                             ',',
+                             ' ' );
+    substituteCharacterWith( stringToInterpret,
+                             ';',
+                             ' ' );
+    std::vector< int > returnVector;
+    std::string indicesString( trimFromFrontAndBack( stringToInterpret,
+                                                     whitespaceChars ) );
+    if( !(indicesString.empty()) )
+    {
+      std::stringstream&
+      streamToParse( getStringParsingStream( indicesString ) );
+      double parsedIntAsDouble;
+      while( streamToParse.good() )
+      {
+        streamToParse >> parsedIntAsDouble;
+        returnVector.push_back( (int)parsedIntAsDouble );
+      }
+    }
+    return returnVector;
+  }
+
   std::string
   StringParser::substringToFirst( std::string const& stringToParse,
                    VectorlikeArray< std::string > const& delimitersOfSubstring,

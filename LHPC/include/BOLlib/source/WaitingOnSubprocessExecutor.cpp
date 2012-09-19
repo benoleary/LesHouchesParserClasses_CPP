@@ -18,7 +18,7 @@ namespace BOL
 
   WaitingOnSubprocessExecutor::WaitingOnSubprocessExecutor(
                          std::string const& executableStringIncludingArguments,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                              int const patienceMilliseconds ) :
       processId( 0 ),
       isVerbose( isVerbose ),

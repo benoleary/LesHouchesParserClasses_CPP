@@ -227,6 +227,16 @@ main( int argumentCount,
     << "\"" << blockNameAndIndices << "\" => \""
     << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
     std::cout << std::endl;
+    blockNameAndIndices.assign( "ALPHA" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
+    blockNameAndIndices.assign( "GAUGE" );
+    std::cout
+    << "\"" << blockNameAndIndices << "\" => \""
+    << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
+    std::cout << std::endl;
     if( slhaSimplisticInterpreter.readFile( secondFileName ) )
     {
       std::cout

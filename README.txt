@@ -238,6 +238,16 @@
 
 
 CHANGELOG:
+ * 19th September 2012: version 0.6.4
+ - changed verbosity bool references to just bools, having decided that the
+   ability to switch off verbosity mid-execution isn't worthwhile.
+ - BOLlib updated to 0.2.0 (fixing AsciiXmlParser, fixed
+   StringParser::stringToIntVector, enhancing ArgumentParser).
+ - added withMap( std::string blockNameAndIndices ) function to
+   SlhaSimplisticInterpreter, which performs the same job as operator(), but
+   checking to see if blockNameAndIndices had already been searched for,
+   storing results in a std::map< std::string, std::string >.
+ 
  * 14th September 2012: version 0.6.3
  - updated SlhaParserExample to demonstrate that SlhaSimplisticInterpreter can
    take strings of indices in floating-point format and also indices can be

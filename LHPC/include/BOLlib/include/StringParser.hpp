@@ -424,29 +424,6 @@ namespace BOL
     return returnValue;
   }
 
-  inline std::vector< int >
-  StringParser::stringToIntVector( std::string stringToInterpret )
-  {
-    substituteCharacterWith( stringToInterpret,
-                             ',',
-                             ' ' );
-    substituteCharacterWith( stringToInterpret,
-                             ';',
-                             ' ' );
-    std::vector< int > returnVector;
-    std::stringstream&
-    streamToParse( getStringParsingStream( trimFromFrontAndBack(
-                                                             stringToInterpret,
-                                                         whitespaceChars ) ) );
-    double parsedIntAsDouble;
-    while( streamToParse.good() )
-    {
-      streamToParse >> parsedIntAsDouble;
-      returnVector.push_back( (int)parsedIntAsDouble );
-    }
-    return returnVector;
-  }
-
   inline bool
   StringParser::charIsIn( char const queryChar,
                           std::string const& charSet )

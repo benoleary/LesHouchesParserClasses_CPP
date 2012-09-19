@@ -15,6 +15,9 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include "AsciiXmlParser.hpp"
+#include "StringParser.hpp"
 
 namespace BOL
 {
@@ -23,24 +26,29 @@ namespace BOL
   {
   public:
     ArgumentParser( int argumentCount,
-                    char** argumentCharArrays );
+                    char** argumentCharArrays,
+                    std::string const inputTag = "",
+                    std::string const fallbackInputFilename = "" );
     ~ArgumentParser();
 
     std::string
-    fromLiteral( std::string const& argumentName ) const;
+    fromLiteral( std::string const& argumentName,
+                 std::string const defaultReturnString = "" ) const;
     // this looks for argumentName as a substring (from the starting char) of
     // any of the elements of argumentStrings, & returns the rest of the 1st
-    // matching string (or an empty string if no match was found).
+    // matching string (or defaultReturnString if no match was found).
     std::string
-    fromTag( std::string const& argumentName ) const;
-    // this looks for "--" + argumentName + "=" as a substring (from the
-    // starting char) of any of the elements of argumentStrings, & returns the
-    // rest of the 1st matching string (or an empty string if no match was
-    // found).
+    fromTag( std::string const& tagString,
+             std::string const defaultReturnString = "" );
+    // this calls fromLiteral( "--" + argumentName + "=" ), and if it gets an
+    // empty string, it looks for an element with argumentName as an XML tag
+    // from the input file (if the input file was readable). if there is still
+    // no string to return, it returns defaultReturnString.
 
 
   protected:
     std::vector< std::string > argumentStrings;
+    AsciiXmlParser inputXmlParser;
   };
 
 
@@ -48,12 +56,13 @@ namespace BOL
 
 
   inline std::string
-  ArgumentParser::fromLiteral( std::string const& argumentName ) const
+  ArgumentParser::fromLiteral( std::string const& argumentName,
+                               std::string const defaultReturnString ) const
   // this looks for argumentName as a substring (from the starting char) of
   // any of the elements of argumentStrings, & returns the rest of the 1st
-  // matching string (or an empty string if no match was found).
+  // matching string (or defaultReturnValue if no match was found).
   {
-    std::string returnString( "" );
+    std::string returnString( defaultReturnString );
     for( std::vector< std::string >::const_iterator
          whichArgument( argumentStrings.begin() );
          argumentStrings.end() > whichArgument;
@@ -73,16 +82,29 @@ namespace BOL
   }
 
   inline std::string
-  ArgumentParser::fromTag( std::string const& argumentName ) const
-  // this looks for "--" + argumentName + "=" as a substring (from the
-  // starting char) of any of the elements of argumentStrings, & returns the
-  // rest of the 1st matching string (or an empty string if no match was
-  // found).
+  ArgumentParser::fromTag( std::string const& tagString,
+                           std::string const defaultReturnString )
+  // this calls fromLiteral( "--" + argumentName + "=" ), and if it gets an
+  // empty string, it looks for an element with argumentName as an XML tag
+  // from the input file (if the input file was readable). if there is still
+  // no string to return, it returns defaultReturnString.
   {
-    std::string tagString( "--" );
-    tagString.append( argumentName );
-    tagString.append( "=" );
-    return fromLiteral( tagString );
+    std::string argumentString( "--" );
+    argumentString.append( tagString );
+    argumentString.append( "=" );
+    std::string returnString( fromLiteral( argumentString ) );
+    if( returnString.empty() )
+    {
+      inputXmlParser.returnToBeginningOfText();
+      returnString.assign( StringParser::trimFromFrontAndBack(
+                                   inputXmlParser.findNextElement( tagString ),
+                                   StringParser::whitespaceAndNewlineChars ) );
+    }
+    if( returnString.empty() )
+    {
+      returnString.assign( defaultReturnString );
+    }
+    return returnString;
   }
 
 } /* namespace BOL */

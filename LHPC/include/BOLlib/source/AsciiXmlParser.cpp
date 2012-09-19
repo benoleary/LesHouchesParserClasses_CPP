@@ -17,7 +17,7 @@ namespace BOL
   std::string const AsciiXmlParser::allowedXmlWhitespaceChars( " \t\r\n" );
 
   AsciiXmlParser::AsciiXmlParser( std::string const& defaultTag,
-                                  bool const& isVerbose ) :
+                                  bool const isVerbose ) :
       isVerbose( isVerbose ),
       fileParsingStream(),
       stringParsingStream(),

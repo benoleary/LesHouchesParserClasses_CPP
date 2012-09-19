@@ -35,6 +35,14 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 19th September 2012: version 0.2.0
+ - fixed bug in AsciiXmlParser where searching for tags subsequent to the 1st
+   would fail unless they were the same length as the 1st tag.
+ - fixed StringParser::stringToIntVector( std::string stringToInterpret ) to
+   return an empty std::vector< int > if stringToInterpret has no indices.
+ - enhanced functionality of ArgumentParser class, so that it now searches for
+   tags in command-line arguments and then in an input XML file and then
+   resorts to defaults.
  * 10th September 2012: version 0.1.0
  - first release!
 

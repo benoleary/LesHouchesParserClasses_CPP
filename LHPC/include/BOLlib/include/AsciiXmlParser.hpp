@@ -32,7 +32,7 @@ namespace BOL
                        std::string > StringPair;
     typedef VectorlikeArray< StringPair > StringPairArray;
     AsciiXmlParser( std::string const& defaultTag,
-                    bool const& isVerbose );
+                    bool const isVerbose );
     ~AsciiXmlParser();
 
     std::string const&
@@ -94,7 +94,7 @@ namespace BOL
   protected:
     static std::string const allowedXmlWhitespaceChars;
 
-    bool const& isVerbose;
+    bool const isVerbose;
     std::fstream fileParsingStream;
     std::stringstream stringParsingStream;
     std::istream* textStream;
@@ -248,6 +248,7 @@ namespace BOL
    */
   {
     soughtTag.assign( tagString );
+    soughtTagLength = soughtTag.size();
     findNextElement();
     soughtTag.assign( defaultTag );
     return fullElementContentAsFound;

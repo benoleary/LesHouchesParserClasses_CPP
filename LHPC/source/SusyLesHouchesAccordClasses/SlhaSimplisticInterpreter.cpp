@@ -42,12 +42,12 @@ namespace LHPC
                                                 ' ' );
     std::string indicesString( "" );
     std::string blockName( BOL::StringParser::substringToFirst(
-                                                           blockNameAndIndices,
+                         BOL::StringParser::trimFromFront( blockNameAndIndices,
+                                BOL::StringParser::whitespaceAndNewlineChars ),
                                                                 " ",
                                                             &indicesString ) );
     std::vector< int >
     indicesVector( BOL::StringParser::stringToIntVector( indicesString ) );
-
     SLHA::BlockClass::BaseStringBlock const&
     blockAsStrings( (*slhaParser.getBlockAsStrings( blockName ))[ 0 ] );
     BOL::VectorlikeArray< std::string > blockLine;
@@ -82,11 +82,11 @@ namespace LHPC
              blockLine.getSize() > whichReturnWord;
              ++whichReturnWord )
         {
-          if( 0 < whichReturnWord )
+          returnString.append( blockLine[ whichReturnWord ] );
+          if( blockLine.getLastIndex() > whichReturnWord )
           {
             returnString.append( "   " );
           }
-          returnString.append( blockLine[ whichReturnWord ] );
         }
         break;
       }

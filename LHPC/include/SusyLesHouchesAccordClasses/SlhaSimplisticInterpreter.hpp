@@ -57,37 +57,14 @@ namespace LHPC
   inline std::string
   SlhaSimplisticInterpreter::withMap( std::string blockNameAndIndices )
   {
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "SlhaSimplisticInterpreter::withMap( \"" << blockNameAndIndices
-    << "\" ) called. keyedResults.size() = " << keyedResults.size();
-    std::cout << std::endl;/**/
-
     mapIterator = keyedResults.find( blockNameAndIndices );
     if( keyedResults.end() == mapIterator )
     {
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "did not find \"" << blockNameAndIndices
-      << "\" in keyedResults, adding it now.";
-      std::cout << std::endl;/**/
-
       mapIterator = keyedResults.insert( keyedResults.begin(),
                                          std::pair< std::string, std::string >(
                                                            blockNameAndIndices,
                                             (*this)( blockNameAndIndices ) ) );
     }
-
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "SlhaSimplisticInterpreter::withMap( \"" << blockNameAndIndices
-    << "\" ) about to return \"" << mapIterator->second
-    << "\". keyedResults.size() = " << keyedResults.size();
-    std::cout << std::endl;/**/
-
     return mapIterator->second;
   }
 

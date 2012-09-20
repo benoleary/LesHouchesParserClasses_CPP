@@ -238,6 +238,14 @@
 
 
 CHANGELOG:
+ * 20th September 2012: version 0.6.6
+ - removed debugging statements from
+   SlhaSimplisticInterpreter::withMap( std::string blockNameAndIndices ).
+ - fixed
+   SlhaSimplisticInterpreter::operator()( std::string blockNameAndIndices ) to
+   correctly only insert whitespace between words of the return string, not
+   before the 1st word of the return string as well.
+
  * 19th September 2012: version 0.6.5
  - BOLlib updated to 0.2.1 (fixing new bug introduced into AsciiXmlParser
    by previous bugfix).

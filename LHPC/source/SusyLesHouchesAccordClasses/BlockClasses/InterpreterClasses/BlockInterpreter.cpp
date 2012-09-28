@@ -32,7 +32,7 @@ namespace LHPC
                                                                  1,
                                                                  1,
                                                                  "" );
-    bool const BlockInterpreter::defaultVerbosity( true );
+    bool const BlockInterpreter::defaultVerbosity( false );
 
 
     BlockInterpreter::BlockInterpreter() :

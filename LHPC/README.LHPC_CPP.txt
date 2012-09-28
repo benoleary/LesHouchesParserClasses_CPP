@@ -238,6 +238,10 @@
 
 
 CHANGELOG:
+ * 28th September 2012: version 0.6.7
+ - finished switching verbosity bool references to just bools (0.6.4 did not
+   change all of them...)
+ 
  * 20th September 2012: version 0.6.6
  - removed debugging statements from
    SlhaSimplisticInterpreter::withMap( std::string blockNameAndIndices ).

@@ -35,7 +35,7 @@ namespace LHPC
 
     MapAndVectorAndBools( PointerMap& codeMap,
                           PointerVector& pointerGroup,
-                          bool const& boolReference );
+                          bool const boolReference );
     virtual
     ~MapAndVectorAndBools();
 
@@ -46,7 +46,7 @@ namespace LHPC
     getMap();
     PointerVector&
     getVector();
-    bool const&
+    bool
     getBool();
     std::vector< bool > const*
     getFlags();
@@ -55,7 +55,7 @@ namespace LHPC
   protected:
     PointerMap& codeMap;
     PointerVector& pointerGroup;
-    bool const& boolReference;
+    bool const boolReference;
     std::vector< bool > const* boolVector;
   };
 
@@ -66,7 +66,7 @@ namespace LHPC
   MapAndVectorAndBools< PointerClass >::MapAndVectorAndBools(
                                                            PointerMap& codeMap,
                                                    PointerVector& pointerGroup,
-                                                  bool const& boolReference ) :
+                                                   bool const boolReference ) :
       codeMap( codeMap ),
       pointerGroup( pointerGroup ),
       boolReference( boolReference ),
@@ -109,7 +109,7 @@ namespace LHPC
   }
 
   template< class PointerClass >
-  inline bool const&
+  inline bool
   MapAndVectorAndBools< PointerClass >::getBool()
   {
     return boolReference;

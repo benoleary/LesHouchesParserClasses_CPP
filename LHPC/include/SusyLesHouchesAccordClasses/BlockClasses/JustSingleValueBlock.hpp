@@ -30,7 +30,7 @@ namespace LHPC
     public:
       JustSingleValueBlock( std::string const& blockName,
                             ValueClass const& defaultUnsetValue,
-                            bool const& isVerbose );
+                            bool const isVerbose = false );
       virtual
       ~JustSingleValueBlock();
 
@@ -54,7 +54,7 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::JustSingleValueBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                      bool const& isVerbose ) :
+                                                       bool const isVerbose ) :
         SlhaBlock< ValueClass,
                    InterpreterClass::JustSingleValue< ValueClass > >(
                                                                      blockName,

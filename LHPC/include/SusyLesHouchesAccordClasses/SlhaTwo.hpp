@@ -26,7 +26,7 @@ namespace LHPC
   {
   public:
     SlhaTwo( SlhaParser& fileParser,
-             bool const& isVerbose );
+             bool const isVerbose );
     virtual
     ~SlhaTwo();
 

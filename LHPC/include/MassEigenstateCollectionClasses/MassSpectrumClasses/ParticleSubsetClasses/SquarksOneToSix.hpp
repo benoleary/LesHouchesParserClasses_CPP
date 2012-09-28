@@ -23,7 +23,7 @@ namespace LHPC
     class SquarksOneToSix : public virtual MassSpectrum
     {
     public:
-      SquarksOneToSix( bool const& isVerbose,
+      SquarksOneToSix( bool const isVerbose = false,
                        bool const flavorConserving = false,
                        std::vector< bool >* const defaultFlags = NULL );
       virtual

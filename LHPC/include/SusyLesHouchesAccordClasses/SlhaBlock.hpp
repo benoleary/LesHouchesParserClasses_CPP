@@ -56,7 +56,7 @@ namespace LHPC
     public:
       SlhaBlock( std::string const& blockName,
                  ValueClass const& defaultUnsetValue,
-                 bool const& isVerbose );
+                 bool const isVerbose );
       virtual
       ~SlhaBlock();
 
@@ -135,7 +135,7 @@ namespace LHPC
 
 
     protected:
-      bool const& isVerbose;
+      bool const isVerbose;
       ValueClass const defaultUnsetValue;
       BOL::VectorlikeArray< BlockParser > dataBlocks;
       int lowestScaleIndex;
@@ -159,7 +159,7 @@ namespace LHPC
     SlhaBlock< ValueClass, BlockParser >::SlhaBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                     bool const& isVerbose ) :
+                                                     bool const isVerbose ) :
         BaseSlhaBlock( blockName ),
         isVerbose( isVerbose ),
         defaultUnsetValue( defaultUnsetValue ),

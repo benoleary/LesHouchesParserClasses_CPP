@@ -18,7 +18,7 @@ namespace LHPC
   namespace MassSpectrumClass
   {
     MinimalSupersymmetricStandardModel::MinimalSupersymmetricStandardModel(
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                bool const neutrinosAreMajorana,
                                                    bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :

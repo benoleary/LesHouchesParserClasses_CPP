@@ -23,7 +23,7 @@ namespace LHPC
     class CharginosOneToTwo : public virtual MassSpectrum
     {
     public:
-      CharginosOneToTwo( bool const& isVerbose,
+      CharginosOneToTwo( bool const isVerbose = false,
                          std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~CharginosOneToTwo();

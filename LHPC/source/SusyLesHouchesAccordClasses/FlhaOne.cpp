@@ -16,7 +16,7 @@
 namespace LHPC
 {
   FlhaOne::FlhaOne( SlhaParser& fileParser,
-                    bool const& isVerbose ) :
+                    bool const isVerbose ) :
       FCINFO( "FCINFO",
               isVerbose ),
       MODSEL( "MODSEL",

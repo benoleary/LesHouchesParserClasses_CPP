@@ -23,7 +23,7 @@ namespace LHPC
     class MssmExtraEwsbSpinZeroBosonSet : public virtual MassSpectrum
     {
     public:
-      MssmExtraEwsbSpinZeroBosonSet( bool const& isVerbose,
+      MssmExtraEwsbSpinZeroBosonSet( bool const isVerbose = false,
                               std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~MssmExtraEwsbSpinZeroBosonSet();

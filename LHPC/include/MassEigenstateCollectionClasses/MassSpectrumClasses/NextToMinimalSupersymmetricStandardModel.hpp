@@ -29,7 +29,7 @@ namespace LHPC
                                                     public NeutralinosOneToFive
     {
     public:
-      NextToMinimalSupersymmetricStandardModel( bool const& isVerbose,
+      NextToMinimalSupersymmetricStandardModel( bool const isVerbose = false,
                                        bool const neutrinosAreMajorana = false,
                               std::vector< bool >* const defaultFlags = NULL );
       virtual

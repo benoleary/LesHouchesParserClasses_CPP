@@ -16,7 +16,7 @@
 namespace LHPC
 {
   SlhaTwo::SlhaTwo( SlhaParser& fileParser,
-                    bool const& isVerbose ) :
+                    bool const isVerbose ) :
       SlhaOne( fileParser,
                isVerbose ),
       QEXTPAR( "QEXTPAR",

@@ -25,7 +25,7 @@ namespace LHPC
                                  public NeutralinosOneToFour
     {
     public:
-      NeutralinosOneToFive( bool const& isVerbose,
+      NeutralinosOneToFive( bool const isVerbose = false,
                             std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~NeutralinosOneToFive();

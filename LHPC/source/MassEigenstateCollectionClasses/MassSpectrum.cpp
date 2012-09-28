@@ -29,7 +29,7 @@ namespace LHPC
   MassSpectrum::defaultIsLightLeptonBoolVector(
                   BOL::StdVectorFiller< bool >( false )( false ).end( true ) );
 
-  MassSpectrum::MassSpectrum( bool const& isVerbose,
+  MassSpectrum::MassSpectrum( bool const isVerbose,
                               std::vector< bool > const* defaultFlags ) :
       allMassEigenstates(),
       unknownMassEigenstates(),

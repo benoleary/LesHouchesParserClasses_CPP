@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    GluinoOneGeneration::GluinoOneGeneration( bool const& isVerbose,
+    GluinoOneGeneration::GluinoOneGeneration( bool const isVerbose,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),

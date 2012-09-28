@@ -35,7 +35,7 @@ namespace LHPC
       isLightLepton = 2,
       sizeOfEnum = 3
     };
-    MassSpectrum( bool const& isVerbose,
+    MassSpectrum( bool const isVerbose = false,
                   std::vector< bool > const* defaultFlags = NULL );
     virtual
     ~MassSpectrum();
@@ -56,8 +56,8 @@ namespace LHPC
     ensureMassEigenstateExists( int const pdgCode );
     MassSpectrum&
     clearMassesAndDecays();
-    bool const&
-    getVerbosityReference() const;
+    bool
+    getVerbosity() const;
     virtual void
     respondToObservedSignal();
     // the default is over-ridden to call clearMassesAndDecays().
@@ -80,7 +80,7 @@ namespace LHPC
     std::vector< MassEigenstate* > allMassEigenstates;
     std::vector< MassEigenstate* > unknownMassEigenstates;
     MassEigenstateCodeToPointerMap pdgCodeMap;
-    bool const& isVerbose;
+    bool const isVerbose;
     MassEigenstateMapAndVectorAndBools mapAndVectorAndBools;
   };
 
@@ -138,8 +138,8 @@ namespace LHPC
     return *this;
   }
 
-  inline bool const&
-  MassSpectrum::getVerbosityReference() const
+  inline bool
+  MassSpectrum::getVerbosity() const
   {
     return isVerbose;
   }

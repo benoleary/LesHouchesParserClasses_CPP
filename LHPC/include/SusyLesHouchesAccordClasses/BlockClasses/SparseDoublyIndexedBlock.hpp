@@ -33,7 +33,7 @@ namespace LHPC
     public:
       SparseDoublyIndexedBlock( std::string const& blockName,
                                 ValueClass const& defaultUnsetValue,
-                                bool const& isVerbose,
+                                bool const isVerbose = false,
                                 int const firstIndexDigits = 2,
                                 int const secondIndexDigits = 2 );
       virtual
@@ -74,7 +74,7 @@ namespace LHPC
     SparseDoublyIndexedBlock< ValueClass >::SparseDoublyIndexedBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                     int const firstIndexDigits,
                                                 int const secondIndexDigits ) :
         IndexedBlockTemplate< ValueClass,

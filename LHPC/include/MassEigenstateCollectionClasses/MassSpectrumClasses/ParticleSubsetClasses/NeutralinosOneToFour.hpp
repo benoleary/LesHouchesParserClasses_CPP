@@ -23,7 +23,7 @@ namespace LHPC
     class NeutralinosOneToFour : public virtual MassSpectrum
     {
     public:
-      NeutralinosOneToFour( bool const& isVerbose,
+      NeutralinosOneToFour( bool const isVerbose = false,
                             std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~NeutralinosOneToFour();

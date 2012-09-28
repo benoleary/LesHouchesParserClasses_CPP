@@ -36,7 +36,7 @@ namespace LHPC
     public:
       TriplyIndexedMultipleEntriesBlock( std::string const& blockName,
                                          ValueClass const& defaultUnsetValue,
-                                         bool const& isVerbose,
+                                         bool const isVerbose = false,
                                          int const firstIndexDigits = 5,
                                          int const secondIndexDigits = 5,
                                          int const thirdIndexDigits = 5 );
@@ -87,7 +87,7 @@ namespace LHPC
                                           >::TriplyIndexedMultipleEntriesBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                     int const firstIndexDigits,
                                                    int const secondIndexDigits,
                                                  int const thirdIndexDigits ) :

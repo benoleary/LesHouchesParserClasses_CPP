@@ -23,7 +23,7 @@ namespace LHPC
     class GluinoOneGeneration : public virtual MassSpectrum
     {
     public:
-      GluinoOneGeneration( bool const& isVerbose,
+      GluinoOneGeneration( bool const isVerbose = false,
                            std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~GluinoOneGeneration();

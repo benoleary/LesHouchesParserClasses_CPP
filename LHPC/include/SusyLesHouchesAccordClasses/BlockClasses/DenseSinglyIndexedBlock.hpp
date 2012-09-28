@@ -32,7 +32,7 @@ namespace LHPC
     public:
       DenseSinglyIndexedBlock( std::string const& blockName,
                                ValueClass const& defaultUnsetValue,
-                               bool const& isVerbose,
+                               bool const isVerbose = false,
                                int const indexDigits = 5 );
       virtual
       ~DenseSinglyIndexedBlock();
@@ -57,7 +57,7 @@ namespace LHPC
     DenseSinglyIndexedBlock< ValueClass >::DenseSinglyIndexedBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                       int const indexDigits ) :
         IndexedBlockTemplate< ValueClass,
                           InterpreterClass::DenseSinglyIndexed< ValueClass > >(

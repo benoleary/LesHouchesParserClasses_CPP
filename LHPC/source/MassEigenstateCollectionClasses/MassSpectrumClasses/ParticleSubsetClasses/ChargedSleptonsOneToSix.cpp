@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    ChargedSleptonsOneToSix::ChargedSleptonsOneToSix( bool const& isVerbose,
+    ChargedSleptonsOneToSix::ChargedSleptonsOneToSix( bool const isVerbose,
                                                    bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,

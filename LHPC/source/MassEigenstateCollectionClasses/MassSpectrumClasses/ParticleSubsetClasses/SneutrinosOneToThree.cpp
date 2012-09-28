@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    SneutrinosOneToThree::SneutrinosOneToThree( bool const& isVerbose,
+    SneutrinosOneToThree::SneutrinosOneToThree( bool const isVerbose,
                                                 bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,

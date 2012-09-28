@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    StandardModel::StandardModel( bool const& isVerbose,
+    StandardModel::StandardModel( bool const isVerbose,
                                   bool const neutrinosAreMajorana,
                                   std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,

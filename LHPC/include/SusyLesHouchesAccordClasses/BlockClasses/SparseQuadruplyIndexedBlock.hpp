@@ -34,7 +34,7 @@ namespace LHPC
     public:
       SparseQuadruplyIndexedBlock( std::string const& blockName,
                                    ValueClass const& defaultUnsetValue,
-                                   bool const& isVerbose,
+                                   bool const isVerbose = false,
                                    int const firstIndexDigits = 9,
                                    int const secondIndexDigits = 9,
                                    int const thirdIndexDigits = 2,
@@ -92,7 +92,7 @@ namespace LHPC
     SparseQuadruplyIndexedBlock< ValueClass >::SparseQuadruplyIndexedBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                     int const firstIndexDigits,
                                                    int const secondIndexDigits,
                                                     int const thirdIndexDigits,

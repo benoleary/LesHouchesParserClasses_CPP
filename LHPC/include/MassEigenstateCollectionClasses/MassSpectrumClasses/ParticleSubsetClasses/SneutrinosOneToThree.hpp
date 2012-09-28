@@ -23,7 +23,7 @@ namespace LHPC
     class SneutrinosOneToThree : public virtual MassSpectrum
     {
     public:
-      SneutrinosOneToThree( bool const& isVerbose,
+      SneutrinosOneToThree( bool const isVerbose = false,
                             bool const flavorConserving = false,
                             std::vector< bool >* const defaultFlags = NULL );
       virtual

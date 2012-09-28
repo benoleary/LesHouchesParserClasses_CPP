@@ -25,7 +25,7 @@ namespace LHPC
                                            public MssmExtraEwsbSpinZeroBosonSet
     {
     public:
-      NmssmExtraEwsbSpinZeroBosonSet( bool const& isVerbose,
+      NmssmExtraEwsbSpinZeroBosonSet( bool const isVerbose = false,
                               std::vector< bool >* const defaultFlags = NULL );
       virtual
       ~NmssmExtraEwsbSpinZeroBosonSet();

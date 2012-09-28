@@ -25,7 +25,7 @@ namespace LHPC
     int const LhcoEvent::charactersForEventNumber( 14 );
     int const LhcoEvent::charactersForTriggerWord( 6 );
 
-    LhcoEvent::LhcoEvent( bool const& isVerbose ) :
+    LhcoEvent::LhcoEvent( bool const isVerbose ) :
         eventNumber( 0 ),
         triggerWord( 0 ),
         nextEventNumber( 0 ),

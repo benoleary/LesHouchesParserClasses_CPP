@@ -19,7 +19,7 @@ namespace LHPC
   namespace SLHA
   {
     LinesAsStringsBlock::LinesAsStringsBlock( std::string const& blockName,
-                                              bool const& isVerbose ) :
+                                              bool const isVerbose ) :
         SlhaBlock< std::string, InterpreterClass::LinesAsStrings >( blockName,
                                                                      "",
                                                                     isVerbose )

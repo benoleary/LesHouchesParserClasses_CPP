@@ -38,7 +38,7 @@ namespace LHPC
                                                public GluinoOneGeneration
     {
     public:
-      MinimalSupersymmetricStandardModel( bool const& isVerbose,
+      MinimalSupersymmetricStandardModel( bool const isVerbose = false,
                                        bool const neutrinosAreMajorana = false,
                                           bool const flavorConserving = false,
                               std::vector< bool >* const defaultFlags = NULL );

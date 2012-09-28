@@ -28,7 +28,7 @@ namespace LHPC
     public:
       IndexedBlockTemplate( std::string const& blockName,
                             ValueClass const& defaultUnsetValue,
-                            bool const& isVerbose,
+                            bool const isVerbose,
                             std::vector< int > const& indexDigitsVector );
       virtual
       ~IndexedBlockTemplate();
@@ -52,7 +52,7 @@ namespace LHPC
     IndexedBlockTemplate< ValueClass, IndexedParser >::IndexedBlockTemplate(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                 std::vector< int > const& indexDigitsVector ) :
         SlhaBlock< ValueClass, IndexedParser >( blockName,
                                                 defaultUnsetValue,

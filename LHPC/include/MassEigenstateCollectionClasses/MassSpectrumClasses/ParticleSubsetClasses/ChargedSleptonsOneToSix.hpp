@@ -23,7 +23,7 @@ namespace LHPC
     class ChargedSleptonsOneToSix : public virtual MassSpectrum
     {
     public:
-      ChargedSleptonsOneToSix( bool const& isVerbose,
+      ChargedSleptonsOneToSix( bool const isVerbose = false,
                                bool const flavorConserving = false,
                               std::vector< bool >* const defaultFlags = NULL );
       virtual

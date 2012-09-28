@@ -31,7 +31,7 @@ namespace LHPC
     {
     public:
       LinesAsStringsBlock( std::string const& blockName,
-                           bool const& isVerbose );
+                           bool const isVerbose = false );
       virtual
       ~LinesAsStringsBlock();
 

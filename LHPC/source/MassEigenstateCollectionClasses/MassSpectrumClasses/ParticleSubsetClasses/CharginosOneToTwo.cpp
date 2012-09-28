@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    CharginosOneToTwo::CharginosOneToTwo( bool const& isVerbose,
+    CharginosOneToTwo::CharginosOneToTwo( bool const isVerbose,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),

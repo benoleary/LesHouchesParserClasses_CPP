@@ -33,7 +33,7 @@ namespace LHPC
     public:
       DenseTriplyIndexedBlock( std::string const& blockName,
                                ValueClass const& defaultUnsetValue,
-                               bool const& isVerbose,
+                               bool const isVerbose = false,
                                int const firstIndexDigits = 2,
                                int const secondIndexDigits = 2,
                                int const thirdIndexDigits = 2 );
@@ -67,7 +67,7 @@ namespace LHPC
     DenseTriplyIndexedBlock< ValueClass >::DenseTriplyIndexedBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                     int const firstIndexDigits,
                                                    int const secondIndexDigits,
                                                  int const thirdIndexDigits ) :

@@ -24,7 +24,7 @@ namespace LHPC
     class StandardModel : public virtual MassSpectrum
     {
     public:
-      StandardModel( bool const& isVerbose,
+      StandardModel( bool const isVerbose = false,
                      bool const neutrinosAreMajorana = false,
                      std::vector< bool >* const defaultFlags = NULL );
       virtual

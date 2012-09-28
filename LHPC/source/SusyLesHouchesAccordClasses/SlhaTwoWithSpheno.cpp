@@ -16,7 +16,7 @@
 namespace LHPC
 {
   SlhaTwoWithSpheno::SlhaTwoWithSpheno( SlhaParser& fileParser,
-                                        bool const& isVerbose ) :
+                                        bool const isVerbose ) :
       SlhaTwo( fileParser,
                isVerbose ),
       SPHENOINFO( "SPHENOINFO",

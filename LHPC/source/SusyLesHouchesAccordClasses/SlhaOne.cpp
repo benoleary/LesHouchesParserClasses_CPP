@@ -16,7 +16,7 @@
 namespace LHPC
 {
   SlhaOne::SlhaOne( SlhaParser& fileParser,
-                    bool const& isVerbose ) :
+                    bool const isVerbose ) :
       MODSEL( "MODSEL",
               BOL::UsefulStuff::notANumber,
               isVerbose ),

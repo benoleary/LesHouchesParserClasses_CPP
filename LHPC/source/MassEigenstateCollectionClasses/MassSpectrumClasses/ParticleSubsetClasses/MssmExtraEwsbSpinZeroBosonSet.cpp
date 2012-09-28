@@ -18,7 +18,7 @@ namespace LHPC
   namespace MassSpectrumClass
   {
     MssmExtraEwsbSpinZeroBosonSet::MssmExtraEwsbSpinZeroBosonSet(
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),

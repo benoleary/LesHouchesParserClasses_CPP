@@ -209,8 +209,8 @@ namespace LHPC
     findPointerWithCode( int const pdgCode );
     MassEigenstate const*
     findPointerWithCode( int const pdgCode ) const;
-    bool const&
-    getVerbosityReference() const;
+    bool
+    getVerbosity() const;
 
 
   protected:
@@ -235,7 +235,7 @@ namespace LHPC
     std::vector< MassEigenstatesPairedWithBr* > decaySetAsVector;
     std::string asciiName;
     std::string latexName;
-    bool const& isVerbose;
+    bool const isVerbose;
     std::vector< bool > const* flagBools;
     MassEigenstateVector& setOfPointersOfMassEigenstateGroup;
 
@@ -797,8 +797,8 @@ namespace LHPC
                                 pdgCodeMap );
   }
 
-  inline bool const&
-  MassEigenstate::getVerbosityReference() const
+  inline bool
+  MassEigenstate::getVerbosity() const
   {
     return isVerbose;
   }

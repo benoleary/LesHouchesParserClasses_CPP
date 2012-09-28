@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    SquarksOneToSix::SquarksOneToSix( bool const& isVerbose,
+    SquarksOneToSix::SquarksOneToSix( bool const isVerbose,
                                       bool const flavorConserving,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,

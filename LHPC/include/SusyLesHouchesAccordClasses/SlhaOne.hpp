@@ -27,7 +27,7 @@ namespace LHPC
   {
   public:
     SlhaOne( SlhaParser& fileParser,
-             bool const& isVerbose );
+             bool const isVerbose );
     virtual
     ~SlhaOne();
 
@@ -57,7 +57,7 @@ namespace LHPC
 
   protected:
     SlhaParser& fileParser;
-    bool const& isVerbose;
+    bool const isVerbose;
   };
 
 }

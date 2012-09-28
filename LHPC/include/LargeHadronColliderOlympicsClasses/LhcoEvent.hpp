@@ -35,7 +35,7 @@ namespace LHPC
         jetObject = 4,
         missingEnergyObject = 6
       };
-      LhcoEvent( bool const& isVerbose );
+      LhcoEvent( bool const isVerbose );
       LhcoEvent( LhcoEvent const& copySource );
       ~LhcoEvent();
 
@@ -100,7 +100,7 @@ namespace LHPC
       ObjectLine const* missingEnergyLinePointer;
       std::vector< std::list< ObjectLine const* > > objectLists;
 
-      bool const& isVerbose;
+      bool const isVerbose;
       std::string eventAsString;
       ObjectLine const* interpretingObjectLine;
       // this is for parsing the data line:

@@ -17,7 +17,7 @@ namespace LHPC
 {
   namespace MassSpectrumClass
   {
-    NeutralinosOneToFour::NeutralinosOneToFour( bool const& isVerbose,
+    NeutralinosOneToFour::NeutralinosOneToFour( bool const isVerbose,
                                     std::vector< bool >* const defaultFlags ) :
         MassSpectrum( isVerbose,
                       defaultFlags ),

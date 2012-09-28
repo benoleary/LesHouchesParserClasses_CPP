@@ -33,7 +33,7 @@ namespace LHPC
     public:
       SparseSinglyIndexedBlock( std::string const& blockName,
                                 ValueClass const& defaultUnsetValue,
-                                bool const& isVerbose,
+                                bool const isVerbose = false,
                                 int const indexDigits = 5 );
       virtual
       ~SparseSinglyIndexedBlock();
@@ -70,7 +70,7 @@ namespace LHPC
     SparseSinglyIndexedBlock< ValueClass >::SparseSinglyIndexedBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                       int const indexDigits ) :
         IndexedBlockTemplate< ValueClass,
                          InterpreterClass::SparseSinglyIndexed< ValueClass > >(

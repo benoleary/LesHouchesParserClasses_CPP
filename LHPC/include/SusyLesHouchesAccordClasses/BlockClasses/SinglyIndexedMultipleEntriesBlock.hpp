@@ -36,7 +36,7 @@ namespace LHPC
     public:
       SinglyIndexedMultipleEntriesBlock( std::string const& blockName,
                                          ValueClass const& defaultUnsetValue,
-                                         bool const& isVerbose,
+                                         bool const isVerbose = false,
                                          int const indexDigits = 5 );
       virtual
       ~SinglyIndexedMultipleEntriesBlock();
@@ -83,7 +83,7 @@ namespace LHPC
                                           >::SinglyIndexedMultipleEntriesBlock(
                                                   std::string const& blockName,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                       int const indexDigits ) :
         IndexedBlockTemplate< ValueClass,
                        InterpreterClass::MultipleSinglyIndexed< ValueClass > >(

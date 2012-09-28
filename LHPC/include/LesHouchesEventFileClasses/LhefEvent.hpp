@@ -27,7 +27,7 @@ namespace LHPC
     class LhefEvent
     {
     public:
-      LhefEvent( bool const& isVerbose );
+      LhefEvent( bool const isVerbose );
       LhefEvent( LhefEvent const& copySource );
       ~LhefEvent();
 
@@ -113,7 +113,7 @@ namespace LHPC
       int motherLineNumber;
       ParticleLine* primaryMotherLinePointer;
       ParticleLine* secondaryMotherLinePointer;
-      bool const& isVerbose;
+      bool const isVerbose;
       std::string eventAsString;
 
       void

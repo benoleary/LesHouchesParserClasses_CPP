@@ -37,12 +37,12 @@ namespace LHPC
         virtual void
         setDefaultUnsetValue( ValueType const& defaultUnsetValue );
         virtual void
-        setVerbosity( bool const& isVerbose );
+        setVerbosity( bool const isVerbose );
 
 
       protected:
         ValueType defaultUnsetValue;
-        bool const* isVerbose;
+        bool isVerbose;
         ValueType valueFromString;
         std::string currentWord;
         std::string lineRemainderA;
@@ -73,7 +73,7 @@ namespace LHPC
       InterpreterTemplate< ValueType >::InterpreterTemplate() :
           BlockInterpreter(),
           defaultUnsetValue(),
-          isVerbose( &(BlockInterpreter::defaultVerbosity) ),
+          isVerbose( BlockInterpreter::defaultVerbosity ),
           valueFromString(),
           currentWord( "" ),
           lineRemainderA( "" ),
@@ -101,9 +101,9 @@ namespace LHPC
 
       template< class ValueType >
       inline void
-      InterpreterTemplate< ValueType >::setVerbosity( bool const& isVerbose )
+      InterpreterTemplate< ValueType >::setVerbosity( bool const isVerbose )
       {
-        this->isVerbose = &isVerbose;
+        this->isVerbose = isVerbose;
       }
 
       template< class ValueType >

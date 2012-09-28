@@ -35,7 +35,7 @@ namespace LHPC
       SparseManyIndexedBlock( std::string const& blockName,
                               int const numberOfIndices,
                               ValueClass const& defaultUnsetValue,
-                              bool const& isVerbose,
+                              bool const isVerbose = false,
                               int const indexDigits = 9 );
       virtual
       ~SparseManyIndexedBlock();
@@ -71,7 +71,7 @@ namespace LHPC
                                                   std::string const& blockName,
                                                      int const numberOfIndices,
                                            ValueClass const& defaultUnsetValue,
-                                                         bool const& isVerbose,
+                                                          bool const isVerbose,
                                                       int const indexDigits ) :
         IndexedBlockTemplate< ValueClass,
                            InterpreterClass::SparseManyIndexed< ValueClass > >(

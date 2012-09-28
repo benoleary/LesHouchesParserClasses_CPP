@@ -20,7 +20,7 @@ namespace LHPC
     std::string const LhefEvent::trimmingChars( " \t\r\n" );
     bool const LhefEvent::trueForVerbosity( true );
 
-    LhefEvent::LhefEvent( bool const& isVerbose ) :
+    LhefEvent::LhefEvent( bool const isVerbose ) :
         numberOfParticles( (int)BOL::UsefulStuff::notANumber ),
         eventId( (int)BOL::UsefulStuff::notANumber ),
         eventWeight( BOL::UsefulStuff::notANumber ),

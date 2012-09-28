@@ -29,7 +29,7 @@ namespace LHPC
   {
   public:
     FlhaOne( SlhaParser& fileParser,
-             bool const isVerbose );
+             bool const isVerbose = false );
     virtual
     ~FlhaOne();
 

@@ -238,6 +238,9 @@
 
 
 CHANGELOG:
+ * 28th September 2012: version 0.6.8
+ - gave default values of false to verbosities of SLHA block collections
+   
  * 28th September 2012: version 0.6.7
  - finished switching verbosity bool references to just bools (0.6.4 did not
    change all of them...)

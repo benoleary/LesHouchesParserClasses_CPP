@@ -35,9 +35,11 @@
 
  There are 3 main parts to LHPC: the LHCO parser and associated structures; the
  LHEF parser and associated structures; and the SLHA parser and associated
- structures. There is also code to automatically plot SLHA spectra using the
- SLHA parser, though this requires the use of external programs: gnuplot,
- latex, dvips, and ps2eps (or ps2epsi).
+ structures.
+ 
+ There is also code to automatically plot SLHA spectra using the SLHA parser,
+ though this requires the use of external programs: gnuplot, latex, dvips, and
+ ps2eps (or ps2epsi).
 
  Running make on the makefile included will compile the library
  (LHPC/lib/libLHPC_CPP.a) and 4 executables (LHPC/bin/LhpcSpectrumPlotter.exe,
@@ -238,6 +240,10 @@
 
 
 CHANGELOG:
+ * 4th October 2012: version 0.6.9
+ - BOLlib updated to 0.2.2 (reducing thread unsafety)
+ - READMEs updated.
+
  * 28th September 2012: version 0.6.8
  - gave default values of false to verbosities of SLHA block collections
    

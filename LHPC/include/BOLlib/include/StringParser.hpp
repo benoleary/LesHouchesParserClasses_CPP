@@ -244,14 +244,9 @@ namespace BOL
     // arguments.
 
 
-  private:
+  protected:
     static char const lowercaseMinusUppercase;
-    static std::stringstream stringParsingStream;
-    static std::vector< char > charBuffer;
-    static VectorlikeArray< std::string > stringVector;
 
-    static std::stringstream&
-    getStringParsingStream( std::string const& stringToParse );
     static char
     charForSingleDigit( int const singleDigitAsInt );
     static int
@@ -331,10 +326,9 @@ namespace BOL
   inline void
   StringParser::transformToLowercase( std::string& stringToTransform )
   {
-    unsigned int stringSize( stringToTransform.size() );
-    for( unsigned int charCounter( 0 );
-         stringSize > charCounter;
-         ++charCounter )
+    for( int charCounter( stringToTransform.size() - 1 );
+         0 <= charCounter;
+         --charCounter )
       // go through each character in the string:
     {
       if( ( 'A' <= stringToTransform[ charCounter ] )
@@ -350,10 +344,9 @@ namespace BOL
   inline void
   StringParser::transformToUppercase( std::string& stringToTransform )
   {
-    unsigned int stringSize( stringToTransform.size() );
-    for( unsigned int charCounter( 0 );
-         stringSize > charCounter;
-         ++charCounter )
+    for( int charCounter( stringToTransform.size() - 1 );
+         0 <= charCounter;
+        --charCounter )
       // go through each character in the string:
     {
       if( ( 'a' <= stringToTransform[ charCounter ] )
@@ -371,10 +364,9 @@ namespace BOL
                                          char const charToBeReplaced,
                                          char const charToBePutIn )
   {
-    unsigned int stringSize( stringToTransform.size() );
-    for( unsigned int charCounter( 0 );
-         stringSize > charCounter;
-         ++charCounter )
+    for( int charCounter( stringToTransform.size() - 1 );
+         0 <= charCounter;
+         --charCounter )
       // go through each character in the string:
     {
       // if it's charToBeReplaced, replace it with charToBePutIn:
@@ -411,16 +403,16 @@ namespace BOL
   inline int
   StringParser::stringToInt( std::string const& stringToInterpret )
   {
-    int returnValue;
-    getStringParsingStream( stringToInterpret ) >> returnValue;
+    int returnValue( 0 );
+    std::stringstream( stringToInterpret ) >> returnValue;
     return returnValue;
   }
 
   inline double
   StringParser::stringToDouble( std::string const& stringToInterpret )
   {
-    double returnValue;
-    getStringParsingStream( stringToInterpret ) >> returnValue;
+    double returnValue( UsefulStuff::notANumber );
+    std::stringstream( stringToInterpret ) >> returnValue;
     return returnValue;
   }
 
@@ -428,14 +420,7 @@ namespace BOL
   StringParser::charIsIn( char const queryChar,
                           std::string const& charSet )
   {
-    if( charSet.find( queryChar ) != std::string::npos  )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return ( std::string::npos != charSet.find( queryChar ) );
   }
 
   inline bool
@@ -443,18 +428,9 @@ namespace BOL
                                std::string const& charSet )
   // this returns true if queryString consists only of chars in charSet.
   {
-    if( queryString.empty() )
-    {
-      return true;
-    }
-    else if( queryString.find_first_not_of( charSet ) == std::string::npos )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return ( queryString.empty()
+             ||
+           ( std::string::npos != queryString.find_first_not_of( charSet ) ) );
   }
 
   inline std::string
@@ -464,8 +440,8 @@ namespace BOL
   // this sets delimiterOfSubstring as the single element of stringVector &
   // calls the above substringToFirst with stringVector.
   {
-    stringVector.setSize( 1 );
-    stringVector.getFront().assign( delimiterOfSubstring );
+    VectorlikeArray< std::string > stringVector( 1 );
+    stringVector[ 0 ].assign( delimiterOfSubstring );
     return substringToFirst( stringToParse,
                              stringVector,
                              remainderString );
@@ -481,9 +457,9 @@ namespace BOL
   {
     size_t
     startOfReturnString( stringToTrim.find_first_not_of( charsToTrim ) );
-    if( startOfReturnString == std::string::npos )
+    if( std::string::npos == startOfReturnString )
     {
-      return "";
+      return std::string( "" );
     }
     else
     {
@@ -548,8 +524,8 @@ namespace BOL
    */
   {
     size_t wordStart( stringToParse.find_first_not_of( divisionCharSet ) );
-    size_t wordEnd;
-    while( wordStart != std::string::npos )
+    size_t wordEnd( 0 );
+    while( std::string::npos != wordStart )
       // if there are any more chars in stringToParse that are not in
       // divisionCharSet, we have at least one substring to add.
     {
@@ -557,7 +533,7 @@ namespace BOL
                                              wordStart );
       destinationArray.newEnd().assign( stringToParse.substr( wordStart,
                                                    ( wordEnd - wordStart ) ) );
-      if( wordEnd != std::string::npos )
+      if( std::string::npos != wordEnd )
       {
         wordStart = stringToParse.find_first_not_of( divisionCharSet,
                                                      wordEnd );
@@ -581,26 +557,6 @@ namespace BOL
                               divisionChar ) );
   }
 
-  /*template< class ForwardIteratorOfString >
-  inline std::string
-  joinWithSeparator( ForwardIteratorOfString const beginIterator,
-                     ForwardIteratorOfString const endIterator,
-                     std::string const& separatorString )
-  *//* this returns a string that is the concatenation of all the strings from
-   *  ForwardIterator beginIterator to  ForwardIterator beginIterator,
-   * separated by separatorString.
-   *//*
-  {
-    ForwardIteratorOfString localIterator( beginIterator );
-    std::string returnString( "" );
-    while( endIterator != beginIterator)
-    {
-      returnString.append( *localIterator );
-      ++localIterator;
-    }
-    return returnString;
-  }*/
-
   inline std::string
   StringParser::joinWithSeparator(
                            VectorlikeArray< std::string > const& stringsToJoin,
@@ -622,7 +578,7 @@ namespace BOL
     }
     else
     {
-      return "";
+      return std::string( "" );
     }
   }
 
@@ -648,7 +604,7 @@ namespace BOL
     }
     else
     {
-      return "";
+      return std::string( "" );
     }
   }
 
@@ -675,7 +631,7 @@ namespace BOL
     }
     else
     {
-      return "";
+      return std::string( "" );
     }
   }
 
@@ -729,14 +685,6 @@ namespace BOL
                            positiveExponentPrefix,
                            negativeExponentPrefix,
                            exponentCharacter );
-  }
-
-  inline std::stringstream&
-  StringParser::getStringParsingStream( std::string const& stringToParse )
-  {
-    stringParsingStream.clear();
-    stringParsingStream.str( stringToParse );
-    return stringParsingStream;
   }
 
 }

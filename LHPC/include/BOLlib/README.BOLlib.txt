@@ -35,6 +35,10 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 4th October 2012: version 0.2.2
+ - tried to make StringParser as thread-safe as possible by removing all
+   non-const static data members.
+
  * 19th September 2012: version 0.2.1
  - fixed bug in AsciiXmlParser where searching for the default tag subsequent
    to looking for a non-default tag would fail unless the last non-default tag
@@ -48,7 +52,6 @@ CHANGELOG:
  - enhanced functionality of ArgumentParser class, so that it now searches for
    tags in command-line arguments and then in an input XML file and then
    resorts to defaults.
-
  * 10th September 2012: version 0.1.0
  - first release!
 

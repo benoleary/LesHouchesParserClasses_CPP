@@ -19,9 +19,6 @@ namespace BOL
   std::string const StringParser::whitespaceAndNewlineChars( " \t\n\r" );
 
   char const StringParser::lowercaseMinusUppercase( 'a' - 'A' );
-  std::stringstream StringParser::stringParsingStream;
-  std::vector< char > StringParser::charBuffer;
-  VectorlikeArray< std::string > StringParser::stringVector( 0 );
 
 
   std::string
@@ -39,7 +36,6 @@ namespace BOL
    * (e.g. intToString( 23, 4, "+", "-" ) returns "+0023").
    */
   {
-    std::string returnString;
     if( 0 >= minimumNumberOfDigits )
     {
       std::cout
@@ -49,33 +45,27 @@ namespace BOL
       << prefixForPositiveNumbers << ", " << prefixForNegativeNumbers
       << " ) could not fit the integer into the given size!";
       // report a warning message.
-      returnString.assign( "please_give_a_positive_number_of_digits" );
+      return std::string( "please_give_a_positive_number_of_digits" );
     }
-    else
+    std::string returnString( prefixForPositiveNumbers );
+    if( 0 > inputInt )
     {
-      if( 0 > inputInt )
-      {
-        returnString.assign( prefixForNegativeNumbers );
-        inputInt = -inputInt;
-      }
-      else
-      {
-        returnString.assign( prefixForPositiveNumbers );
-      }
-      // now the '+' or '-' or whatever is substituting has been inserted &
-      // inputInt is positive semi-definite.
-      std::string unpaddedIntAsString( positiveIntToString( inputInt ) );
-      int numberOfZeroesToInsert( minimumNumberOfDigits
-                                  - (int)(unpaddedIntAsString.size()) );
-      // if numberOfZeroesToInsert is negative, then the number was longer than
-      // the minimum output string length specified.
-      if( 0 < numberOfZeroesToInsert )
-      {
-        returnString.append( (size_t)numberOfZeroesToInsert,
-                             paddingChar );
-      }
-      returnString.append( unpaddedIntAsString );
+      returnString.assign( prefixForNegativeNumbers );
+      inputInt = -inputInt;
     }
+    // now the '+' or '-' or whatever is substituting has been inserted &
+    // inputInt is positive semi-definite.
+    std::string unpaddedIntAsString( positiveIntToString( inputInt ) );
+    int numberOfZeroesToInsert( minimumNumberOfDigits
+                                - (int)(unpaddedIntAsString.size()) );
+    // if numberOfZeroesToInsert is negative, then the number was longer than
+    // the minimum output string length specified.
+    if( 0 < numberOfZeroesToInsert )
+    {
+      returnString.append( (size_t)numberOfZeroesToInsert,
+                           paddingChar );
+    }
+    returnString.append( unpaddedIntAsString );
     return returnString;
   }
 
@@ -105,7 +95,6 @@ namespace BOL
    * NaNs are returned as "NaN".
    */
   {
-    std::string returnString;
     if( ( 0 >= numberOfMantissaDigits )
         ||
         ( 0 >= numberOfExponentDigits ) )
@@ -119,113 +108,105 @@ namespace BOL
       << negativeExponentPrefix<< ", " << exponentCharacter
       << " ) could not fit the double into the given size!";
       // report a warning message.
-      returnString.assign( "please_give_a_positive_number_of_digits" );
+      return std::string( "please_give_a_positive_number_of_digits" );
+    }
+    std::string returnString( prefixForPositiveNumbers );
+    double formattedMantissa( inputDouble );
+    if( 0.0 > inputDouble )
+    {
+      returnString.assign( prefixForNegativeNumbers );
+      formattedMantissa = -inputDouble;
+    }
+    if( 0.0 == formattedMantissa )
+    {
+      returnString.append( "0." );
+      returnString.append( ( numberOfMantissaDigits - 1 ),
+                           '0' );
+      returnString.append( exponentCharacter );
+      returnString.append( positiveExponentPrefix );
+      returnString.append( numberOfExponentDigits,
+                           '0' );
+    }
+    else if( 0.0 < formattedMantissa )
+      // at this point any negative numbers will now be positive, so any
+      // that fail this comparison should be NaN.
+    {
+      int tenToDigitsMinusOneAsInt( 1 );
+      for( int mantissaDigitCount( 1 );
+           numberOfMantissaDigits > mantissaDigitCount;
+           ++mantissaDigitCount )
+      {
+        tenToDigitsMinusOneAsInt *= 10;
+      }
+      double tenToDigitsMinusOneAsDouble( (double)tenToDigitsMinusOneAsInt );
+      double tenToDigits( 10.0 * tenToDigitsMinusOneAsDouble );
+      int formattedExponent( 0 );
+      while( tenToDigits <= formattedMantissa )
+      {
+        formattedMantissa *= 0.1;
+        ++formattedExponent;
+      }
+      while( tenToDigitsMinusOneAsDouble > formattedMantissa )
+      {
+        formattedMantissa *= 10.0;
+        --formattedExponent;
+      }
+      /* now formattedMantissa is between tenToDigitsMinusOneAsDouble &
+       * tenToDigits, & hence has numberOfMantissaCharacters digits before the
+       * decimal point. however, now we have to round correctly:
+       */
+      int mantissaTimesTenToSomePowerAsInt( (int)formattedMantissa );
+      if( 0.5 <= ( formattedMantissa
+                   - (double)mantissaTimesTenToSomePowerAsInt ) )
+      {
+        ++mantissaTimesTenToSomePowerAsInt;
+      }
+      if( mantissaTimesTenToSomePowerAsInt
+          >= ( 10 * tenToDigitsMinusOneAsInt) )
+        // if rounding pushed mantissaTimesTenToSomePowerAsInt into having too
+        // many digits...
+      {
+        mantissaTimesTenToSomePowerAsInt
+        = ( mantissaTimesTenToSomePowerAsInt / 10 );
+        ++formattedExponent;
+      }
+      std::string mantissaTimesTenToSomePowerAsString( positiveIntToString(
+                                          mantissaTimesTenToSomePowerAsInt ) );
+      returnString.append( 1,
+                           mantissaTimesTenToSomePowerAsString[ 0 ] );
+      returnString.append( 1,
+                           '.' );
+      returnString.append( mantissaTimesTenToSomePowerAsString,
+                           1,
+                          ( mantissaTimesTenToSomePowerAsString.size() - 1 ) );
+      formattedExponent += ( numberOfMantissaDigits - 1 );
+      // this accounts for all the multiplication to get the mantissa as an
+      // int of the appropriate length.
+      returnString.append( exponentCharacter );
+      if( 0 > formattedExponent )
+      {
+        returnString.append( negativeExponentPrefix );
+        formattedExponent = -formattedExponent;
+      }
+      else
+      {
+        returnString.append( positiveExponentPrefix );
+      }
+      std::string
+      exponentIntAsString( positiveIntToString( formattedExponent ) );
+      int exponentZeroesToPrepend( numberOfExponentDigits
+                                   - (int)(exponentIntAsString.size()) );
+      if( 0 < exponentZeroesToPrepend )
+      {
+        returnString.append( exponentZeroesToPrepend,
+                             '0' );
+      }
+      returnString.append( exponentIntAsString );
     }
     else
+      // if it failed the comparison, it should be a NaN.
     {
-      double formattedMantissa;
-      if( 0.0 > inputDouble )
-      {
-        returnString.assign( prefixForNegativeNumbers );
-        formattedMantissa = -inputDouble;
-      }
-      else
-      {
-        returnString.assign( prefixForPositiveNumbers );
-        formattedMantissa = inputDouble;
-      }
-      if( 0.0 == formattedMantissa )
-      {
-        returnString.append( "0." );
-        returnString.append( ( numberOfMantissaDigits - 1 ),
-                             '0' );
-        returnString.append( exponentCharacter );
-        returnString.append( positiveExponentPrefix );
-        returnString.append( numberOfExponentDigits,
-                             '0' );
-      }
-      else if( 0.0 < formattedMantissa )
-        // at this point any negative numbers will now be positive, so any
-        // that fail this comparison should be NaN.
-      {
-        int tenToDigitsMinusOneAsInt( 1 );
-        for( int mantissaDigitCount( 1 );
-             numberOfMantissaDigits > mantissaDigitCount;
-             ++mantissaDigitCount )
-        {
-          tenToDigitsMinusOneAsInt *= 10;
-        }
-        double tenToDigitsMinusOneAsDouble( (double)tenToDigitsMinusOneAsInt );
-        double tenToDigits( 10.0 * tenToDigitsMinusOneAsDouble );
-        int formattedExponent( 0 );
-        while( tenToDigits <= formattedMantissa )
-        {
-          formattedMantissa *= 0.1;
-          ++formattedExponent;
-        }
-        while( tenToDigitsMinusOneAsDouble > formattedMantissa )
-        {
-          formattedMantissa *= 10.0;
-          --formattedExponent;
-        }
-        /* now formattedMantissa is between tenToDigitsMinusOneAsDouble
-         * & tenToDigits, & hence has numberOfMantissaCharacters digits before
-         * the decimal point.
-         * however, now we have to round correctly:
-         */
-        int mantissaTimesTenToSomePowerAsInt( (int)formattedMantissa );
-        if( 0.5 <= ( formattedMantissa
-                     - (double)mantissaTimesTenToSomePowerAsInt ) )
-        {
-          ++mantissaTimesTenToSomePowerAsInt;
-        }
-        if( mantissaTimesTenToSomePowerAsInt
-            >= ( 10 * tenToDigitsMinusOneAsInt) )
-          // if rounding pushed mantissaTimesTenToSomePowerAsInt into having
-          // too many digits...
-        {
-          mantissaTimesTenToSomePowerAsInt
-          = ( mantissaTimesTenToSomePowerAsInt / 10 );
-          ++formattedExponent;
-        }
-        std::string mantissaTimesTenToSomePowerAsString( positiveIntToString(
-                                          mantissaTimesTenToSomePowerAsInt ) );
-        returnString.append( 1,
-                             mantissaTimesTenToSomePowerAsString[ 0 ] );
-        returnString.append( 1,
-                             '.' );
-        returnString.append( mantissaTimesTenToSomePowerAsString,
-                             1,
-                          ( mantissaTimesTenToSomePowerAsString.size() - 1 ) );
-        formattedExponent += ( numberOfMantissaDigits - 1 );
-        // this accounts for all the multiplication to get the mantissa as an
-        // int of the appropriate length.
-        returnString.append( exponentCharacter );
-        if( 0 > formattedExponent )
-        {
-          returnString.append( negativeExponentPrefix );
-          formattedExponent = -formattedExponent;
-        }
-        else
-        {
-          returnString.append( positiveExponentPrefix );
-        }
-        std::string
-        exponentIntAsString( positiveIntToString( formattedExponent ) );
-        int exponentZeroesToPrepend( numberOfExponentDigits
-                                     - (int)(exponentIntAsString.size()) );
-        if( 0 < exponentZeroesToPrepend )
-        {
-          returnString.append( exponentZeroesToPrepend,
-                               '0' );
-        }
-        returnString.append( exponentIntAsString );
-      }
-      else
-        // if it failed the comparison, it should be a NaN.
-      {
-        returnString.assign( UsefulStuff::nanString );
-      }
+      returnString.assign( UsefulStuff::nanString );
     }
     return returnString;
   }
@@ -236,49 +217,41 @@ namespace BOL
   // this returns true if both strings would be identical if all their
   // uppercase chars were converted to lowercase.
   {
-    size_t stringSize( firstString.size() );
-    if( secondString.size() == stringSize )
-      // if the strings match in size...
-    {
-      bool returnBool( true );
-      // it is assumed that the strings match, unless a char turns out to
-      // differ.
-      for( unsigned int charCounter( 0 );
-           ( returnBool
-             &&
-             ( stringSize > charCounter ) );
-           ++charCounter )
-        // go through each character in the string:
-      {
-        // if the strings do not match at this char, check to see if they are
-        // letters that just differ in case:
-        if( ( secondString[ charCounter ] != firstString[ charCounter ] )
-            &&
-            !( ( firstString[ charCounter ] >= 'A' )
-               &&
-               ( firstString[ charCounter ] <= 'Z' )
-               &&
-               ( secondString[ charCounter ]
-                 == ( firstString[ charCounter ]
-                      + lowercaseMinusUppercase ) ) )
-             &&
-             !( ( firstString[ charCounter ] >= 'a' )
-                &&
-                ( firstString[ charCounter ] <= 'z' )
-                &&
-                ( secondString[ charCounter ]
-                  == ( firstString[ charCounter ]
-                       - lowercaseMinusUppercase ) ) ) )
-        {
-          returnBool = false;
-        }
-      }
-      return returnBool;
-    }
-    else
+    if( firstString.size() != secondString.size() )
+      // if the strings don't match in size, they obviously do not match.
     {
       return false;
     }
+    for( int charCounter( firstString.size() - 1 );
+         0 <= charCounter ;
+         --charCounter )
+      // go through each character in the string:
+    {
+      // if the strings do not match at this char, check to see if they are
+      // letters that just differ in case:
+      if( ( secondString[ charCounter ] != firstString[ charCounter ] )
+          &&
+          !( ( firstString[ charCounter ] >= 'A' )
+             &&
+             ( firstString[ charCounter ] <= 'Z' )
+             &&
+             ( secondString[ charCounter ]
+               == ( firstString[ charCounter ]
+                    + lowercaseMinusUppercase ) ) )
+          &&
+          !( ( firstString[ charCounter ] >= 'a' )
+             &&
+             ( firstString[ charCounter ] <= 'z' )
+             &&
+             ( secondString[ charCounter ]
+               == ( firstString[ charCounter ]
+                    - lowercaseMinusUppercase ) ) ) )
+      {
+        return false;
+      }
+    }
+    // if this point is reached, all the characters matched:
+    return true;
   }
 
   std::vector< int >
@@ -292,11 +265,10 @@ namespace BOL
                              ' ' );
     std::vector< int > returnVector;
     std::string indicesString( trimFromFrontAndBack( stringToInterpret,
-                                                     whitespaceChars ) );
+                                                 whitespaceAndNewlineChars ) );
     if( !(indicesString.empty()) )
     {
-      std::stringstream&
-      streamToParse( getStringParsingStream( indicesString ) );
+      std::stringstream streamToParse( indicesString );
       double parsedIntAsDouble;
       while( streamToParse.good() )
       {
@@ -375,7 +347,7 @@ namespace BOL
       {
         remainderString->assign( "" );
       }
-      return "";
+      return std::string( "" );
     }
     else
     {
@@ -432,148 +404,78 @@ namespace BOL
   char
   StringParser::charForSingleDigit( int const singleDigitAsInt )
   {
-    char returnChar( '?' );
-    if( 0 == singleDigitAsInt )
+    switch( singleDigitAsInt )
     {
-      returnChar = '0';
+      case 0:
+        return '0';
+      case 1:
+        return '1';
+      case 2:
+        return '2';
+      case 3:
+        return '3';
+      case 4:
+        return '4';
+      case 5:
+        return '5';
+      case 6:
+        return '6';
+      case 7:
+        return '7';
+      case 8:
+        return '8';
+      case 9:
+        return '9';
+      default:
+        return '?';
     }
-    else if( 1 == singleDigitAsInt )
-    {
-      returnChar = '1';
-    }
-    else if( 2 == singleDigitAsInt )
-    {
-      returnChar = '2';
-    }
-    else if( 3 == singleDigitAsInt )
-    {
-      returnChar = '3';
-    }
-    else if( 4 == singleDigitAsInt )
-    {
-      returnChar = '4';
-    }
-    else if( 5 == singleDigitAsInt )
-    {
-      returnChar = '5';
-    }
-    else if( 6 == singleDigitAsInt )
-    {
-      returnChar = '6';
-    }
-    else if( 7 == singleDigitAsInt )
-    {
-      returnChar = '7';
-    }
-    else if( 8 == singleDigitAsInt )
-    {
-      returnChar = '8';
-    }
-    else if( 9 == singleDigitAsInt )
-    {
-      returnChar = '9';
-    }
-    else if( 10 == singleDigitAsInt )
-    {
-      returnChar = 'A';
-    }
-    else if( 11 == singleDigitAsInt )
-    {
-      returnChar = 'B';
-    }
-    else if( 12 == singleDigitAsInt )
-    {
-      returnChar = 'C';
-    }
-    else if( 13 == singleDigitAsInt )
-    {
-      returnChar = 'D';
-    }
-    else if( 14 == singleDigitAsInt )
-    {
-      returnChar = 'E';
-    }
-    else if( 15 == singleDigitAsInt )
-    {
-      returnChar = 'F';
-    }
-    return returnChar;
   }
 
   int
   StringParser::intForSingleDigit( char const singleDigitAsChar )
   {
-    char returnInt( (int)(UsefulStuff::notANumber) );
-    if( '0' == singleDigitAsChar )
+    switch( singleDigitAsChar )
     {
-      returnInt = 0;
+      case '0':
+        return 0;
+      case '1':
+        return 1;
+      case '2':
+        return 2;
+      case '3':
+        return 3;
+      case '4':
+        return 4;
+      case '5':
+        return 5;
+      case '6':
+        return 6;
+      case '7':
+        return 7;
+      case '8':
+        return 8;
+      case '9':
+        return 9;
+      case 'A':
+        return 10;
+      case 'B':
+        return 11;
+      case 'C':
+        return 12;
+      case 'D':
+        return 13;
+      case 'E':
+        return 14;
+      case 'F':
+        return 15;
+      default:
+        return (int)(UsefulStuff::notANumber);
     }
-    else if( '1' == singleDigitAsChar )
-    {
-      returnInt = 1;
-    }
-    else if( '2' == singleDigitAsChar )
-    {
-      returnInt = 2;
-    }
-    else if( '3' == singleDigitAsChar )
-    {
-      returnInt = 3;
-    }
-    else if( '4' == singleDigitAsChar )
-    {
-      returnInt = 4;
-    }
-    else if( '5' == singleDigitAsChar )
-    {
-      returnInt = 5;
-    }
-    else if( '6' == singleDigitAsChar )
-    {
-      returnInt = 6;
-    }
-    else if( '7' == singleDigitAsChar )
-    {
-      returnInt = 7;
-    }
-    else if( '8' == singleDigitAsChar )
-    {
-      returnInt = 8;
-    }
-    else if( '9' == singleDigitAsChar )
-    {
-      returnInt = 9;
-    }
-    else if( 'A' == singleDigitAsChar )
-    {
-      returnInt = 10;
-    }
-    else if( 'B' == singleDigitAsChar )
-    {
-      returnInt = 11;
-    }
-    else if( 'C' == singleDigitAsChar )
-    {
-      returnInt = 12;
-    }
-    else if( 'D' == singleDigitAsChar )
-    {
-      returnInt = 13;
-    }
-    else if( 'E' == singleDigitAsChar )
-    {
-      returnInt = 14;
-    }
-    else if( 'F' == singleDigitAsChar )
-    {
-      returnInt = 15;
-    }
-    return returnInt;
   }
 
   std::string
   StringParser::positiveIntToString( int positiveInt )
-  // this puts the digits of positiveInt into charBuffer in the order of
+  // this puts the digits of positiveInt into digitBuffer in the order of
   // digit for highest power of 10 1st.
   {
     int numberOfDigits( 1 );

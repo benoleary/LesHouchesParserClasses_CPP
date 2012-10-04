@@ -41,4 +41,4 @@ $(LIBRARYFILE): $(LIBDIR) $(OBJECTS)
 	$(AR) $(AFLAGS) $@ $(OBJECTS)
 
 clean:
-	\rm -rf *o $(LIBRARYFILE)
+	\rm -f $(OBJECTS) $(LIBRARYFILE)

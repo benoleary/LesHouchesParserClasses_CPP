@@ -42,3 +42,6 @@ $(LIBRARYFILE): $(LIBDIR) $(OBJECTS)
 
 clean:
 	\rm -f $(OBJECTS) $(LIBRARYFILE)
+
+deleteobjects:
+	\rm -f $(OBJECTS)

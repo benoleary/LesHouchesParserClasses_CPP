@@ -124,3 +124,8 @@ $(SLHAEGEXE): $(BINDIR) $(LIBRARYFILE)
 clean:
 	$(MAKE) -C ./include/BOLlib/ clean
 	\rm -f $(OBJECTS) $(LIBRARYFILE) $(EXES)
+
+deleteobjects:
+	$(MAKE) -C ./include/BOLlib/ deleteobjects
+	\rm -f $(OBJECTS)
+	

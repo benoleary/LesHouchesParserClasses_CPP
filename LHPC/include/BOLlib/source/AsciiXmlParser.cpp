@@ -28,6 +28,7 @@ namespace BOL
       attributesAsParsed(),
       tagParsingArray(),
       attributeParsingString( "" ),
+      attributeNameString( "" ),
       defaultTag( defaultTag ),
       soughtTag( defaultTag ),
       soughtTagLength( soughtTag.size() ),
@@ -50,13 +51,13 @@ namespace BOL
   }
 
 
-  VectorlikeArray< std::pair< std::string, std::string > > const&
+  std::map< std::string, std::string > const&
   AsciiXmlParser::getCurrentElementAttributes()
   {
     if( attributesNotYetParsed )
       // if the attributes need to be parsed...
     {
-      attributesAsParsed.clearEntries();
+      attributesAsParsed.clear();
       // the container is readied to take the attributes as they are parsed.
       if( fullOpeningTagAsFound.size() > soughtTag.size() )
         // if there are possibly attributes...
@@ -78,16 +79,15 @@ namespace BOL
         StringParser::parseByChar( attributeParsingString,
                                    tagParsingArray,
                                    allowedXmlWhitespaceChars );
-        attributesAsParsed.setSize( tagParsingArray.getSize() );
         for( int attributeIndex( tagParsingArray.getLastIndex() );
              0 <= attributeIndex;
              --attributeIndex )
         {
-          attributesAsParsed[ attributeIndex ].first.assign(
-             StringParser::substringToFirst( tagParsingArray[ attributeIndex ],
-                                             "=",
-                                             &attributeParsingString ) );
-          attributesAsParsed[ attributeIndex ].second.assign(
+          attributeNameString.assign( StringParser::substringToFirst(
+                                             tagParsingArray[ attributeIndex ],
+                                                                      "=",
+                                                   &attributeParsingString ) );
+          attributesAsParsed[ attributeNameString ].assign(
                                               attributeParsingString.substr( 2,
                                          attributeParsingString.size() - 3 ) );
         }

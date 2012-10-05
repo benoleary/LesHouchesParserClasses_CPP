@@ -240,6 +240,13 @@
 
 
 CHANGELOG:
+ * 5th October 2012: version 0.7.0
+ - BOLlib updated to 0.3.0 (BOL::AsciiXmlParser::getCurrentElementAttributes()
+   now returns a std::map< std::string, std::string > const& reference).
+ - makefile now has deleteobjects option to delete the .o files without
+   deleting the library or executables.
+ - READMEs updated.
+ 
  * 4th October 2012: version 0.6.9
  - BOLlib updated to 0.2.2 (reducing thread unsafety)
  - READMEs updated.

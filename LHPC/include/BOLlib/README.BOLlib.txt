@@ -35,6 +35,13 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 5th October 2012: version 0.3.0
+ - changed AsciiXmlParser::getCurrentElementAttributes() to return a
+   std::map< std::string, std::string > const& reference.
+ - fixed make clean in makefile to properly clean up, & added
+   make deleteobjects to allow the deletion of .o files without deleting the
+   library file.
+
  * 4th October 2012: version 0.2.2
  - tried to make StringParser as thread-safe as possible by removing all
    non-const static data members.

@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <map>
 #include "VectorlikeArray.hpp"
 #include "StringParser.hpp"
 
@@ -87,7 +88,7 @@ namespace BOL
     getCurrentElementContentTrimmedOfWhitespace() const;
     std::string const&
     getCurrentOpeningTagAsFound() const;
-    VectorlikeArray< std::pair< std::string, std::string > > const&
+    std::map< std::string, std::string > const&
     getCurrentElementAttributes();
 
 
@@ -104,10 +105,10 @@ namespace BOL
     std::string fullOpeningTagAsFound;
     // this includes any attributes; this does not include '<' or '>'.
     bool attributesNotYetParsed;
-    VectorlikeArray< std::pair< std::string, std::string > >
-    attributesAsParsed;
+    std::map< std::string, std::string > attributesAsParsed;
     VectorlikeArray< std::string > tagParsingArray;
     std::string attributeParsingString;
+    std::string attributeNameString;
     std::string defaultTag;
     std::string soughtTag;
     size_t soughtTagLength;

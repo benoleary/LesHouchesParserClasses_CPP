@@ -101,7 +101,7 @@ namespace LHPC
              notYetFoundFirstLineOfAnEvent )
       {
         fileIsOpenAndNotYetAtEndOfFile
-        = fileParser.readNextNonEmptyLineOfFileWithoutComment( currentLine );
+        = fileParser.readJustNextValidLine( currentLine );
         if( fileIsOpenAndNotYetAtEndOfFile )
         {
           notYetFoundFirstLineOfAnEvent

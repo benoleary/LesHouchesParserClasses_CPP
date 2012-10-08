@@ -53,7 +53,7 @@ namespace LHPC
              ( 0 != lineNumber ) )
       {
         fileIsOpenAndNotYetAtEndOfFile
-        = fileParser.readNextNonEmptyLineOfFileWithoutComment( currentLine );
+        = fileParser.readJustNextValidLine( currentLine );
         if( fileIsOpenAndNotYetAtEndOfFile )
         {
           lineNumber = currentEvent.recordLine( currentLine );

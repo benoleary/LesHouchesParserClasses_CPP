@@ -73,6 +73,11 @@ namespace BOL
      * end of the file is reached before stringToFill is not empty after the
      * manipulations, stringToFill is left empty & false is returned.
      */
+    bool
+    readJustNextValidLine( std::string& stringToFill )
+    { return readNextNonEmptyLineOfFileWithoutComment( stringToFill ); }
+    // this is just to shorten the name without breaking backwards
+    // compatibility.
 
 
   protected:

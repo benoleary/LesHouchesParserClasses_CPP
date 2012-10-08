@@ -1,5 +1,5 @@
 /*****************************************************************************\
- * README.BOLlib.txt                                                                *
+ * README.BOLlib.txt                                                         *
  *                                                                           *
  *  Created on: Sep 10, 2012                                                 *
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)                      *
@@ -35,6 +35,14 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 8th October 2012: version 0.3.1
+ - added
+   CommentedTextParser::readJustNextValidLine( std::string& stringToFill )
+   as an alias for
+   CommentedTextParser::readNextNonEmptyLineOfFileWithoutComment(
+                                                    std::string& stringToFill )
+ - tidied extra whitespace in README.BOLlib.txt file.
+
  * 5th October 2012: version 0.3.0
  - changed AsciiXmlParser::getCurrentElementAttributes() to return a
    std::map< std::string, std::string > const& reference.

@@ -5,7 +5,7 @@
  *      Author: Ben O'Leary (benjamin.oleary@gmail.com)                      *
  *      Copyright 2012 Ben O'Leary                                           *
  *                                                                           *
- *      This file is part of LesHouchesParserClasses.                        *
+ *      This file is part of LesHouchesParserClasses (LHPC).                 *
  *                                                                           *
  *      LesHouchesParserClasses is free software: you can redistribute it    *
  *      and/or modify it under the terms of the GNU General Public License   *
@@ -18,7 +18,7 @@
  *      General Public License for more details.                             *
  *                                                                           *
  *      You should have received a copy of the GNU General Public License    *
- *      (in LHPC_CPP/GNU_public_license.txt ) along with                     *
+ *      (in LHPC/GNU_public_license.txt ) along with                         *
  *      LesHouchesParserClasses.  If not, see                                *
  *      <http://www.gnu.org/licenses/>.                                      *
  *      A full list of the files of LesHouchesParserClasses is at the end of *
@@ -31,7 +31,7 @@
  LesHouchesParserClasses (LHPC) is a set of classes for interpreting files in
  the Les Houches Event File (LHEF) format and SUSY Les Houches Accord (SLHA)
  format. It also parses Flavor Les Houches Accord (FLHA) files, though with
- less functionality. This LHPC_CPP set of files is the version written in C++.
+ less functionality. This set of files is the version written in C++.
 
  There are 3 main parts to LHPC: the LHCO parser and associated structures; the
  LHEF parser and associated structures; and the SLHA parser and associated
@@ -42,7 +42,7 @@
  ps2eps (or ps2epsi).
 
  Running make on the makefile included will compile the library
- (LHPC/lib/libLHPC_CPP.a) and 4 executables (LHPC/bin/LhpcSpectrumPlotter.exe,
+ (LHPC/lib/libLHPC.a) and 4 executables (LHPC/bin/LhpcSpectrumPlotter.exe,
  LHPC/bin/LhefParserExample.exe, LHPC/bin/LhcoParserExample.exe, and
  LHPC/bin/SlhaParserExample.exe). The executables can be run with test input
  files in the LHPC/bin/testing directory.
@@ -240,6 +240,11 @@
 
 
 CHANGELOG:
+ * 8th October 2012: version 0.7.1
+ - BOLlib updated to 0.3.1 (minor function alias).
+ - using above function alias in LhcoParser class.
+ - READMEs updated.
+
  * 5th October 2012: version 0.7.0
  - BOLlib updated to 0.3.0 (BOL::AsciiXmlParser::getCurrentElementAttributes()
    now returns a std::map< std::string, std::string > const& reference).

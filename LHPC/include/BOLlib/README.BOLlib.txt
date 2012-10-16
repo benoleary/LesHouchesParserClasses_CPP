@@ -35,6 +35,17 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 16th October 2012: version 0.4.0
+ - major changes to AsciiXmlParser (breaking compatibility with 0.3 & older):
+   -- now ignores XML comments properly.
+   -- now ignores XML prolog properly.
+   -- now records XML processing instructions & CDATA sections properly.
+   -- now just reads the direct child elements of the loaded string or of the
+      root element of the loaded file. child elements of these elements can be
+      parsed by giving their strings to another AsciiXmlParser (or the original
+      parser, if discarding the rest of the text isn't a problem).
+ - ArgumentParser changed to be compatible with new AsciiXmlParser.
+
  * 8th October 2012: version 0.3.1
  - added
    CommentedTextParser::readJustNextValidLine( std::string& stringToFill )

@@ -240,6 +240,15 @@
 
 
 CHANGELOG:
+ * 16th October 2012: version 0.7.2
+ - BOLlib updated to 0.4.0 (AsciiXmlParser rewritten, now properly ignores XML
+   comments) - breaks any code that relies on BOL::AsciiXmlParser, but all LHPC
+   files have been updated to use the new code.
+ - added
+   SlhaSimplisticInterpreter::getLowestScale( std::string const& blockName )
+   to return the scale of the copy of the block called blockName with the
+   lowest scale.
+
  * 8th October 2012: version 0.7.1
  - BOLlib updated to 0.3.1 (minor function alias).
  - using above function alias in LhcoParser class.

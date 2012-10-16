@@ -15,12 +15,13 @@
 
 namespace LHPC
 {
+  std::string const LhefParser::eventTag( "event" );
+
   LhefParser::LhefParser( std::string const eventFileName,
                           bool const isVerbose ) :
       isVerbose( isVerbose ),
-      fileParser( "event",
-                  this->isVerbose ),
-      currentEvent( this->isVerbose ),
+      fileParser( isVerbose ),
+      currentEvent( isVerbose ),
       automaticFilters(),
       fileIsOpen( false ),
       eventAsString( "" ),

@@ -62,7 +62,6 @@ namespace BOL
   // any of the elements of argumentStrings, & returns the rest of the 1st
   // matching string (or defaultReturnValue if no match was found).
   {
-    std::string returnString( defaultReturnString );
     for( std::vector< std::string >::const_iterator
          whichArgument( argumentStrings.begin() );
          argumentStrings.end() > whichArgument;
@@ -72,13 +71,10 @@ namespace BOL
                                        argumentName.size(),
                                        argumentName ) )
       {
-        returnString.assign( *whichArgument,
-                             argumentName.size(),
-                             ( whichArgument->size() - argumentName.size() ) );
-        break;
+        return whichArgument->substr( argumentName.size() );
       }
     }
-    return returnString;
+    return defaultReturnString;
   }
 
   inline std::string
@@ -92,19 +88,22 @@ namespace BOL
     std::string argumentString( "--" );
     argumentString.append( tagString );
     argumentString.append( "=" );
-    std::string returnString( fromLiteral( argumentString ) );
-    if( returnString.empty() )
+    argumentString.assign( fromLiteral( argumentString ) );
+    if( !(argumentString.empty()) )
     {
-      inputXmlParser.returnToBeginningOfText();
-      returnString.assign( StringParser::trimFromFrontAndBack(
-                                   inputXmlParser.findNextElement( tagString ),
-                                   StringParser::whitespaceAndNewlineChars ) );
+      return argumentString;
     }
-    if( returnString.empty() )
+    inputXmlParser.returnToBeginningOfText();
+    while( inputXmlParser.readNextElement() )
     {
-      returnString.assign( defaultReturnString );
+      if( inputXmlParser.currentElementNameMatches( tagString ) )
+      {
+        return StringParser::trimFromFrontAndBack(
+                                     inputXmlParser.getCurrentElementContent(),
+                                     StringParser::whitespaceAndNewlineChars );
+      }
     }
-    return returnString;
+    return defaultReturnString;
   }
 
 } /* namespace BOL */

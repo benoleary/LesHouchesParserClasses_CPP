@@ -20,9 +20,9 @@ namespace BOL
                                   std::string const fallbackInputFilename ) :
     argumentStrings( ( argumentCount - 1 ),
                      "" ),
-    inputXmlParser( "blah",
-                    false )
+    inputXmlParser()
   {
+    inputXmlParser.loadString( "" );
     for( int whichArgument( 1 );
          argumentCount > whichArgument;
          ++whichArgument )
@@ -37,7 +37,26 @@ namespace BOL
       {
         inputFilename.assign( fallbackInputFilename );
       }
-      inputXmlParser.openFile( inputFilename );
+      // at this point, if no input filename was provided either by the command
+      // line arguments or by the constructor, I think that it's obvious that
+      // the user didn't want to look for arguments in an XML file, so the
+      // error message should not be shown for failing to open it.
+      if( !(inputFilename.empty()) )
+      {
+        if( inputXmlParser.readAllOfRootElementOfFile( inputFilename ) )
+        {
+          inputXmlParser.loadString(
+                                   inputXmlParser.getCurrentElementContent() );
+        }
+        else
+        {
+          std::cout
+          << std::endl
+          << "BOL::ArgumentParser constructor failed to open root element of"
+          << " \"" << inputFilename << "\"!";
+          std::cout << std::endl;
+        }
+      }
     }
   }
 

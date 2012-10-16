@@ -54,6 +54,8 @@ namespace LHPC
 
 
   protected:
+    static std::string const eventTag;
+
     bool isVerbose;
     BOL::AsciiXmlParser fileParser;
     LHEF::LhefEvent currentEvent;
@@ -81,8 +83,7 @@ namespace LHPC
   // this opens the file with the given name as the source of its events &
   // returns true, unless the file could not be opened.
   {
-    fileParser.openFile( eventFileName );
-    fileIsOpen = fileParser.wasSuccessful();
+    fileIsOpen = fileParser.openRootElementOfFile( eventFileName );
     return fileIsOpen;
   }
 
@@ -101,21 +102,24 @@ namespace LHPC
   {
     if( fileIsOpen )
     {
-      eventAsString.assign( fileParser.findNextElement() );
-      fileIsOpen = fileParser.wasSuccessful();
-      if( fileIsOpen )
+      fileIsOpen = fileParser.readNextElement();
+      while( !(fileParser.currentElementNameMatches( eventTag )) )
       {
-        eventIsValid = currentEvent.recordEvent( eventAsString );
-        for( int filterIndex( automaticFilters.size() - 1 );
-             0 <= filterIndex;
-             --filterIndex )
+        fileIsOpen = fileParser.readNextElement();
+        if( !fileIsOpen )
         {
-          automaticFilters[ filterIndex ]->updateForNewEvent( currentEvent );
+          fileParser.closeFile();
+          eventAsString.assign( "" );
+          return false;
         }
       }
-      else
+      eventAsString.assign( fileParser.getCurrentElementContent() );
+      eventIsValid = currentEvent.recordEvent( eventAsString );
+      for( int filterIndex( automaticFilters.size() - 1 );
+           0 <= filterIndex;
+           --filterIndex )
       {
-        fileParser.closeFile();
+        automaticFilters[ filterIndex ]->updateForNewEvent( currentEvent );
       }
     }
     return fileIsOpen;

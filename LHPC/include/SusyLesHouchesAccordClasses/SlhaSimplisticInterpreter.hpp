@@ -36,6 +36,8 @@ namespace LHPC
     getDouble( std::string blockNameAndIndices );
     int
     getInt( std::string blockNameAndIndices );
+    double
+    getLowestScale( std::string const& blockName ) const;
     bool
     readFile( std::string const& slhaFileName );
     // this opens the file with name given by slhaFileName with slhaParser.
@@ -84,6 +86,13 @@ namespace LHPC
     return returnValue;
   }
 
+  inline double
+  SlhaSimplisticInterpreter::getLowestScale(
+                                           std::string const& blockName ) const
+  {
+    return (*slhaParser.getBlockAsStrings( blockName ))[ 0 ].getScale();
+  }
+
   inline bool
   SlhaSimplisticInterpreter::readFile( std::string const& slhaFileName )
   // this opens the file with name given by slhaFileName with slhaParser.
@@ -100,7 +109,6 @@ namespace LHPC
     stringParser.str( newStringForParser );
     return stringParser;
   }
-
 
 } /* namespace LHPC */
 #endif /* SLHASIMPLISTICINTERPRETER_HPP_ */

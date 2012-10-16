@@ -92,7 +92,7 @@ all: $(BOLLIBFILE) $(OBJECTS) $(LIBRARYFILE) $(EXES)
 library: $(OBJECTS) $(LIBRARYFILE)
 	\rm -rf $(OBJECTS)
 	
-.PHONY: all library clean
+.PHONY: all library clean deleteobjects
 
 $(BOLLIBFILE):
 	$(MAKE) -C ./include/BOLlib/ library

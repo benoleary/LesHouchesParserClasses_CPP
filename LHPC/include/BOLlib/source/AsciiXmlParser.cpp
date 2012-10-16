@@ -14,30 +14,54 @@
 
 namespace BOL
 {
+  char const AsciiXmlParser::markupOpener( '<' );
+  char const AsciiXmlParser::markupCloser( '>' );
+  char const AsciiXmlParser::tagCloser( '/' );
   std::string const AsciiXmlParser::allowedXmlWhitespaceChars( " \t\r\n" );
+  std::string const AsciiXmlParser::allowedXmlQuoteChars( "\'\"" );
+  std::pair< std::string, std::string > const
+  AsciiXmlParser::commentDelimiter( "<!--",
+                                    "-->" );
+  std::pair< std::string, std::string > const
+  AsciiXmlParser::piDelimiter( "<?",
+                               "?>" );
+  std::pair< std::string, std::string > const
+  AsciiXmlParser::doctypeDelimiter( "<!DOCTYPE",
+                                    ">" );
+  std::pair< std::string, std::string > const
+  AsciiXmlParser::cdataDelimiter( "<![CDATA[",
+                                  "]]>" );
 
-  AsciiXmlParser::AsciiXmlParser( std::string const& defaultTag,
-                                  bool const isVerbose ) :
+
+  AsciiXmlParser::AsciiXmlParser( bool const isVerbose ) :
       isVerbose( isVerbose ),
       fileParsingStream(),
       stringParsingStream(),
       textStream( &stringParsingStream ),
+      rootTag( "" ),
+      rootAttributeMap(),
+      rootLineRange( -1,
+                     -1 ),
+      elementName( "" ),
       fullElementContentAsFound( "" ),
       fullOpeningTagAsFound( "" ),
-      attributesNotYetParsed( true ),
-      attributesAsParsed(),
-      tagParsingArray(),
-      attributeParsingString( "" ),
-      attributeNameString( "" ),
-      defaultTag( defaultTag ),
-      soughtTag( defaultTag ),
-      soughtTagLength( soughtTag.size() ),
-      charPosition( 0 ),
-      lastOperationSucceeded( true ),
-      finishedSearching( false ),
-      currentReadChar( ' ' ),
-      lastReadChar( ' ' ),
-      potentialClosingTag( "" )
+      elementAttributeMap(),
+      elementLineRange( -1,
+                        -1 ),
+      markupString( "" ),
+      streamIsGood( false ),
+      currentChar( ' ' ),
+      readNewlines( 0 ),
+      newlinesBeforeMarkup( 0 ),
+      parseStart( 0 ),
+      parseEnd( 0 ),
+      previousLength( 0 ),
+      currentQuoteChar( '\'' ),
+      currentAttribute( "",
+                        "" ),
+      closingTag( "" ),
+      closingTagsToFind( 0 ),
+      currentTagName( "" )
   {
     // just an initialization list.
   }
@@ -51,267 +75,466 @@ namespace BOL
   }
 
 
-  std::map< std::string, std::string > const&
-  AsciiXmlParser::getCurrentElementAttributes()
-  {
-    if( attributesNotYetParsed )
-      // if the attributes need to be parsed...
-    {
-      attributesAsParsed.clear();
-      // the container is readied to take the attributes as they are parsed.
-      if( fullOpeningTagAsFound.size() > soughtTag.size() )
-        // if there are possibly attributes...
-      {
-        attributeParsingString.assign( fullOpeningTagAsFound.substr(
-                                                          soughtTag.size() ) );
-        if( '/'
-            == attributeParsingString[ attributeParsingString.size() - 1 ] )
-          // if the last char of the opening tag indicates that the tag also
-          // closed the element...
-        {
-          // that ending '/' should be ignored:
-          attributeParsingString.resize( attributeParsingString.size() - 1 );
-        }
-        // the various containers are cleared:
-        tagParsingArray.clearEntries();
-        // tagParsingArray is filled with the strings pairing each attribute
-        // with its value:
-        StringParser::parseByChar( attributeParsingString,
-                                   tagParsingArray,
-                                   allowedXmlWhitespaceChars );
-        for( int attributeIndex( tagParsingArray.getLastIndex() );
-             0 <= attributeIndex;
-             --attributeIndex )
-        {
-          attributeNameString.assign( StringParser::substringToFirst(
-                                             tagParsingArray[ attributeIndex ],
-                                                                      "=",
-                                                   &attributeParsingString ) );
-          attributesAsParsed[ attributeNameString ].assign(
-                                              attributeParsingString.substr( 2,
-                                         attributeParsingString.size() - 3 ) );
-        }
-      }
-      attributesNotYetParsed = false;
-    }
-    return attributesAsParsed;
-  }
-
   bool
-  AsciiXmlParser::recordToEndOfSoughtElement()
-  /* this records from textStream up to the end of the current element (with
-   * tag name given by soughtTag). if the current element is just a tag which
-   * both opens and closes the element, then fullElementContentAsFound is set
-   * to be empty & only fullOpeningTagAsFound is recorded. otherwise, all
-   * characters up to the closing tag for this element are recorded as text,
-   * including all markup and child elements, in fullElementContentAsFound.
+  AsciiXmlParser::openRootElementOfFile( std::string const& fileName )
+  /* this loads the file with the given name into the internal ifstream for
+   * parsing, then opens the root element. if there was a problem loading the
+   * file, or no root element could be opened, false is returned. this closes
+   * the previously-loaded file, if it was open.
    */
   {
-    // flush any previous element before beginning:
-    fullElementContentAsFound.clear();
-    lastOperationSucceeded = true;
-    if( '/' == fullOpeningTagAsFound[ fullOpeningTagAsFound.size() - 1 ] )
-      // if the opening tag also closes the element...
+    closeFile();
+    fileParsingStream.open( fileName.c_str() );
+    if( !(fileParsingStream.good()) )
     {
-      // leave the content empty & note success:
-      return true;
-    }
-    else
-      // otherwise "</" followed by soughtTag followed by possible whitespace
-      // followed by '>' has to be found.
-    {
-      finishedSearching = false;
-      while( lastOperationSucceeded
-             &&
-             !finishedSearching )
-        // the loop keeps looking for the closing tag until it either finds it
-        // or runs out of textStream.
-      {
-        while( textStream->get( currentReadChar ).good()
-               &&
-               '<' != currentReadChar )
-        {
-          fullElementContentAsFound.append( 1,
-                                            currentReadChar );
-        }
-        // everything up to the next potential closing tag is recorded.
-        if( '<' == currentReadChar )
-          // if there is a potential tag...
-        {
-          finishedSearching = foundSoughtClosingTag();
-          /* foundSoughtClosingTag compares the potential tag, & returns true
-           * if it found it. lastOperationSucceeded is set to false if it
-           * failed to find a well-formed tag to compare against a valid
-           * closing tag.
-           */
-        }
-        else
-          // otherwise textStream ran out of characters before a possible
-          // closing tag was found.
-        {
-          lastOperationSucceeded = false;
-        }
-      }
-      if( !lastOperationSucceeded
-          &&
-          isVerbose )
+      if( isVerbose )
       {
         std::cout
         << std::endl
-        << "BOL::AsciiXmlParser::warning! could not find \"</"
-        << soughtTag << ">\" to close the open element!";
+        << "BOL::error! AsciiXmlParser::openRootElementOfFile( " << fileName
+        << " ) could not open the file!";
         std::cout << std::endl;
       }
-      return lastOperationSucceeded;
+      return false;
     }
+    textStream = &fileParsingStream;
+    streamIsGood = skipPrologAndOpenRootElement();
+    if( !streamIsGood
+        &&
+        isVerbose )
+    {
+      std::cout
+      << std::endl
+      << "BOL::error! AsciiXmlParser::openRootElementOfFile( " << fileName
+      << " ) could not find a root element!";
+      std::cout << std::endl;
+    }
+    return streamIsGood;
   }
 
   bool
-  AsciiXmlParser::recordSoughtTagOrDiscard()
-  /* this compares the next chars from textStream with soughtTag, & if the tag
-   * is a valid XML tag for soughtTag, with or without attributes, it is
-   * recorded into fullOpeningTagAsFound, & true is returned. otherwise the
-   * read chars are discarded & false is returned. in either case, textStream
-   * has been read up to either '>' or the end of the stream.
+  AsciiXmlParser::closeMarkup( size_t const startPosition )
+  /* this records characters from textStream by appending them to markupString,
+   * up to the 1st instance of markupCloser that is not enclosed in quotes,
+   * but only looking for quote characters from startPosition onwards.
    */
   {
-    charPosition = 0;
-    while( textStream->get( currentReadChar ).good()
-           &&
-           ( currentReadChar == soughtTag[ charPosition ] )
-           &&
-           ( (++charPosition) < soughtTagLength ) )
+    streamIsGood = recordTo( markupString,
+                             markupCloser );
+    if( !streamIsGood )
     {
-      // the conditional does the work of comparing up to either the end of
-      // soughtTag or the 1st non-matching char.
-    }
-    if( charPosition == soughtTagLength )
-      // if soughtTag was found, we need to check that it wasn't just a
-      // substring of a different tag:
-    {
-      if( textStream->get( currentReadChar ).good() )
+      if( isVerbose )
       {
-        if( '>' == currentReadChar )
-          // if the tag was indeed soughtTag, without attributes, note how it
-          // was found, & stop looking:
+        std::cout
+        << std::endl
+        << "BOL::error! AsciiXmlParser::closeMarkup( " << startPosition
+        << " ) could not find the end of a markup!";
+        std::cout << std::endl;
+      }
+      return false;
+    }
+    parseStart = markupString.find_first_of( allowedXmlQuoteChars,
+                                             startPosition );
+    while( std::string::npos != parseStart )
+    {
+      currentQuoteChar = markupString[ parseStart ];
+      parseEnd = markupString.find( currentQuoteChar,
+                                    ( parseStart + 1 ) );
+      while( std::string::npos == parseEnd )
+      {
+        markupString.append( 1,
+                             markupCloser );
+        previousLength = markupString.size();
+        streamIsGood = recordTo( markupString,
+                                 markupCloser );
+        if( !streamIsGood )
         {
-          fullOpeningTagAsFound.assign( soughtTag );
-          return true;
-        }
-        else if( ( '/' == currentReadChar )
-                 ||
-                 StringParser::charIsIn( currentReadChar,
-                                         allowedXmlWhitespaceChars ) )
-          // if the tag was indeed soughtTag, with attributes, or just about to
-          // close itself, note how it was found, & stop looking:
-        {
-          fullOpeningTagAsFound.assign( soughtTag );
-          fullOpeningTagAsFound.append( 1,
-                                        currentReadChar );
-          while( textStream->get( currentReadChar ).good()
-                 &&
-                 '>' != currentReadChar )
+          if( isVerbose )
           {
-            fullOpeningTagAsFound.append( 1,
-                                          currentReadChar );
-            // this reads the rest of the opening tag into
-            // fullOpeningTagAsFound.
+            std::cout
+            << std::endl
+            << "BOL::error! AsciiXmlParser::closeMarkup( " << startPosition
+            << ") could not find the end of a markup!";
+            std::cout << std::endl;
           }
-          return true;
-        }
-        else
-          // otherwise there was a problem reading in the last char:
-        {
-          lastOperationSucceeded = false;
           return false;
         }
+        parseEnd = markupString.find( currentQuoteChar,
+                                      previousLength );
       }
-      else
-        // otherwise soughtTag was only found as a substring of another tag.
-      {
-        return false;
-      }
+      parseStart = markupString.find_first_of( allowedXmlQuoteChars,
+                                               ( parseEnd + 1 ) );
     }
-    else
-      // otherwise, soughtTag was not found as a tag.
-    {
-      return false;
-    }
+    return true;
   }
 
   bool
-  AsciiXmlParser::foundSoughtClosingTag()
-  /* this reads in a potential closing tag & checks to see if it is a valid
-   * closing tag for the sought element. if it is, the function returns true.
-   * otherwise, if it was a valid tag but not the closing tag for the element,
-   * the tag (including '<', possible '/'s, & '>') is appended to
-   * fullElementContentAsFound, & lastOperationSucceeded is left as true, but
-   * false is returned. if no valid tag could be read in,
-   * lastOperationSucceeded is set to false and false is returned.
+  AsciiXmlParser::ignoreDelimited(
+               std::pair< std::string, std::string > const& delimitingStrings )
+  /* this checks to see if markupString begins with delimitingStrings.first,
+   * & if so, ensures that markupString ends with delimitingStrings.second,
+   * appending to markupString if necessary, then empties it. true is then
+   * returned, unless the end of the text was reached before this could
+   * happen.
    */
   {
-    if( textStream->get( currentReadChar ).good() )
-      // if there is a char after the '<' that triggered this function...
+    if( !(compareMarkupStart( delimitingStrings.first )) )
     {
-      if( '/' == currentReadChar )
-        // if it's a potential closing tag...
+      return true;
+    }
+    while( !(compareMarkupEnd( delimitingStrings.second )) )
+    {
+      streamIsGood = recordTo( markupString,
+                               markupCloser );
+      if( !streamIsGood )
       {
-        potentialClosingTag.clear();
-        // potentialClosingTag is cleared so as to take in the tag.
-        while( textStream->get( currentReadChar ).good()
-               &&
-               '>' != currentReadChar )
+        if( isVerbose )
         {
-          potentialClosingTag.append( 1,
-                                      currentReadChar );
+          std::cout
+          << std::endl
+          << "BOL::error! AsciiXmlParser::ignoreDelimited( \""
+          << delimitingStrings.first << ", " << delimitingStrings.second
+          << "\" ) could not find the ending delimiter!";
+          std::cout << std::endl;
         }
-        if( ( '>' == currentReadChar )
-            &&
-            ( 0 == StringParser::trimFromBack( potentialClosingTag,
-                                               allowedXmlWhitespaceChars
-                                                     ).compare( soughtTag ) ) )
-          // if it was the closing tag...
-        {
-          // note that the tag did close the element:
-          return true;
-        }
-        else
-          // otherwise, record it as part of the element content:
-        {
-          fullElementContentAsFound.append( "</" );
-          // the '<' triggered this function being called, & the '/' triggered
-          // this branch of the if-else.
-          fullElementContentAsFound.append( potentialClosingTag );
-          fullElementContentAsFound.append( 1,
-                                            currentReadChar );
-          // currentReadChar will be forgotten about once this function ends,
-          // so it needs to be recorded at this point.
-
-          // note that the tag did not close the element:
-          return false;
-        }
-      }
-      else
-        /* otherwise it was just '<' followed by stuff that is not the closing
-         * tag, so the '<' that triggered this function gets appended, then
-         * currentReadChar before it is forgotten about, then false is returned
-         * without any other characters being read.
-         */
-      {
-        fullElementContentAsFound.append( 1,
-                                          '<' );
-        fullElementContentAsFound.append( 1,
-                                          currentReadChar );
         return false;
       }
     }
-    else
-      // otherwise the closing tag cannot be found in textStream, so
-      // lastOperationSucceeded is set to false and false is returned:
+    markupString.assign( "" );
+    return true;
+  }
+
+  bool
+  AsciiXmlParser::recordDelimited(
+               std::pair< std::string, std::string > const& delimitingStrings )
+  /* this checks to see if markupString begins with delimitingStrings.first,
+   * & if so, ensures that markupString ends with delimitingStrings.second,
+   * appending to markupString if necessary, then appends
+   * markupOpener + markupString + markupCloser to fullElementContentAsFound,
+   * then empties markupString. if markupString does not begin with
+   * delimitingStrings.first, no change is made to either markupString or
+   * fullElementContentAsFound. true is then returned, unless the end of the
+   * text was reached before this could happen.
+   */
+  {
+    if( !(compareMarkupStart( delimitingStrings.first )) )
     {
-      lastOperationSucceeded = false;
+      return true;
+    }
+    while( !(compareMarkupEnd( delimitingStrings.second )) )
+    {
+      markupString.append( 1,
+                           markupCloser );
+      streamIsGood = recordTo( markupString,
+                               markupCloser );
+      if( !streamIsGood )
+      {
+        if( isVerbose )
+        {
+          std::cout
+          << std::endl
+          << "BOL::error! AsciiXmlParser::ignoreDelimited( \""
+          << delimitingStrings.first << ", " << delimitingStrings.second
+          << "\" ) could not find the ending delimiter!";
+          std::cout << std::endl;
+        }
+        return false;
+      }
+    }
+    fullElementContentAsFound.append( 1,
+                                      markupOpener );
+    fullElementContentAsFound.append( markupString );
+    fullElementContentAsFound.append( 1,
+                                      markupCloser );
+    markupString.assign( "" );
+    return true;
+  }
+
+  bool
+  AsciiXmlParser::eraseQuotedStringsInMarkup( size_t const startPosition )
+  /* this erases any quoted text in markupString starting from startPosition,
+   * extending markupString from textStream to the next unquoted
+   * markupCloser.
+   */
+  {
+    // at this point, every opening quote in markupString from startPosition is
+    // matched by a closing quote (properly nested).
+    parseStart = markupString.find_first_of( allowedXmlQuoteChars,
+                                             startPosition );
+    while( std::string::npos != parseStart )
+    {
+      currentQuoteChar = markupString[ parseStart ];
+      parseEnd = markupString.find( currentQuoteChar,
+                                    ( parseStart + 1 ) );
+      markupString.erase( parseStart,
+                          ( parseEnd - parseStart + 1 ) );
+      // we have to erase the closing quote character as well.
+      parseStart = markupString.find_first_of( allowedXmlQuoteChars,
+                                               parseStart );
+    }
+    // at this point, all quoted strings have been removed from markupString,
+    // & now it ends at the 1st unquoted '>' in the text.
+    return true;
+  }
+
+  bool
+  AsciiXmlParser::parseAttributes()
+  /* this parses any attributes in markupString, assuming that parseEnd is at
+   * the end of the tag's name. false is returned if a malformed attribute is
+   * found.
+   */
+  {
+    elementAttributeMap.clear();
+    parseStart = markupString.find_first_not_of( allowedXmlWhitespaceChars,
+                                                 parseEnd );
+    while( std::string::npos != parseStart )
+    {
+      if( ( ( markupString.size() - 1 ) == parseStart )
+          &&
+          ( tagCloser == markupString[ parseStart ] ) )
+      {
+        // if there is only whitespace left in the markup or the indicator of
+        // an empty element, the parsing is done:
+        return true;
+      }
+      // at this point, we have found a new attribute.
+      parseEnd = markupString.find( '=',
+                                    parseStart );
+      if( std::string::npos == parseEnd )
+      {
+        if( isVerbose )
+        {
+          std::cout
+          << std::endl
+          << "BOL::error! AsciiXmlParser::parseOpeningTag() found an attribute"
+          << " (\"" << markupString.substr( parseStart )
+          << "\") without a value!";
+          std::cout << std::endl;
+        }
+        return false;
+      }
+      currentAttribute.first.assign( markupString.substr( parseStart,
+                                                 ( parseEnd - parseStart ) ) );
+      currentQuoteChar = markupString[ ( ++parseEnd ) ];
+      // this really should be ' or " for valid XML, but we won't bother
+      // checking...
+      parseStart = ( ++parseEnd );
+      // the attribute's value begins after the '=' & the quote character (by
+      // this point, parseEnd has been incremented twice before parseStart gets
+      // set).
+      parseEnd = markupString.find( currentQuoteChar,
+                                    parseStart );
+      if( std::string::npos == parseEnd )
+        // this shouldn't ever happen, because such cases should have already
+        // been caught by closeMarkup().
+      {
+        if( isVerbose )
+        {
+          std::cout
+          << std::endl
+          << "BOL::error! AsciiXmlParser::parseOpeningTag() found an attribute"
+          << " (\"" << markupString.substr( parseStart )
+          << "\") without a well-formed value (no closing quote mark)!";
+          std::cout << std::endl;
+        }
+        return false;
+      }
+      currentAttribute.second.assign( markupString.substr( parseStart,
+                                                 ( parseEnd - parseStart ) ) );
+      elementAttributeMap.insert( currentAttribute );
+      parseStart = markupString.find_first_not_of( allowedXmlWhitespaceChars,
+                                                   ( ++parseEnd ) );
+      // parseEnd has to be incremented so that parseStart doesn't just sit on
+      // the closing quote.
+    }
+    return true;
+  }
+
+  bool
+  AsciiXmlParser::recordToEndOfElement()
+  /* this stores the characters between the opening tag & the corresponding
+   * closing tag in fullElementContentAsFound, returning false if the end of
+   * the text was reached before finding the closing tag.
+   */
+  {
+    fullOpeningTagAsFound.assign( "" );
+    recordTagTo( fullOpeningTagAsFound );
+    fullElementContentAsFound.assign( "" );
+    // we note which line the opening tag is on:
+    elementLineRange.first = ( readNewlines + 1 );
+    if( tagCloser == markupString[ markupString.size() - 1 ] )
+    {
+      // empty tags need no recording:
+      elementLineRange.second = ( readNewlines + 1 );
+      return true;
+    }
+    closingTag.assign( 1,
+                       tagCloser );
+    closingTag.append( elementName );
+    closingTagsToFind = 1;
+    // there could be nested elements of the same name (not necessarily nested
+    // directly).
+    while( 0 < closingTagsToFind )
+    {
+      streamIsGood = ( recordToNextTag()
+                       &&
+                       parseTagName( currentTagName ) );
+      if( !streamIsGood )
+      {
+        return false;
+      }
+      if( 0 == currentTagName.compare( elementName ) )
+      {
+        // if a nested child element of the same name is found, the child
+        // element is recorded too.
+        ++closingTagsToFind;
+      }
+      else if( 0 == currentTagName.compare( closingTag ) )
+      {
+        --closingTagsToFind;
+      }
+      if( 0 < closingTagsToFind )
+      {
+        // if unless this is the closing tag of element, the markup must be
+        // recorded, & here, because textStream has already gone past it.
+        recordTagTo( fullElementContentAsFound );
+      }
+      else
+      {
+        // if this is the closing tag, we note which line it is on:
+        elementLineRange.second = ( readNewlines + 1 );
+      }
+    }
+    return true;
+  }
+
+  bool
+  AsciiXmlParser::skipPrologAndOpenRootElement()
+  /* this skips any XML prolog & then opens the root element. the prolog is an
+   * optional XML declaration & an optional document type declaration, with any
+   * number of comments & processing instructions (though not before the XML
+   * declaration if there is one).
+   */
+  {
+    resetContent();
+    // the XML declaration markup is skipped as it is a special case of
+    // processing instruction markup.
+    while( markupString.empty() )
+    {
+      streamIsGood = ( discardToNextMarkup()
+                       &&
+                       ignoreDelimited( commentDelimiter )
+                       &&
+                       ignoreDelimited( piDelimiter ) );
+      if( !streamIsGood )
+      {
+        if( isVerbose )
+        {
+          std::cout
+          << std::endl
+          << "BOL::error! AsciiXmlParser::skipPrologAndOpenRootElement() could"
+          << " not find any valid root element tag markup!";
+          std::cout << std::endl;
+        }
+        return false;
+      }
+    }
+    // at this point, either the current markup is the root element's opening
+    // tag, or is the document declaration if there is one, either only up to
+    // the 1st '>' regardless of if it actually is the end of the markup or
+    // not (e.g. if it is within quotes).
+    if( ( doctypeDelimiter.first.size() < ( markupString.size() + 2 ) )
+        &&
+        compareMarkupStart( doctypeDelimiter.first ) )
+      // if the markup is a document type declaration...
+    {
+      // since we will discard the document type declaration, it doesn't matter
+      // if we mangle markupString in doing so, since it will be over-written
+      // the opening tag of the root element anyway.
+      streamIsGood = eraseQuotedStringsInMarkup( 0 );
+      if( !streamIsGood )
+      {
+        if( isVerbose )
+        {
+          std::cout
+          << std::endl
+          << "BOL::error! AsciiXmlParser::skipPrologAndOpenRootElement() could"
+          << " not find any valid root element tag markup!";
+          std::cout << std::endl;
+        }
+        return false;
+      }
+      size_t unclosedSubmarkupOpener( markupString.find( markupOpener ) );
+      while( std::string::npos != unclosedSubmarkupOpener )
+      {
+        previousLength = markupString.size();
+        streamIsGood = ( recordTo( markupString,
+                                   markupCloser )
+                         &&
+                         eraseQuotedStringsInMarkup( previousLength ) );
+        if( !streamIsGood )
+        {
+          if( isVerbose )
+          {
+            std::cout
+            << std::endl
+            << "BOL::error! AsciiXmlParser::skipPrologAndOpenRootElement()"
+            << " could not find any valid root element tag markup!";
+            std::cout << std::endl;
+          }
+          return false;
+        }
+        unclosedSubmarkupOpener = markupString.find( markupOpener,
+                                                     unclosedSubmarkupOpener );
+      }
+      markupString.assign( "" );
+      // at this point, we have read in an unquoted '>' for every '<'. now we
+      // can forget the mangled document type declaration & we only have to
+      // discard any more comments or processing instructions before the
+      // opening tag of the root element.
+      while( markupString.empty() )
+      {
+        streamIsGood = ( discardToNextMarkup()
+                         &&
+                         ignoreDelimited( commentDelimiter )
+                         &&
+                         ignoreDelimited( piDelimiter ) );
+        if( !streamIsGood )
+        {
+          if( isVerbose )
+          {
+            std::cout
+            << std::endl
+            << "BOL::error! AsciiXmlParser::skipPrologAndOpenRootElement()"
+            << " could not find any valid root element tag markup!";
+            std::cout << std::endl;
+          }
+          return false;
+        }
+      }
+    }
+    // at this point, the current markup is the root element's opening tag,
+    // though only up to the 1st '>' regardless of if it actually is the end of
+    // the markup or not (e.g. if it is within quotes).
+    rootLineRange.first = ( readNewlines + 1 );
+    streamIsGood = ( parseTagName( elementName )
+                     &&
+                     parseAttributes() );
+    if( !streamIsGood )
+    {
+      if( isVerbose )
+      {
+        std::cout
+        << std::endl
+        << "BOL::error! AsciiXmlParser::skipPrologAndOpenRootElement() could"
+        << " not find any valid root element tag markup!";
+        std::cout << std::endl;
+      }
       return false;
     }
+    rootAttributeMap = elementAttributeMap;
+    rootTag.assign( elementName );
+    return true;
   }
 
 }

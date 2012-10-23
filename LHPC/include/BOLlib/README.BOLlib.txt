@@ -35,6 +35,12 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 23rd October 2012: version 0.4.1
+ - minor signature change to AsciiXmlParser::loadString: from taking a
+   std::string const& reference to a std::string const copy (fixing some bugs
+   caused by overly leet re-use of the same AsciiXmlParser to parse its own
+   parsed content).
+
  * 16th October 2012: version 0.4.0
  - major changes to AsciiXmlParser (breaking compatibility with 0.3 & older):
    -- now ignores XML comments properly.

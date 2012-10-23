@@ -240,6 +240,9 @@
 
 
 CHANGELOG:
+ * 23rd October 2012: version 0.7.3
+ - BOLlib updated to 0.4.1 (minor AsciiXmlParser::loadString signature change)
+   
  * 16th October 2012: version 0.7.2
  - BOLlib updated to 0.4.0 (AsciiXmlParser rewritten, now properly ignores XML
    comments) - breaks any code that relies on BOL::AsciiXmlParser, but all LHPC

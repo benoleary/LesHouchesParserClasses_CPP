@@ -47,7 +47,7 @@ namespace BOL
       * this closes the previously-loaded file, if it was open.
       */
     bool
-    loadString( std::string const& stringToParse );
+    loadString( std::string const stringToParse );
     /* this loads stringToParse into the internal stringstream for parsing. if
       * there was a problem loading the file, false is returned. if there was a
       * file open, it is now closed.
@@ -267,7 +267,7 @@ namespace BOL
   }
 
   inline bool
-  AsciiXmlParser::loadString( std::string const& stringToParse )
+  AsciiXmlParser::loadString( std::string const stringToParse )
   /* this loads stringToParse into the internal stringstream for parsing. if
     * there was a problem loading the file, false is returned. if there was a
     * file open, it is now closed.
@@ -384,7 +384,6 @@ namespace BOL
     elementLineRange.first = -1;
     elementLineRange.second = -1;
     markupString.assign( "" );
-    streamIsGood = false;
     readNewlines = 0;
   }
 

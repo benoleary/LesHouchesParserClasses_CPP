@@ -43,12 +43,12 @@ namespace BOL
       // error message should not be shown for failing to open it.
       if( !(inputFilename.empty()) )
       {
-        if( inputXmlParser.readAllOfRootElementOfFile( inputFilename ) )
-        {
-          inputXmlParser.loadString(
-                                   inputXmlParser.getCurrentElementContent() );
-        }
-        else
+        bool successfullyRead( inputXmlParser.readAllOfRootElementOfFile(
+                                                                inputFilename )
+                               &&
+                               inputXmlParser.loadString(
+                                 inputXmlParser.getCurrentElementContent() ) );
+        if( !successfullyRead )
         {
           std::cout
           << std::endl

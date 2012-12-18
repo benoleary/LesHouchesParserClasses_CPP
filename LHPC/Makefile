@@ -15,9 +15,10 @@ SHELL=/bin/sh
 CC=g++
 CCOBJFLAGS=-c -Wall -O3 -I./include/
 CCEXEFLAGS=-Wall -O3 -I./include/
-LDFLAGS= -L./lib/ -lLHPC -L./include/BOLlib/lib/ -lBOLlib
+LDFLAGS= -L./lib/ -lLHPC # -L./include/BOLlib/lib/ -lBOLlib
 AR=ar
 ARFLAGS=rcs
+AREXTRACTIONFLAGS=xv
 LHEFDIR=source/LesHouchesEventFileClasses
 MECDIR=source/MassEigenstateCollectionClasses
 MECMSCDIR=$(MECDIR)/MassSpectrumClasses
@@ -104,7 +105,9 @@ $(LIBDIR):
 	mkdir $@
 
 $(LIBRARYFILE): $(LIBDIR) $(BOLLIBFILE) $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $(OBJECTS)
+	$(AR) $(AREXTRACTIONFLAGS) $(BOLLIBFILE)
+	$(AR) $(ARFLAGS) $@ $(OBJECTS) *.o
+	\rm *.o __.SYMDEF
 	
 $(BINDIR):
 	mkdir $@

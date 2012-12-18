@@ -240,6 +240,11 @@
 
 
 CHANGELOG:
+ * 18th December 2012: version 0.7.4
+ - changed Makefile to include all BOLlib source files in libLHPC.a, so only
+   -L/path/to/LHPC/ -lLHPC is needed to link the static library, without
+   needing to link libBOLlib.a as well.
+
  * 23rd October 2012: version 0.7.3
  - BOLlib updated to 0.4.1 (minor AsciiXmlParser::loadString signature change)
    

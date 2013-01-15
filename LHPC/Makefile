@@ -107,7 +107,7 @@ $(LIBDIR):
 $(LIBRARYFILE): $(LIBDIR) $(BOLLIBFILE) $(OBJECTS)
 	$(AR) $(AREXTRACTIONFLAGS) $(BOLLIBFILE)
 	$(AR) $(ARFLAGS) $@ $(OBJECTS) *.o
-	\rm *.o __.SYMDEF
+	-\rm *.o __.SYMDEF
 	
 $(BINDIR):
 	mkdir $@

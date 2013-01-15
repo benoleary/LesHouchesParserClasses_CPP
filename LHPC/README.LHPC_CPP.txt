@@ -240,6 +240,14 @@
 
 
 CHANGELOG:
+ * 15th January 2013: version 0.7.5
+ - fixed SlhaSimplisticInterpreter::operator( std::string blockNameAndIndices )
+   to correctly return an empty string if given the name of a block that does
+   not exist in the SLHAfile, rather than causing a segmentation fault.
+ - minor change to Makefile to ensure that it does not return an error if it
+   could not remove the file __.SYMDEF, which is sometimes there when unpacking
+   libBOLlib.a to incorporate it into libLHPC.a directly.
+
  * 18th December 2012: version 0.7.4
  - changed Makefile to include all BOLlib source files in libLHPC.a, so only
    -L/path/to/LHPC/ -lLHPC is needed to link the static library, without

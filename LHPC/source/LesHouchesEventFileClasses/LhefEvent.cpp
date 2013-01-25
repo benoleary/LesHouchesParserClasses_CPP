@@ -37,7 +37,8 @@ namespace LHPC
         primaryMotherLinePointer( NULL ),
         secondaryMotherLinePointer( NULL ),
         isVerbose( isVerbose ),
-        eventAsString( "" )
+        eventAsString( "" ),
+        optionalInformation( "" )
     {
       // just an initialization list.
     }
@@ -60,7 +61,8 @@ namespace LHPC
         primaryMotherLinePointer( NULL ),
         secondaryMotherLinePointer( NULL ),
         isVerbose( trueForVerbosity ),
-        eventAsString( copySource.eventAsString )
+        eventAsString( copySource.eventAsString ),
+        optionalInformation( copySource.optionalInformation )
     {
       /* the copy constructors of particleLines cannot get their mother &
        * daughter pointers by themselves, so this constructor has to sort them
@@ -85,15 +87,31 @@ namespace LHPC
      * true is returned if all the entries were filled as expected.
      */
     {
-      this->eventAsString.assign( BOL::StringParser::trimFromFront(
-                                BOL::StringParser::trimFromBack( eventAsString,
-                                                               trimmingChars ),
+      this->eventAsString.assign( BOL::StringParser::trimFromFrontAndBack(
+                                                                 eventAsString,
                                                              trimmingChars ) );
       ++eventNumberInFile;
       eventAsLines.clearEntries();
-      BOL::StringParser::parseByChar( this->eventAsString,
-                                      eventAsLines,
-                                      BOL::StringParser::newlineChars );
+      size_t startOfOptionalInformation( this->eventAsString.find( '#' ) );
+      if( std::string::npos != startOfOptionalInformation )
+      {
+        optionalInformation.assign(
+                      this->eventAsString.substr( startOfOptionalInformation ) );
+        BOL::StringParser::parseByChar(
+                                       BOL::StringParser::trimFromFrontAndBack(
+                                                 this->eventAsString.substr( 0,
+                                                  startOfOptionalInformation ),
+                                                               trimmingChars ),
+                                        eventAsLines,
+                                        BOL::StringParser::newlineChars );
+      }
+      else
+      {
+        optionalInformation.assign( "" );
+        BOL::StringParser::parseByChar( this->eventAsString,
+                                        eventAsLines,
+                                        BOL::StringParser::newlineChars );
+      }
       // now lineParser should be 1 string for the header line &
       // ( lineParser.getSize() - 1 ) strings for the particle lines.
       if( 1 >= eventAsLines.getSize() )
@@ -216,6 +234,7 @@ namespace LHPC
             }
             // end of if-else to finally set up the ParticleLines after
             // checking that they all recorded properly.
+
           }
           // end of if-else checking that the number of particles in the header
           // matches the number of lines for particles in the event.

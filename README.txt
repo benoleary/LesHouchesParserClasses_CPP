@@ -240,6 +240,20 @@
 
 
 CHANGELOG:
+ * 25th January 2013: version 0.8.0
+ - fixed LhefEvent::recordEvent( std::string const& eventAsString )
+   to allow for the optional information permitted by the LHEF format. all
+   characters after the 1st instance of a '#' character are separated from the
+   event before parsing, stored in a string accessible by
+   LhefEvent::getOptionalInformation().
+ - added StandardPreselector class to facilitate common combinations of
+   FilterRules for final-state particles. also added
+   EitherSignElectronPreselector, EitherSignMuonPreselector, JetPreselector,
+   LightLeptonPreselector derived classes for very common desired final states.
+ - added example use of the StandardPreselector class and derived classes to
+   LhefParserExample.cpp example.
+ - update Makefile and READMEs.
+ 
  * 15th January 2013: version 0.7.5
  - fixed SlhaSimplisticInterpreter::operator( std::string blockNameAndIndices )
    to correctly return an empty string if given the name of a block that does

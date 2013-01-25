@@ -95,36 +95,6 @@ namespace LHPC
     return eventIsValid;
   }
 
-  inline bool
-  LhefParser::readNextEvent()
-  // this reads in the next event in the event file, & returns true if
-  // successful.
-  {
-    if( fileIsOpen )
-    {
-      fileIsOpen = fileParser.readNextElement();
-      while( !(fileParser.currentElementNameMatches( eventTag )) )
-      {
-        fileIsOpen = fileParser.readNextElement();
-        if( !fileIsOpen )
-        {
-          fileParser.closeFile();
-          eventAsString.assign( "" );
-          return false;
-        }
-      }
-      eventAsString.assign( fileParser.getCurrentElementContent() );
-      eventIsValid = currentEvent.recordEvent( eventAsString );
-      for( int filterIndex( automaticFilters.size() - 1 );
-           0 <= filterIndex;
-           --filterIndex )
-      {
-        automaticFilters[ filterIndex ]->updateForNewEvent( currentEvent );
-      }
-    }
-    return fileIsOpen;
-  }
-
   inline LHEF::LhefEvent const&
   LhefParser::getEvent() const
   // this returns the last parsed event.

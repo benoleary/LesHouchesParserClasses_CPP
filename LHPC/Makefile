@@ -15,7 +15,7 @@ SHELL=/bin/sh
 CC=g++
 CCOBJFLAGS=-c -Wall -O3 -I./include/
 CCEXEFLAGS=-Wall -O3 -I./include/
-LDFLAGS= -L./lib/ -lLHPC # -L./include/BOLlib/lib/ -lBOLlib
+LDFLAGS= -L./lib/ -lLHPC
 AR=ar
 ARFLAGS=rcs
 AREXTRACTIONFLAGS=xv
@@ -32,6 +32,11 @@ SOURCES=source/LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  $(LHEFDIR)/FilterRuleClasses/ParticleCode.cpp \
  $(LHEFDIR)/FilterRuleClasses/PseudorapidityCut.cpp \
  $(LHEFDIR)/FilterRuleClasses/TransverseMomentumCut.cpp \
+ $(LHEFDIR)/PreSelectorClasses/EitherSignElectronPreselector.cpp \
+ $(LHEFDIR)/PreSelectorClasses/EitherSignMuonPreselector.cpp \
+ $(LHEFDIR)/PreSelectorClasses/JetPreselector.cpp \
+ $(LHEFDIR)/PreSelectorClasses/LightLeptonPreselector.cpp \
+ $(LHEFDIR)/PreSelectorClasses/StandardPreselector.cpp \
  source/LargeHadronColliderOlympicsClasses/FourMomentum.cpp \
  source/LargeHadronColliderOlympicsClasses/LhcoEvent.cpp \
  source/LargeHadronColliderOlympicsClasses/LhcoParser.cpp \

@@ -21,6 +21,7 @@
 #include "LesHouchesEventFileClasses/LhefEvent.hpp"
 #include "LesHouchesEventFileClasses/LhefParser.hpp"
 #include "LesHouchesEventFileClasses/ParticleLine.hpp"
+#include "LesHouchesEventFileClasses/PreselectorClasses.hpp"
 #include "LargeHadronColliderOlympicsClasses/FourMomentum.hpp"
 
 #endif /* LHEF_HPP_ */

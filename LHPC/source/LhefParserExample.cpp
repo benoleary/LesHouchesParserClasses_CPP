@@ -112,6 +112,92 @@ int main( int argumentCount,
       << " initial state & intermediate particles) is " << energySum;
       std::cout << std::endl;
 
+
+      // first of all, examples of the pre-baked filters:
+      LHPC::LHEF::PreselectorClass::StandardPreselector
+      photonFilter( testParser,
+                    22 );
+      // photonFilter will now store ParticleLines with final-state photons
+      // from each event read by testParser, with no minimum transverse
+      // momentum or pseudorapidity range requirements.
+
+      std::vector< int > particleCodes;
+      particleCodes.push_back( LHPC::PDGVII::negativeTau );
+      particleCodes.push_back( LHPC::PDGVII::positiveTau );
+      LHPC::LHEF::PreselectorClass::StandardPreselector
+      tauFilter( testParser,
+                 particleCodes,
+                 10.0,
+                 2.5 );
+      // tauFilter will now store ParticleLines with final-state tau leptons of
+      // either sign from each event read by testParser, which have minimum
+      // transverse momentum of 10.0 and pseudorapidity within the range -2.5
+      // to +2.5.
+
+      LHPC::LHEF::PreselectorClass::LightLeptonPreselector
+      lightLeptonFilter( testParser,
+                         20.0,
+                         2.4 );
+      // tauFilter will now store ParticleLines with final-state electrons or
+      // muons of either sign from each event read by testParser, which have
+      // minimum transverse momentum of 20.0 and pseudorapidity within the
+      // range -2.4 to +2.4.
+
+      particleCodes.clear();
+      particleCodes.push_back( LHPC::PDGVII::negativeCharginoOne );
+      particleCodes.push_back( LHPC::PDGVII::positiveCharginoOne );
+      LHPC::LHEF::PreselectorClass::StandardPreselector
+      charginoFilter( testParser,
+                      particleCodes,
+                      100.0,
+                      2.5 );
+      // charginoFilter will now store ParticleLines with final-state charginos
+      // of either sign from each event read by testParser, which have minimum
+      // transverse momentum of 100.0 and pseudorapidity within the range -2.5
+      // to +2.5.
+
+      if( testParser.readNextEvent() )
+      {
+        if( photonFilter.isEmpty() )
+        {
+          std::cout
+          << std::endl
+          << "no photons in this event!";
+          std::cout << std::endl;
+        }
+        else
+        {
+          std::cout
+          << std::endl
+          << "1st photon of this event has energy = "
+          << photonFilter[ 0 ].getEnergy();
+          std::cout << std::endl;
+        }
+        for( int whichChargino( 0 );
+             charginoFilter.getSize() > whichChargino;
+             ++whichChargino )
+        {
+          std::cout
+          << std::endl
+          << "chargino[ " << whichChargino
+          << " ] of this event has transverse momentum = "
+          << charginoFilter[ whichChargino ].getTransverseMomentum();
+          std::cout << std::endl;
+        }
+        for( std::list< LHPC::LHEF::ParticleLine const* >::const_iterator
+             leptonIterator( lightLeptonFilter.getList().begin() );
+             lightLeptonFilter.getList().end() != leptonIterator;
+             ++leptonIterator )
+        {
+          std::cout
+          << std::endl
+          << "event had light lepton in final state with pseudorapidity = "
+          << (*leptonIterator)->getPseudorapidity();
+          std::cout << std::endl;
+        }
+      }
+
+
       // now we set up some filter rules.
 
       /* I set up typedefs (like aliases) for the descriptive FilterRuleClass
@@ -288,11 +374,12 @@ int main( int argumentCount,
         std::cout << ", total missing transverse momentum = "
         << LHPC::LHEF::ParticleLine::sumMomentaAsLine( sumOfInvisibleLine,
                                                        invisibleLines
-                                                      ).getTransverseMomentum()
+                                                     ).getTransverseMomentum();
         /* convoluted example to show that
          * LHPC::LHEF::ParticleLine::sumMomentaAsLine returns a reference
          * to the ParticleLine that it uses to store the sum of the momenta.
          */
+        std::cout
         << " (actual total energy carried by sum of invisible particles = "
         << sumOfInvisibleLine.getEnergy() << ")";
         // sumOfInvisibleLine still has the momemtum sum from

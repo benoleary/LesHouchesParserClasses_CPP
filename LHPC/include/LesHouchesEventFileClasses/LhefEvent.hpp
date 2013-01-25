@@ -65,6 +65,8 @@ namespace LHPC
       getAsString() const;
       std::string const
       getAsStringWithTags() const;
+      std::string const&
+      getOptionalInformation() const;
 
       // stuff for setting up the LhefEvent:
       bool
@@ -115,6 +117,7 @@ namespace LHPC
       ParticleLine* secondaryMotherLinePointer;
       bool const isVerbose;
       std::string eventAsString;
+      std::string optionalInformation;
 
       void
       setAsInvalid();
@@ -191,6 +194,12 @@ namespace LHPC
       returnString.append( eventAsString );
       returnString.append( "\n</event>" );
       return returnString;
+    }
+
+    inline std::string const&
+    LhefEvent::getOptionalInformation() const
+    {
+      return optionalInformation;
     }
 
     inline void

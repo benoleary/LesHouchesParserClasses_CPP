@@ -111,18 +111,12 @@ namespace LHPC
       rulesToPass = numberOfRules;
       while( ( 0 < rulesToPass )
              &&
-             ( (*filterRules[ numberOfRules - rulesToPass ])( lineToCheck ) ) )
+             ( (*(filterRules[ numberOfRules
+                               - rulesToPass ]))( lineToCheck ) ) )
       {
         --rulesToPass;
       }
-      if( 0 == rulesToPass )
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      return( 0 == rulesToPass );
     }
 
   }

@@ -35,6 +35,10 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 15th February 2013: version 0.4.2
+ - added default value of StringParser::whitespaceAndNewlineChars as
+   StringParser::charsToTrim for StringParser::trimFromFrontAndBack.
+
  * 23rd October 2012: version 0.4.1
  - minor signature change to AsciiXmlParser::loadString: from taking a
    std::string const& reference to a std::string const copy (fixing some bugs

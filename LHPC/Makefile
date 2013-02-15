@@ -32,11 +32,11 @@ SOURCES=source/LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  $(LHEFDIR)/FilterRuleClasses/ParticleCode.cpp \
  $(LHEFDIR)/FilterRuleClasses/PseudorapidityCut.cpp \
  $(LHEFDIR)/FilterRuleClasses/TransverseMomentumCut.cpp \
- $(LHEFDIR)/PreSelectorClasses/EitherSignElectronPreselector.cpp \
- $(LHEFDIR)/PreSelectorClasses/EitherSignMuonPreselector.cpp \
- $(LHEFDIR)/PreSelectorClasses/JetPreselector.cpp \
- $(LHEFDIR)/PreSelectorClasses/LightLeptonPreselector.cpp \
- $(LHEFDIR)/PreSelectorClasses/StandardPreselector.cpp \
+ $(LHEFDIR)/PreselectorClasses/EitherSignElectronPreselector.cpp \
+ $(LHEFDIR)/PreselectorClasses/EitherSignMuonPreselector.cpp \
+ $(LHEFDIR)/PreselectorClasses/JetPreselector.cpp \
+ $(LHEFDIR)/PreselectorClasses/LightLeptonPreselector.cpp \
+ $(LHEFDIR)/PreselectorClasses/StandardPreselector.cpp \
  source/LargeHadronColliderOlympicsClasses/FourMomentum.cpp \
  source/LargeHadronColliderOlympicsClasses/LhcoEvent.cpp \
  source/LargeHadronColliderOlympicsClasses/LhcoParser.cpp \

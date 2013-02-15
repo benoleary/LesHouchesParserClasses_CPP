@@ -240,6 +240,11 @@
 
 
 CHANGELOG:
+ * 15th February 2013: version 0.8.1
+ - fixed silly typo in Makefile (several instances of "/PreSelector/" instead
+   of "/Preselector/", which was being ignored by my Mac and compiling fine.)
+ - updated to version 0.4.2 of BOLlib.
+
  * 25th January 2013: version 0.8.0
  - fixed LhefEvent::recordEvent( std::string const& eventAsString )
    to allow for the optional information permitted by the LHEF format. all

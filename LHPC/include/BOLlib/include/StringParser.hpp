@@ -157,7 +157,7 @@ namespace BOL
      */
     static std::string
     trimFromFrontAndBack( std::string const& stringToTrim,
-                          std::string const& charsToTrim );
+                  std::string const& charsToTrim = whitespaceAndNewlineChars );
     /* this returns the substring of stringToTrim which has had all the chars
      * removed which are in charsToTrim and appear in stringToTrim before the
      * first char which is not in charsToTrim and after the last char which is

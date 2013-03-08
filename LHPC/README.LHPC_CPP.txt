@@ -103,7 +103,7 @@
    - this class is for reading in events from a file in the LHEF format.
    
  The essential functionality of this class is already covered by the classes in
- the LesHouches directory of an installation of the publically-available code
+ the LesHouches directory of an installation of the publicly-available code
  ThePEG (typically part of an installation of Herwig++). The LhefParser class
  was written independently of the code in ThePEG, and provides an extra layer
  of interpretation beyond just filling the HEPRUP and HEPEUP groupings of the
@@ -240,6 +240,9 @@
 
 
 CHANGELOG:
+ * 8th March 2013: version 0.8.2
+ - updated to version 0.4.3 of BOLlib (fixing bug with XML reader).
+
  * 15th February 2013: version 0.8.1
  - fixed silly typo in Makefile (several instances of "/PreSelector/" instead
    of "/Preselector/", which was being ignored by my Mac and compiling fine.)

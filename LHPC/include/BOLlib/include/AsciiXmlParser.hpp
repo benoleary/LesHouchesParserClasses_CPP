@@ -152,7 +152,10 @@ namespace BOL
     /* this records characters from textStream by appending them to
      * markupString, up to the 1st instance of markupCloser that is not
      * enclosed in quotes, but only looking for quote characters from
-     * startPosition onwards.
+     * startPosition onwards. an exception is made if the markup was a comment:
+     * if markupString begins with commentDelimiter.first, all characters up to
+     * the next found ( commentDelimiter.first + markupCloser ) are discarded
+     * & markupString is emptied, then true is returned.
      */
     bool
     discardToNextMarkup();
@@ -489,8 +492,6 @@ namespace BOL
     while( markupString.empty() )
     {
       streamIsGood = ( recordToNextMarkup()
-                       &&
-                       ignoreDelimited( commentDelimiter )
                        &&
                        recordDelimited( piDelimiter )
                        &&

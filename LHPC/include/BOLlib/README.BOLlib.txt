@@ -35,6 +35,10 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 8th March 2013: version 0.4.3
+ - fixed bug where quote marks (' & ") within comments were not being correctly
+   ignored.
+
  * 15th February 2013: version 0.4.2
  - added default value of StringParser::whitespaceAndNewlineChars as
    StringParser::charsToTrim for StringParser::trimFromFrontAndBack.

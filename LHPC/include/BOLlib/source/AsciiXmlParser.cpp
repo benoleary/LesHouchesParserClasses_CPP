@@ -116,11 +116,17 @@ namespace BOL
   AsciiXmlParser::closeMarkup( size_t const startPosition )
   /* this records characters from textStream by appending them to markupString,
    * up to the 1st instance of markupCloser that is not enclosed in quotes,
-   * but only looking for quote characters from startPosition onwards.
+   * but only looking for quote characters from startPosition onwards. an
+   * exception is made if the markup was a comment: if markupString begins with
+   * commentDelimiter.first, all characters up to the next found
+   * ( commentDelimiter.first + markupCloser ) are discarded & markupString is
+   * emptied, then true is returned.
    */
   {
-    streamIsGood = recordTo( markupString,
-                             markupCloser );
+    streamIsGood = ( recordTo( markupString,
+                               markupCloser )
+                     &&
+                     ignoreDelimited( commentDelimiter ) );
     if( !streamIsGood )
     {
       if( isVerbose )

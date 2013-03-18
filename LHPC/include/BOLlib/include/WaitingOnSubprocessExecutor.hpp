@@ -17,6 +17,7 @@
 #include <ctime>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include "StringParser.hpp"
 #include "VectorlikeArray.hpp"
 

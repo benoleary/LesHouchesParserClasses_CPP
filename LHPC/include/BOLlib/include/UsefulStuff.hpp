@@ -68,23 +68,7 @@ namespace BOL
   // this returns true if the difference between firstDouble & secondDouble
   // is less than maximumDifference.
   {
-    if( 0.0 > maximumDifference )
-    {
-      maximumDifference = -maximumDifference;
-    }
-    double differenceOfDoubles( firstDouble - secondDouble );
-    if( 0.0 > differenceOfDoubles )
-    {
-      differenceOfDoubles = -differenceOfDoubles;
-    }
-    if( maximumDifference > differenceOfDoubles )
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+    return ( abs( maximumDifference ) >= abs( firstDouble - secondDouble ) );
   }
 
   inline double

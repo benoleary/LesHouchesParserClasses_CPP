@@ -35,9 +35,12 @@
  to allow others to use the classes.
 
 CHANGELOG:
- * 15th March 2013: version 0.4.4
+ * 25th March 2013: version 0.4.4
  - added explicit #include <unistd.h> to WaitingOnSubprocessExecutor.hpp so
    that it no longer relies on some other header including it.
+ - added UsefulStuff::runSystemCommand( std::string const& systemCommand ) to
+   simplify running system( char[] ), throwing an exception if system( ... )
+   returned -1.
 
  * 8th March 2013: version 0.4.3
  - fixed bug where quote marks (' & ") within comments were not being correctly

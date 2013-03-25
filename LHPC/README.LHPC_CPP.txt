@@ -240,8 +240,8 @@
 
 
 CHANGELOG:
- * 15th March 2013: version 0.8.3
- - updated to version 0.4.3 BOLlib (added explicit #include <unistd.h> to
+ * 25th March 2013: version 0.8.3
+ - updated to version 0.4.4 BOLlib (added explicit #include <unistd.h> to
    WaitingOnSubprocessExecutor.hpp so that it no longer relies on some other
    header including it).
 

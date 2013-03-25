@@ -15,6 +15,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <stdexcept>
 #include <string>
 #include <cmath>
 #include <fstream>
@@ -50,6 +51,10 @@ namespace BOL
     static bool
     fileExists( std::string const& fileName );
     // returns true if a file with the name fileName exists, false otherwise.
+    static void
+    runSystemCommand( std::string const& systemCommand );
+    // this runs system( systemCommand.c_str() ) & throws an exception if it
+    // returned -1.
 
 
   private:
@@ -136,6 +141,18 @@ namespace BOL
       return false;
     }
   }
+
+  inline void
+  UsefulStuff::runSystemCommand( std::string const& systemCommand )
+  {
+    int systemReturn( system( systemCommand.c_str() ) );
+    if( -1 == systemReturn )
+    {
+      throw std::runtime_error( "system( \"" +  systemCommand
+                                + "\" ) returned -1" );
+    }
+  }
+
 }
 
 #endif /* USEFULSTUFF_HPP_ */

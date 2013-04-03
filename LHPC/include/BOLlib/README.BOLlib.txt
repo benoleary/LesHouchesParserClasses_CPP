@@ -35,6 +35,10 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 3rd April 2013: version 0.4.5
+ - CommentedTextParser::parseNextLineOfFile(...) now trims uncommented lines
+   of any trailing newline characters.
+
  * 25th March 2013: version 0.4.4
  - added explicit #include <unistd.h> to WaitingOnSubprocessExecutor.hpp so
    that it no longer relies on some other header including it.

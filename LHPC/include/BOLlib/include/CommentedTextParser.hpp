@@ -201,13 +201,17 @@ namespace BOL
   {
     if( readInNextLine() )
     {
-      stringForData.assign( BOL::StringParser::substringToFirst( lineBeingRead,
+      stringForData.assign( BOL::StringParser::substringToFirst(
+                                BOL::StringParser::trimFromBack( lineBeingRead,
+                                             BOL::StringParser::newlineChars ),
                                                               commentMarkerSet,
                                                          &stringForComment ) );
       /* this puts all of the line just read before the comment marker into
        * stringForData & the remainder into stringForComment (including the
        * comment characters).
        */
+      BOL::StringParser::trimFromBack( stringForData,
+                                       BOL::StringParser::newlineChars );
       return true;
     }
     else

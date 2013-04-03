@@ -48,7 +48,6 @@ namespace LHPC
                                                             &indicesString ) );
     std::vector< int >
     indicesVector( BOL::StringParser::stringToIntVector( indicesString ) );
-
     SLHA::SameNameBlockSet*
     blockPointer( slhaParser.getBlockAsStrings( blockName ) );
     if( NULL == blockPointer )

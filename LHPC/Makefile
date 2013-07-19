@@ -15,7 +15,6 @@ SHELL=/bin/sh
 CC=g++
 CCOBJFLAGS=-c -Wall -O3 -I./include/
 CCEXEFLAGS=-Wall -O3 -I./include/
-LDFLAGS= -L./lib/ -lLHPC
 AR=ar
 ARFLAGS=rcs
 AREXTRACTIONFLAGS=xv
@@ -80,8 +79,10 @@ SOURCES=source/LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  $(SLHADIR)/BlockClasses/InterpreterClasses/LinesAsStrings.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 BOLLIBFILE=include/BOLlib/lib/libBOLlib.a
+LIBNAME=LHPC
 LIBDIR=./lib/
-LIBRARYFILE=$(LIBDIR)/libLHPC.a
+LDFLAGS= -L$(LIBDIR) -l$(LIBNAME)
+LIBRARYFILE=$(LIBDIR)/lib$(LIBNAME).a
 BINDIR=./bin/
 PLOTTERCPP= source/LhpcSpectrumPlotter.cpp
 PLOTTERGEXE=$(BINDIR)/LhpcSpectrumPlotter.exe

@@ -138,7 +138,8 @@ namespace LHPC
                                                   int const soughtIndex ) const
     // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     {
-      return this->dataBlocks[ this->lowestIndex ].hasEntry( soughtIndex );
+      return
+      this->dataBlocks[ this->lowestScaleIndex ].hasEntry( soughtIndex );
     }
 
     template< class ValueClass >

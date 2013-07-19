@@ -136,7 +136,8 @@ namespace LHPC
              std::pair< std::pair< int, int >, int > const& indexTriple ) const
     // this returns hasEntry( soughtIndex ) of the lowest-scale interpreter.
     {
-      return this->dataBlocks[ this->lowestIndex ].hasEntry( indexTriple );
+      return
+      this->dataBlocks[ this->lowestScaleIndex ].hasEntry( indexTriple );
     }
 
   }  // end of SLHA namespace

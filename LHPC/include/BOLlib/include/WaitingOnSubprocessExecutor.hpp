@@ -29,7 +29,7 @@ namespace BOL
     WaitingOnSubprocessExecutor(
                          std::string const& executableStringIncludingArguments,
                                  bool const isVerbose,
-                                 int const patienceTicks = 10000 );
+                                 int const patienceMilliseconds = 10000 );
     ~WaitingOnSubprocessExecutor();
 
     void

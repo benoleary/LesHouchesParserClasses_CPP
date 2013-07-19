@@ -93,7 +93,7 @@ namespace LHPC
     JustSingleValueBlock< ValueClass >::hasEntry() const
     // this returns hasEntry() of the lowest-scale interpreter.
     {
-      return this->dataBlocks[ this->lowestIndex ].hasEntry();
+      return this->dataBlocks[ this->lowestScaleIndex ].hasEntry();
     }
 
   }  // end of SLHA namespace

@@ -240,6 +240,11 @@
 
 
 CHANGELOG:
+ * 19th July 2013: version 0.8.5
+ - fixed bug in hasEntry(...) of DoublyIndexedMultipleEntriesBlock,
+   JustSingleValueBlock, SinglyIndexedMultipleEntriesBlock,
+   SparseSinglyIndexedBlock, and TriplyIndexedMultipleEntriesBlock classes.
+
  * 3rd April 2013: version 0.8.4
  - updated to version 0.4.5 BOLlib (parsing uncommented lines no longer leaves
    trailing newline characters) leading to SlhaSimplisticInterpreter working

@@ -240,6 +240,9 @@
 
 
 CHANGELOG:
+ * 11th October 2013: version 0.8.6
+ - Upgraded to BOLlib v0.4.6 (just adding in FilePlaceholderManager class).
+
  * 19th July 2013: version 0.8.5
  - fixed bug in hasEntry(...) of DoublyIndexedMultipleEntriesBlock,
    JustSingleValueBlock, SinglyIndexedMultipleEntriesBlock,

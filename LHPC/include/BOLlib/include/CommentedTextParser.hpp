@@ -166,6 +166,7 @@ namespace BOL
       << "BOL::error! CommentedTextParser tried to open "
       << fileName << " but could not (or " << fileName << " is empty)!";
       std::cout << std::endl;
+      linesOfFileRemain = false;
     }
     return linesOfFileRemain;
   }

@@ -349,7 +349,7 @@ namespace LHPC
             < dataBlocks[ lowestScaleIndex ].getScale() )
           /* since hasHadPushSinceLastReset is true, lowestScaleIndex is a
            * valid index for dataBlocks, so the comparison is valid, & if true,
-           *  lowestScaleIndex is set correctly.
+           * lowestScaleIndex is set correctly.
            */
         {
           lowestScaleIndex = dataBlocks.getLastIndex();

@@ -15,6 +15,7 @@ SOURCES=source/ArgumentParser.cpp \
  source/BasicObserved.cpp \
  source/BasicObserver.cpp \
  source/CommentedTextParser.cpp \
+ source/FilePlaceholderManager.cpp \
  source/InputFileToOutputFileClaimer.cpp \
  source/StringParser.cpp \
  source/TwoDimensionalDataPlotter.cpp \

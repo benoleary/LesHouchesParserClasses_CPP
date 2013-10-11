@@ -35,6 +35,13 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 11th October 2013: version 0.4.6
+ - CommentedTextParser::openFile(...) now definitely sets linesOfFileRemain to
+   false if it could not open the file.
+ - added FilePlaceholderManager class to do the job of
+   InputFileToOutputFileClaimer better. I'd remove InputFileToOutputFileClaimer
+   out of embarrassment, but I'd rather not break backwards compatibility.
+
  * 3rd April 2013: version 0.4.5
  - CommentedTextParser::parseNextLineOfFile(...) now trims uncommented lines
    of any trailing newline characters.
@@ -109,21 +116,32 @@ CHANGELOG:
 The C++ files of LesHouchesParserClasses are:
  include/ArgumentParser.hpp
  include/AsciiXmlParser.hpp
+ include/BalancedPartitionCandidate.hpp
  include/BasicObserved.hpp
  include/BasicObserver.hpp
+ include/BOLlib.hpp
  include/CommentedTextParser.hpp
- include/PushingObserved.hpp
+ include/FilePlaceholderManager.hpp
+ include/InputFileToOutputFileClaimer.hpp
  include/PushedToObserver.hpp
+ include/PushingObserved.hpp
  include/StdVectorFiller.hpp
  include/StringParser.hpp
+ include/TwoDimensionalDataPlotter.hpp
  include/UsefulStuff.hpp
  include/VectorlikeArray.hpp
+ include/WaitingOnSubprocessExecutor.hpp
  source/ArgumentParser.cpp
  source/AsciiXmlParser.cpp
+ source/BalancedPartitionCandidate.cpp
  source/BasicObserved.cpp
  source/BasicObserver.cpp
  source/CommentedTextParser.cpp
+ source/FilePlaceholderManager.cpp
+ source/InputFileToOutputFileClaimer.cpp
  source/StringParser.cpp
+ source/TwoDimensionalDataPlotter.cpp
  source/UsefulStuff.cpp
+ source/WaitingOnSubprocessExecutor.cpp
  Makefile
  and README.BOLlib.txt (copied as README.txt) which describes the package.

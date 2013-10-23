@@ -240,8 +240,12 @@
 
 
 CHANGELOG:
- * 11th October 2013: version 0.8.6
- - Upgraded to BOLlib v0.4.6 (just adding in FilePlaceholderManager class).
+ * 23rd October 2013: version 0.8.6
+ - upgraded to BOLlib v0.4.6 (just adding in FilePlaceholderManager class).
+ - added SlhaParser::copyWithoutBlock( std::string const& originalFilename,
+   std::string const& blockToStrip, std::string const& copyFilename ) to copy
+   an SLHA file called originalFilename to a file called copyFilename without
+   any blocks with the name blockToStrip (also stripping out blank lines).
 
  * 19th July 2013: version 0.8.5
  - fixed bug in hasEntry(...) of DoublyIndexedMultipleEntriesBlock,

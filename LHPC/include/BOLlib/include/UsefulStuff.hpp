@@ -19,6 +19,7 @@
 #include <string>
 #include <cmath>
 #include <fstream>
+#include <sys/time.h>
 
 namespace BOL
 {
@@ -55,7 +56,9 @@ namespace BOL
     runSystemCommand( std::string const& systemCommand );
     // this runs system( systemCommand.c_str() ) & throws an exception if it
     // returned -1.
-
+    static double
+    secondsSince( timeval const& referenceTimeval );
+    // this returns the number of seconds since referenceTimeval as a double.
 
   private:
     static bool randomSeedNotYetSet;
@@ -151,6 +154,18 @@ namespace BOL
       throw std::runtime_error( "system( \"" +  systemCommand
                                 + "\" ) returned -1" );
     }
+  }
+
+  inline double
+  UsefulStuff::secondsSince( timeval const& referenceTimeval )
+  // this returns the number of seconds since referenceTimeval as a double.
+  {
+    timeval currentTimeval;
+    gettimeofday( &currentTimeval,
+                  NULL );
+    return ( (double)( currentTimeval.tv_sec - referenceTimeval.tv_sec )
+             + 0.000001 * (double)( currentTimeval.tv_usec
+                                    - referenceTimeval.tv_usec ) );
   }
 
 }

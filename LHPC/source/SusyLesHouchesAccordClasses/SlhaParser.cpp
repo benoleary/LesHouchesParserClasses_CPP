@@ -15,6 +15,57 @@
 
 namespace LHPC
 {
+  void
+  SlhaParser::copyWithoutBlock( std::string const& originalFilename,
+                                std::string const& blockToStrip,
+                                std::string const& copyFilename )
+  {
+    BOL::CommentedTextParser fileParser( "#",
+                                         false );
+    fileParser.openFile( originalFilename );
+    std::string dataString;
+    std::string commentString;
+    std::string firstWordOfLine;
+    std::string restOfLine;
+    bool copyingLine( true );
+    std::stringstream copyStream;
+    while( fileParser.parseNextLineOfFile( dataString,
+                                           commentString ) )
+    {
+      firstWordOfLine.assign( BOL::StringParser::firstWordOf( dataString,
+                                                              &restOfLine ) );
+      if( BOL::StringParser::stringsMatchIgnoringCase( firstWordOfLine,
+                   SLHA::BlockClass::BaseStringBlock::decayIdentifierString ) )
+      {
+        // if we find a DECAY, then we're not stripping out a block any more.
+        copyingLine = true;
+      }
+      else if( BOL::StringParser::stringsMatchIgnoringCase( firstWordOfLine,
+                   SLHA::BlockClass::BaseStringBlock::blockIdentifierString ) )
+      {
+        /* if we find a BLOCK, then we're not stripping any more if this BLOCK
+         * is not the type that we are stripping, but we are (still) stripping
+         * if it is.
+         */
+        copyingLine = !( BOL::StringParser::stringsMatchIgnoringCase(
+                                  BOL::StringParser::firstWordOf( restOfLine ),
+                                                              blockToStrip ) );
+      }
+      if( copyingLine
+          &&
+          !( dataString.empty()
+             && commentString.empty() ) )
+      {
+        // if we're not stripping out a block, record the line again (except
+        // for blank lines).
+        copyStream << dataString << commentString << "\n";
+      }
+    }
+    std::ofstream outputStream( copyFilename.c_str() );
+    outputStream << copyStream.str();
+    outputStream.close();
+  }
+
   SlhaParser::SlhaParser( bool const shouldRecordBlocksNotRegistered,
                           bool const isVerbose ) :
       isVerbose( isVerbose ),

@@ -280,6 +280,10 @@ main( int argumentCount,
       std::cout << std::endl;
     }
 
+    LHPC::SlhaParser::copyWithoutBlock( firstFileName,
+                                        "nmix",
+                                        ( firstFileName + ".stripped_copy" ) );
+
     std::cout
     << std::endl
     << "ended successfully, I hope.";

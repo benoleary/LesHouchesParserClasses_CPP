@@ -30,6 +30,11 @@ namespace LHPC
   class SlhaParser : public BOL::PushingObserved< SpectrumUpdater >
   {
   public:
+    static void
+    copyWithoutBlock( std::string const& originalFilename,
+                      std::string const& blockToStrip,
+                      std::string const& copyFilename );
+
     SlhaParser( bool const shouldRecordBlocksNotRegistered = true,
                 bool const isVerbose = true);
     virtual

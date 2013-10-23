@@ -35,12 +35,13 @@
  to allow others to use the classes.
 
 CHANGELOG:
- * 11th October 2013: version 0.4.6
+ * 22nd October 2013: version 0.4.6
  - CommentedTextParser::openFile(...) now definitely sets linesOfFileRemain to
    false if it could not open the file.
  - added FilePlaceholderManager class to do the job of
    InputFileToOutputFileClaimer better. I'd remove InputFileToOutputFileClaimer
    out of embarrassment, but I'd rather not break backwards compatibility.
+ - added UsefulStuff::secondsSince(...) for timing.
 
  * 3rd April 2013: version 0.4.5
  - CommentedTextParser::parseNextLineOfFile(...) now trims uncommented lines

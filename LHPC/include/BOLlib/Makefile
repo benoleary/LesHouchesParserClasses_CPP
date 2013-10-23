@@ -14,6 +14,7 @@ SOURCES=source/ArgumentParser.cpp \
  source/BalancedPartitionCandidate.cpp \
  source/BasicObserved.cpp \
  source/BasicObserver.cpp \
+ source/BasicTimer.cpp \
  source/CommentedTextParser.cpp \
  source/FilePlaceholderManager.cpp \
  source/InputFileToOutputFileClaimer.cpp \

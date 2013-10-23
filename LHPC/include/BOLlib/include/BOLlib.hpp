@@ -22,6 +22,7 @@
 #include "BalancedPartitioner.hpp"
 #include "BasicObserved.hpp"
 #include "BasicObserver.hpp"
+#include "BasicTimer.hpp"
 #include "CommentedTextParser.hpp"
 #include "FilePlaceholderManager.hpp"
 #include "InputFileToOutputFileClaimer.hpp"

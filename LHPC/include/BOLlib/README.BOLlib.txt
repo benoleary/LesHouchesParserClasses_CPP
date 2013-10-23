@@ -35,13 +35,13 @@
  to allow others to use the classes.
 
 CHANGELOG:
- * 22nd October 2013: version 0.4.6
+ * 23rd October 2013: version 0.4.6
  - CommentedTextParser::openFile(...) now definitely sets linesOfFileRemain to
    false if it could not open the file.
  - added FilePlaceholderManager class to do the job of
    InputFileToOutputFileClaimer better. I'd remove InputFileToOutputFileClaimer
    out of embarrassment, but I'd rather not break backwards compatibility.
- - added UsefulStuff::secondsSince(...) for timing.
+ - added BasicTimer class for basic timing stuff.
 
  * 3rd April 2013: version 0.4.5
  - CommentedTextParser::parseNextLineOfFile(...) now trims uncommented lines
@@ -120,6 +120,7 @@ The C++ files of LesHouchesParserClasses are:
  include/BalancedPartitionCandidate.hpp
  include/BasicObserved.hpp
  include/BasicObserver.hpp
+ include/BasicTimer.hpp
  include/BOLlib.hpp
  include/CommentedTextParser.hpp
  include/FilePlaceholderManager.hpp
@@ -137,6 +138,7 @@ The C++ files of LesHouchesParserClasses are:
  source/BalancedPartitionCandidate.cpp
  source/BasicObserved.cpp
  source/BasicObserver.cpp
+ source/BasicTimer.cpp
  source/CommentedTextParser.cpp
  source/FilePlaceholderManager.cpp
  source/InputFileToOutputFileClaimer.cpp

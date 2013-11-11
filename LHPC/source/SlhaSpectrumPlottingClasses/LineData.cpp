@@ -32,7 +32,7 @@ namespace LHPC
       LineData::LineData() :
           columnIndex( 0 ),
           whichJustification( centerJustified ),
-          massValue( massValue ),
+          massValue( 0.0 ),
           labelPosition( -1.0 ),
           labelString( "error" ),
           colorString( "black" ),

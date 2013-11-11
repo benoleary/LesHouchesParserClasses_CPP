@@ -240,7 +240,14 @@
 
 
 CHANGELOG:
- * 23rd October 2013: version 0.8.6
+ * 11th November 2013: version 0.8.6
+ - fixed wrong numbers being assigned to PDG.IX codes for the MSSM without
+   R-parity.
+ - fixed unassigned mass value in LineData.cpp, though it should not ever
+   matter.
+ - fixed incorrect consts in declarations of findOrMakeEntry(...) in
+   DenseTriplyIndexed.hpp which should not have been ignored by the compiler,
+   damnit.
  - upgraded to BOLlib v0.4.6 (just adding in FilePlaceholderManager class).
  - added SlhaParser::copyWithoutBlock( std::string const& originalFilename,
    std::string const& blockToStrip, std::string const& copyFilename ) to copy

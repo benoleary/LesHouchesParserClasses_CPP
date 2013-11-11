@@ -290,11 +290,11 @@ namespace LHPC
   int const
   NineDigitSlhaCodes::positiveColorlessSpinZeroBosonSeven( 100000607 );
   int const NineDigitSlhaCodes::negativeColorlessSpinZeroBosonSeven(
-                                        -negativeColorlessSpinZeroBosonSeven );
+                                        -positiveColorlessSpinZeroBosonSeven );
   int const NineDigitSlhaCodes::positiveHiggsSeven(
-                                         negativeColorlessSpinZeroBosonSeven );
+                                         positiveColorlessSpinZeroBosonSeven );
   int const NineDigitSlhaCodes::negativeHiggsSeven(
-                                        -negativeColorlessSpinZeroBosonSeven );
+                                        -positiveColorlessSpinZeroBosonSeven );
   int const NineDigitSlhaCodes::neutrinoFourMajorana( 111000004 );
   int const NineDigitSlhaCodes::neutrinoFiveMajorana( 111000005 );
   int const NineDigitSlhaCodes::neutrinoSixMajorana( 111000006 );

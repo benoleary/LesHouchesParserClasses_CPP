@@ -76,8 +76,8 @@ namespace LHPC
         size_t largestThirdIndex;
 
         ValueClass&
-        findOrMakeEntry( int const firstIndex,
-                         int const secondIndex,
+        findOrMakeEntry( int firstIndex,
+                         int secondIndex,
                          int const thirdIndex );
         // this ensures that the entry at the sought indices exists, filling
         // out with copies of defaultUnsetValue, & returns it.

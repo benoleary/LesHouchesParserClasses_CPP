@@ -17,6 +17,11 @@ namespace BOL
   std::string const StringParser::whitespaceChars( " \t" );
   std::string const StringParser::newlineChars( "\n\r" );
   std::string const StringParser::whitespaceAndNewlineChars( " \t\n\r" );
+  std::string const
+  StringParser::lowercaseAlphabetChars( "abcdefghijklmnopqrstuvwxyz" );
+  std::string const
+  StringParser::uppercaseAlphabetChars( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" );
+  std::string const StringParser::digitChars( "0123456789" );
 
   char const StringParser::lowercaseMinusUppercase( 'a' - 'A' );
 
@@ -252,6 +257,66 @@ namespace BOL
     }
     // if this point is reached, all the characters matched:
     return true;
+  }
+
+  bool
+  StringParser::stringIsDouble( std::string const& stringToInterpret,
+                                double& doubleToSet )
+  /* this returns true if stringToInterpret is a floating-point number in
+   * scientific E notation (allowing 'E' or 'e'), and sets doubleToSet
+   * accordingly if so.
+   */
+  {
+    size_t charPosition( stringToInterpret.find_first_not_of(
+                                                 whitespaceAndNewlineChars ) );
+    if( charPosition == std::string::npos )
+    {
+      return false;
+    }
+    if( ( stringToInterpret[ charPosition ] == '+' )
+        ||
+        ( stringToInterpret[ charPosition ] == '-' ) )
+    {
+      if( charPosition == ( stringToInterpret.size() - 1 ) )
+      {
+        return false;
+      }
+      ++charPosition;
+    }
+    charPosition = stringToInterpret.find_first_not_of( digitChars,
+                                                        charPosition );
+    if( ( charPosition != std::string::npos )
+        &&
+        ( stringToInterpret[ charPosition ] == '.' ) )
+    {
+      charPosition = stringToInterpret.find_first_not_of( digitChars,
+                                                        ( charPosition + 1 ) );
+    }
+    if( ( charPosition < ( stringToInterpret.size() - 2 ) )
+        &&
+        ( ( stringToInterpret[ charPosition ] == 'e' )
+          ||
+          ( stringToInterpret[ charPosition ] == 'E' ) ) )
+    {
+      ++charPosition;
+      if( ( stringToInterpret[ charPosition ] == '+' )
+          ||
+          ( stringToInterpret[ charPosition ] == '-' ) )
+      {
+        ++charPosition;
+      }
+      charPosition = stringToInterpret.find_first_not_of( digitChars,
+                                                          charPosition );
+    }
+    charPosition
+    = stringToInterpret.find_first_not_of( whitespaceAndNewlineChars,
+                                           charPosition );
+    if( charPosition == std::string::npos )
+    {
+      doubleToSet = stringToDouble( stringToInterpret );
+      return true;
+    }
+    return false;
   }
 
   std::vector< int >

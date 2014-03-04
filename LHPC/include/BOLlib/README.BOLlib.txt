@@ -35,6 +35,15 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 4th March 2014: version 0.4.7
+ - added StringParser::stringIsDouble( std::string const& stringToInterpret,
+                                       double& doubleToSet )
+   to check if a string represents a floating-point number in scientific E
+   notation.
+ - added StringParser::lowercaseAlphabetChars,
+   StringParser::uppercaseAlphabetChars, & StringParser::digitChars as public
+   static strings.
+
  * 23rd October 2013: version 0.4.6
  - CommentedTextParser::openFile(...) now definitely sets linesOfFileRemain to
    false if it could not open the file.

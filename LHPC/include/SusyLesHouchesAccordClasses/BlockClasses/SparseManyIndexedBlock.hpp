@@ -23,7 +23,7 @@ namespace LHPC
   namespace SLHA
   {
     /* this template class interprets all the blocks with the same name, though
-     * differing scale values, which are interpreted as having a pair of int
+     * differing scale values, which are interpreted as having a set of int
      * indices which does not have to have entries for each value (nor even
      * necessarily positive index values).
      */

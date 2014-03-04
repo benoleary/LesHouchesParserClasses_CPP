@@ -35,6 +35,9 @@ namespace BOL
     static std::string const whitespaceChars;
     static std::string const newlineChars;
     static std::string const whitespaceAndNewlineChars;
+    static std::string const lowercaseAlphabetChars;
+    static std::string const uppercaseAlphabetChars;
+    static std::string const digitChars;
 
     static int
     numberOfDigitsInInt( int inputInt );
@@ -109,6 +112,13 @@ namespace BOL
     stringToInt( std::string const& stringToInterpret );
     static double
     stringToDouble( std::string const& stringToInterpret );
+    static bool
+    stringIsDouble( std::string const& stringToInterpret,
+                    double& doubleToSet );
+    /* this returns true if stringToInterpret is a floating-point number in
+     * scientific E notation (allowing 'E' or 'e'), and sets doubleToSet
+     * accordingly if so.
+     */
     static std::vector< int >
     stringToIntVector( std::string stringToInterpret );
     /* this interprets a string of int separated by commas or semicolons, with

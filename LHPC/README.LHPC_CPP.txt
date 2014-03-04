@@ -240,6 +240,11 @@
 
 
 CHANGELOG:
+ * 4th March 2014: version 0.8.7
+ - updated to version 0.4.7 BOLlib (added StringParser::stringIsDouble & a few
+   static strings).
+ - corrected incorrect comment in description of SparseManyIndexedBlock.
+
  * 11th November 2013: version 0.8.6
  - fixed wrong numbers being assigned to PDG.IX codes for the MSSM without
    R-parity.

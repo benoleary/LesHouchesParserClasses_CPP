@@ -26,9 +26,14 @@ namespace BOL
   {
   public:
     typedef std::pair< double, double > DoublePair;
+    typedef std::pair< std::string, std::string > StringPair;
     typedef std::vector< DoublePair > DoublePairVector;
     typedef
     std::pair< DoublePairVector, std::string > DoublePairVectorWithString;
+    typedef
+    std::pair< DoublePairVector, StringPair > DoublePairVectorWithStringPair;
+    typedef
+    std::vector< DoublePairVectorWithStringPair > PlotDataVector;
 
     TwoDimensionalDataPlotter( std::string const& pathToGnuplotExecutable,
                                std::string const& plotFileName);
@@ -38,9 +43,17 @@ namespace BOL
     addPoint( double const xValue,
               double const yValue );
     void
-    plotData();
+    plotData( std::string const legendString = "",
+              std::string const xAxisLabel = "",
+              std::string const yAxisLabel = "" );
     void
-    plotData( std::vector< DoublePairVectorWithString > const& dataAndColors );
+    plotData( std::vector< DoublePairVectorWithString > const& dataAndColors,
+              std::string const xAxisLabel = "",
+              std::string const yAxisLabel = "" );
+    void
+    plotData( PlotDataVector const& dataAndColorsAndLabels,
+              std::string const xAxisLabel = "",
+              std::string const yAxisLabel = "" );
     void
     clearEntries( std::string plotFileName );
 

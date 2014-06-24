@@ -240,6 +240,10 @@
 
 
 CHANGELOG:
+ * 24th June 2014: version 0.8.8
+ - updated to version 0.5.1 BOLlib (added extra functionality to
+   TwoDimensionalDataPlotter).
+
  * 4th March 2014: version 0.8.7
  - updated to version 0.4.7 BOLlib (added StringParser::stringIsDouble & a few
    static strings).

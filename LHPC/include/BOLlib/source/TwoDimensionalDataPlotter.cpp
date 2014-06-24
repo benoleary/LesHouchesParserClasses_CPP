@@ -39,7 +39,9 @@ namespace BOL
 
 
   void
-  TwoDimensionalDataPlotter::plotData()
+  TwoDimensionalDataPlotter::plotData( std::string const legendString,
+                                       std::string const xAxisLabel,
+                                       std::string const yAxisLabel )
   {
     outputStream.open( gnuplotDataFileName.c_str() );
     if( outputStream.is_open() )
@@ -63,8 +65,10 @@ namespace BOL
         << "set term postscript eps enhanced color solid" << std::endl
         << "set output \"" << plotFileName << "\"" << std::endl
         << "set style line 1 lt rgb \"red\" lw 3" << std::endl
-        << "plot '" << gnuplotDataFileName
-        << "' index 0 notitle with lines ls 1" << std::endl;
+        << "set ylabel \"" << yAxisLabel << "\"" << std::endl
+        << "set xlabel \"" << xAxisLabel << "\"" << std::endl
+        << "plot '" << gnuplotDataFileName << "' index 0 title \""
+        << legendString << "\" with lines ls 1" << std::endl;
         outputStream.close();
 
         gnuplotExecutor.forkAndExecvAndWait();
@@ -90,21 +94,16 @@ namespace BOL
 
   void
   TwoDimensionalDataPlotter::plotData(
-               std::vector< DoublePairVectorWithString > const& dataAndColors )
+                std::vector< DoublePairVectorWithString > const& dataAndColors,
+                                       std::string const xAxisLabel,
+                                       std::string const yAxisLabel )
   {
     std::string dataFileName;
-    int const numberOfFileNumberDigits( StringParser::numberOfDigitsInInt(
+    size_t numberOfFileNumberDigits( StringParser::numberOfDigitsInInt(
                                                       dataAndColors.size() ) );
 
-    // debugging:
-    /**/std::cout << std::endl << "debugging:"
-    << std::endl
-    << "dataAndColors.size() = " << dataAndColors.size()
-    << ", numberOfFileNumberDigits = " << numberOfFileNumberDigits;
-    std::cout << std::endl;/**/
-
     std::vector< std::pair< std::string, std::string > > colorsWithFilenames;
-    for( unsigned int whichEntry( 0 );
+    for( size_t whichEntry( 0 );
          dataAndColors.size() > whichEntry;
          ++whichEntry )
     {
@@ -115,15 +114,6 @@ namespace BOL
       colorsWithFilenames.push_back( std::pair< std::string, std::string >(
                                             dataAndColors[ whichEntry ].second,
                                                               dataFileName ) );
-
-      // debugging:
-      /**/std::cout << std::endl << "debugging:"
-      << std::endl
-      << "opening " << dataFileName
-      << std::endl
-      << "dataAndColors[ " << whichEntry << " ].first.size() = "
-      << dataAndColors[ whichEntry ].first.size();
-      std::cout << std::endl;/**/
 
       outputStream.open( dataFileName.c_str() );
       if( outputStream.is_open() )
@@ -156,8 +146,10 @@ namespace BOL
     {
       outputStream
       << "set term postscript eps enhanced color solid" << std::endl
+      << "set ylabel \"" << yAxisLabel << "\"" << std::endl
+      << "set xlabel \"" << xAxisLabel << "\"" << std::endl
       << "set output \"" << plotFileName << "\"" << std::endl;
-      for( unsigned int whichEntry( 0 );
+      for( size_t whichEntry( 0 );
            colorsWithFilenames.size() > whichEntry;
            ++whichEntry )
       {
@@ -168,7 +160,7 @@ namespace BOL
       }
       outputStream
       << "plot ";
-      for( unsigned int whichEntry( 0 );
+      for( size_t whichEntry( 0 );
            colorsWithFilenames.size() > whichEntry;
            ++whichEntry )
       {
@@ -179,6 +171,101 @@ namespace BOL
         outputStream
         << "'" << colorsWithFilenames[ whichEntry ].second
         << "' index 0 notitle with lines ls " << ( whichEntry + 1 );
+      }
+      outputStream.close();
+
+      gnuplotExecutor.forkAndExecvAndWait();
+    }
+    else
+    {
+      std::cout
+      << std::endl
+      << "BOL::error! TwoDimensionalDataPlotter::plotData() could not open"
+      << gnuplotCommandFileName;
+      std::cout << std::endl;
+    }
+  }
+
+  void
+  TwoDimensionalDataPlotter::plotData(
+                                  PlotDataVector const& dataAndColorsAndLabels,
+                                       std::string const xAxisLabel,
+                                       std::string const yAxisLabel )
+  {
+    std::string dataFileName;
+    size_t numberOfFileNumberDigits( StringParser::numberOfDigitsInInt(
+                                             dataAndColorsAndLabels.size() ) );
+    size_t numberOfFiles( dataAndColorsAndLabels.size() );
+
+    std::vector< std::string > dataFileNames;
+    for( size_t whichEntry( 0 );
+         whichEntry < numberOfFiles;
+         ++whichEntry )
+    {
+      dataFileName.assign( gnuplotDataFileName );
+      dataFileName.append( StringParser::intToString( whichEntry,
+                                                      numberOfFileNumberDigits,
+                                                      "" ) );
+      dataFileNames.push_back( dataFileName );
+      outputStream.open( dataFileName.c_str() );
+      if( outputStream.is_open() )
+        // if the file was successfully opened...
+      {
+        for( size_t dataIndex( 0 );
+             dataAndColorsAndLabels[ whichEntry ].first.size() > dataIndex;
+             ++dataIndex )
+        {
+          outputStream
+          << dataAndColorsAndLabels[ whichEntry ].first[ dataIndex ].first
+          << " "
+          << dataAndColorsAndLabels[ whichEntry ].first[ dataIndex ].second
+          << std::endl;
+        }
+        outputStream.close();
+      }
+      else
+      {
+        std::cout
+        << std::endl
+        << "BOL::error! TwoDimensionalDataPlotter::plotData() could not open"
+        << dataFileName;
+        std::cout << std::endl;
+      }
+    }
+
+    outputStream.open( gnuplotCommandFileName.c_str() );
+    if( outputStream.is_open() )
+      // if the file was successfully opened...
+    {
+      outputStream
+      << "set term postscript eps enhanced color solid" << std::endl
+      << "set ylabel \"" << yAxisLabel << "\"" << std::endl
+      << "set xlabel \"" << xAxisLabel << "\"" << std::endl
+      << "set output \"" << plotFileName << "\"" << std::endl;
+      for( size_t whichEntry( 0 );
+           whichEntry < numberOfFiles;
+           ++whichEntry )
+      {
+        outputStream
+        << "set style line " << ( whichEntry + 1 ) << " lt rgb \""
+        << dataAndColorsAndLabels[ whichEntry ].second.first << "\" lw 3"
+        << std::endl;
+      }
+      outputStream
+      << "plot ";
+      for( size_t whichEntry( 0 );
+           whichEntry < numberOfFiles;
+           ++whichEntry )
+      {
+        if( 0 < whichEntry )
+        {
+          outputStream << ", ";
+        }
+        outputStream
+        << "'" << dataFileNames[ whichEntry ]
+        << "' index 0 title \""
+        << dataAndColorsAndLabels[ whichEntry ].second.second
+        << "\" with lines ls " << ( whichEntry + 1 );
       }
       outputStream.close();
 

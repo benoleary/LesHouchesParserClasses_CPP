@@ -35,6 +35,9 @@
  to allow others to use the classes.
 
 CHANGELOG:
+ * 24th June 2014: version 0.5.1
+ - Added extra functionality to TwoDimensionalDataPlotter.
+
  * 4th March 2014: version 0.4.7
  - added StringParser::stringIsDouble( std::string const& stringToInterpret,
                                        double& doubleToSet )

@@ -12,7 +12,7 @@
 
 SHELL=/bin/sh
 
-CC=g++
+CC=g++ -g
 CCOBJFLAGS=-c -Wall -O3 -I./include/
 CCEXEFLAGS=-Wall -O3 -I./include/
 AR=ar
@@ -62,6 +62,11 @@ SOURCES=source/LesHouchesEventFileClasses/AutomaticEventFilter.cpp \
  source/ParticleCodesAndDataClasses/PdgData.cpp \
  source/ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp \
  source/SlhaSpectrumPlottingClasses/LineData.cpp \
+ source/SlhaSpectrumPlottingClasses/SlhaValueColoredSegments.cpp \
+ source/SlhaSpectrumPlottingClasses/SlhaValueLineColoring.cpp \
+ source/SlhaSpectrumPlottingClasses/SlhaValuePlotLine.cpp \
+ source/SlhaSpectrumPlottingClasses/SlhaValuePlotter.cpp \
+ source/SlhaSpectrumPlottingClasses/SlhaValueSingleColor.cpp \
  source/SlhaSpectrumPlottingClasses/SpectrumPlotter.cpp \
  source/SusyLesHouchesAccordClasses/FlavorObservable.cpp \
  source/SusyLesHouchesAccordClasses/FlavorObservableError.cpp \
@@ -84,15 +89,21 @@ LIBDIR=./lib/
 LDFLAGS= -L$(LIBDIR) -l$(LIBNAME)
 LIBRARYFILE=$(LIBDIR)/lib$(LIBNAME).a
 BINDIR=./bin/
-PLOTTERCPP= source/LhpcSpectrumPlotter.cpp
-PLOTTERGEXE=$(BINDIR)/LhpcSpectrumPlotter.exe
+SLHAVALUEPLOTTERCPP= source/LhpcSlhaValuePlotter.cpp
+SLHAVALUEPLOTTEREXE=$(BINDIR)/LhpcSlhaValuePlotter.exe
+SLHASPECTRUMPLOTTERCPP= source/LhpcSpectrumPlotter.cpp
+SLHASPECTRUMPLOTTEREXE=$(BINDIR)/LhpcSpectrumPlotter.exe
 LHCOEGCPP= source/LhcoParserExample.cpp
 LHCOEGEXE=$(BINDIR)/LhcoParserExample.exe
 LHEFEGCPP= source/LhefParserExample.cpp
 LHEFEGEXE=$(BINDIR)/LhefParserExample.exe
 SLHAEGCPP= source/SlhaParserExample.cpp
 SLHAEGEXE=$(BINDIR)/SlhaParserExample.exe
-EXES=$(PLOTTERGEXE) $(LHCOEGEXE) $(LHEFEGEXE) $(SLHAEGEXE)
+EXES=$(SLHAVALUEPLOTTEREXE) \
+ $(SLHASPECTRUMPLOTTEREXE) \
+ $(LHCOEGEXE) \
+ $(LHEFEGEXE) \
+ $(SLHAEGEXE)
 
 all: $(BOLLIBFILE) $(OBJECTS) $(LIBRARYFILE) $(EXES)
 
@@ -118,8 +129,11 @@ $(LIBRARYFILE): $(LIBDIR) $(BOLLIBFILE) $(OBJECTS)
 $(BINDIR):
 	mkdir $@
 
-$(PLOTTERGEXE): $(BINDIR) $(LIBRARYFILE)
-	$(CC) $(CCEXEFLAGS) -o $@ $(PLOTTERCPP) $(LDFLAGS)
+$(SLHAVALUEPLOTTEREXE): $(BINDIR) $(LIBRARYFILE)
+	$(CC) $(CCEXEFLAGS) -o $@ $(SLHAVALUEPLOTTERCPP) $(LDFLAGS)
+
+$(SLHASPECTRUMPLOTTEREXE): $(BINDIR) $(LIBRARYFILE)
+	$(CC) $(CCEXEFLAGS) -o $@ $(SLHASPECTRUMPLOTTERCPP) $(LDFLAGS)
 
 $(LHCOEGEXE): $(BINDIR) $(LIBRARYFILE)
 	$(CC) $(CCEXEFLAGS) -o $@ $(LHCOEGCPP) $(LDFLAGS)

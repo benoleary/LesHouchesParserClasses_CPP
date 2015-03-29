@@ -1,0 +1,216 @@
+<LhpcSpectrumPlottingControl>
+
+<!--#
+    #   LHPC SLHA value plotting default control file.
+    #   created by Ben O'Leary (benjamin.oleary@gmail.com) 2015-03-22.
+    #
+    #-->
+
+  <GeneralControls>
+
+    <!-- Set this to true to take absolute magnitudes of the values. -->
+    <UseAbsoluteValues> true </UseAbsoluteValues>
+
+    <!-- The label for the vertical axis. -->
+    <VerticalAxisLabel> Mass (GeV) </VerticalAxisLabel>
+
+    <!-- The value from the SHLA file are multiplied by this before being
+         plotted, so to plot in TeV from masses given in the SLHA file in GeV,
+         set this to 0.001. -->
+    <VerticalAxisScaling> 1.0 </VerticalAxisScaling>
+
+    <!-- The maximum value to be plotted. If this value is <= 0, the range is
+         automatically 1.1 times the largest mass in the spectrum. -->
+    <VerticalAxisUpperRange> -1.0 </VerticalAxisUpperRange>
+
+    <!-- The fraction of the vertical range to use as the height of the mass
+         line label. -->
+    <LabelHeight> 0.05 </LabelHeight>
+
+    <!-- No label for the horizontal axis in general. -->
+    <HorizontalAxisLabel></HorizontalAxisLabel>
+
+
+    <!-- The following widths are all relative to the width of the colored line
+         representing a value from the SLHA file being 100.0 units wide. -->
+
+    <!-- The width of a label. -->
+    <LabelWidth> 50.0 </LabelWidth>
+
+    <!-- The width between the y-axis and the first column. -->
+    <MarginWidth> 10.0 </MarginWidth>
+
+    <!-- The width of the line joining the label to its colored line. -->
+    <JoinerWidth> 15.0 </JoinerWidth>
+
+    <!-- The width of the line joining the label to its colored line. -->
+    <ColumnPairOffset> 10.0 </ColumnPairOffset>
+
+
+    <!-- The gnuplot executable including its full path. -->
+    <GnuplotExecutable> /usr/bin/gnuplot </GnuplotExecutable>
+
+    <!-- The latex executable including its full path. -->
+    <LatexExecutable> /usr/bin/latex </LatexExecutable>
+
+    <!-- The dvips executable including its full path. -->
+    <DvipsExecutable> /usr/bin/dvips </DvipsExecutable>
+
+    <!-- The ps2eps or ps2epsi executable including its full path. -->
+    <Ps2epsExecutable> /usr/bin/ps2eps </Ps2epsExecutable>
+
+    <!-- The command to remove files including its full path. -->
+    <RemoveCommand> /bin/rm </RemoveCommand>
+
+    <!-- The command to move files including its full path. -->
+    <MoveCommand> /bin/mv </MoveCommand>
+
+  </GeneralControls>
+
+  <!-- Each column is described by a ColumnDefinition element, which consists
+       of a set of ColumnLines. Each ColumnLine plots the line for a single
+       value from the SLHA file given by SlhaValue), which gets a label, given
+       in LaTeX form by LatexLabel, aligned to the left or right of the column
+       determined by LabelSide, with a color or colors given by LineColor.
+       The color names must be in the form that gnuplot understands:
+       input "show palette colornames" in gnuplot to see the available colors.
+       If the line is to be a single color, LineColor should have the attribute
+       DrawType="SingleColor" (which is assumed by default, so can actually be
+       left out). If the line is to be made of several segments of different
+       colors, DrawType="ColoredSegments" can be used. In this case, a set of
+       LineSegments must be given (in the order in which the colors will appear
+       left-to-right). Each LineSegment has a color (SegmentColor) and a
+       weight (ColorWeight). If the ColorWeight element has the attribute
+       "RaiseToPower", then the weight is calculated as the value given by the
+       XML element body raised to the power given byRaiseToPower. The width of
+       the segment is the normalized weight of the segment times the width of a
+       normal line. For example, a ColumnLine with
+       <LineColor DrawType="ColoredSegments">
+          <LineSegment>
+            <SegmentColor> green </SegmentColor>
+            <ColorWeight RaiseToPower="0.5"> 5.0 </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> red </SegmentColor>
+            <ColorWeight RaiseToPower="1"> USQMIX[1, 2] </ColorWeight>
+          </LineSegment>
+       </LineColor>
+       would be green for the left fraction f of the line, red for the rest,
+       where f = x / ( x + y ), with x = 5.0^(0.5) and
+       y = (the value of USQMIX[1, 2])^1.
+
+       (There is a special extra color name allowed by LHPC SlhaValuePlotter:
+       "transparent", which will just not plot that line segment, which can be
+       used to make dashed lines or something, though with probably too much
+       effort.)
+
+       Values from the SHLA file are referenced by the block name followed by
+       an index or a comma-separated set of indices in square brackets:
+       e.g. MASS[25] or USQMIX[1, 2]. -->
+  <ColumnDefinitions>
+
+    <!-- Higgs bosons. -->
+    <ColumnDefinition>
+
+      <ColumnLine>
+        <SlhaValue> MASS[25] </SlhaValue>
+        <LabelLatex> $h_{1}$ </LabelLatex>
+        <LabelSide> left </LabelSide>
+        <LineColor DrawType="SingleColor"> gold </LineColor>
+      </ColumnLine>
+
+      <ColumnLine>
+        <SlhaValue> MASS[35] </SlhaValue>
+        <LabelLatex> $h_{2}$ </LabelLatex>
+        <LabelSide> left </LabelSide>
+        <LineColor DrawType="SingleColor"> gold </LineColor>
+      </ColumnLine>
+
+      <ColumnLine>
+        <SlhaValue> MASS[36] </SlhaValue>
+        <LabelLatex> $A_{h1}$ </LabelLatex>
+        <LabelSide> left </LabelSide>
+        <LineColor DrawType="SingleColor"> gold </LineColor>
+      </ColumnLine>
+
+      <ColumnLine>
+        <SlhaValue> MASS[37] </SlhaValue>
+        <LabelLatex> $H_{1}^{\pm}$ </LabelLatex>
+        <LabelSide> right </LabelSide>
+        <LineColor DrawType="SingleColor"> orange-red </LineColor>
+      </ColumnLine>
+
+    </ColumnDefinition>
+
+    <!-- Up-type squarks. -->
+    <ColumnDefinition>
+
+      <ColumnLine>
+        <SlhaValue> MASS[1000002] </SlhaValue>
+        <LabelLatex> ${\tilde{u}}_{1}$ </LabelLatex>
+        <LabelSide> right </LabelSide>
+        <LineColor DrawType="ColoredSegments">
+          <LineSegment>
+            <SegmentColor> green </SegmentColor>
+            <ColorWeight RaiseToPower="2"> USQMIX[1, 1] </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> transparent </SegmentColor>
+            <ColorWeight RaiseToPower="2"> USQMIX[1, 2] </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> cyan </SegmentColor>
+            <ColorWeight RaiseToPower="2"> USQMIX[1, 3] </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> blue </SegmentColor>
+            <ColorWeight RaiseToPower="2"> USQMIX[1, 4] </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> purple </SegmentColor>
+            <ColorWeight RaiseToPower="2"> USQMIX[1, 5] </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> red </SegmentColor>
+            <ColorWeight RaiseToPower="2"> USQMIX[1, 6] </ColorWeight>
+          </LineSegment>
+        </LineColor>
+      </ColumnLine>
+
+      <ColumnLine>
+        <SlhaValue> MASS[1000004] </SlhaValue>
+        <LabelLatex> ${\tilde{u}}_{2}$ </LabelLatex>
+        <LabelSide> right </LabelSide>
+        <LineColor DrawType="ColoredSegments">
+          <LineSegment>
+            <SegmentColor> green </SegmentColor>
+            <ColorWeight RaiseToPower="2"> 1 </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> turquoise </SegmentColor>
+            <ColorWeight RaiseToPower="2"> 2 </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> transparent </SegmentColor>
+            <ColorWeight RaiseToPower="2"> 3 </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> blue </SegmentColor>
+            <ColorWeight RaiseToPower="2"> 4 </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> purple </SegmentColor>
+            <ColorWeight RaiseToPower="2"> 0 </ColorWeight>
+          </LineSegment>
+          <LineSegment>
+            <SegmentColor> red </SegmentColor>
+            <ColorWeight RaiseToPower="2"> 0 </ColorWeight>
+          </LineSegment>
+        </LineColor>
+      </ColumnLine>
+
+    </ColumnDefinition>
+
+  </ColumnDefinitions>
+
+</LhpcSpectrumPlottingControl>

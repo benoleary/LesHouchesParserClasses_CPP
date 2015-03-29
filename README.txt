@@ -42,14 +42,23 @@
  ps2eps (or ps2epsi).
 
  Running make on the makefile included will compile the library
- (LHPC/lib/libLHPC.a) and 4 executables (LHPC/bin/LhpcSpectrumPlotter.exe,
- LHPC/bin/LhefParserExample.exe, LHPC/bin/LhcoParserExample.exe, and
- LHPC/bin/SlhaParserExample.exe). The executables can be run with test input
- files in the LHPC/bin/testing directory.
+ (LHPC/lib/libLHPC.a) and 5 executables (LHPC/bin/LhpcSlhaValuePlotter.exe,
+ LHPC/bin/LhpcSpectrumPlotter.exe, LHPC/bin/LhefParserExample.exe,
+ LHPC/bin/LhcoParserExample.exe, and LHPC/bin/SlhaParserExample.exe). The
+ executables can be run with test input files in the LHPC/bin/testing
+ directory.
 
 
 
-** SLHA spectrum plotter
+** SLHA value plotter
+ As mentioned above, running make will produce LhpcSlhaValuePlotter.exe, which
+ can be run without any arguments to show further information on how to use it.
+ Please ensure that the paths in the <GeneralControls> element are correct! The
+ paths in the example LHPC/bin/testing/LhpcSpectrumPlottingControl.xml use
+ the paths that seem to me to be the 'standard' Linux paths.
+
+** SLHA spectrum plotter (superceded by SLHA value plotter, but kept for
+                          compatibility)
  As mentioned above, running make will produce LhpcSpectrumPlotter.exe, which
  can be run without any arguments to show further information on how to use it.
  Please ensure that the paths in the control block are correct! The paths in
@@ -240,6 +249,12 @@
 
 
 CHANGELOG:
+ * 29th March 2015: version 0.8.9
+ - added LhpcSlhaValuePlotter and requisite classes to expand on functionality
+   of LhpcSpectrumPlotter, using XML for the input, allowing for any SLHA value
+   (not just those in the MASS or FMASS blocks) to be plotted, also with
+   several colors per line if required.
+   
  * 24th June 2014: version 0.8.8
  - updated to version 0.5.1 BOLlib (added extra functionality to
    TwoDimensionalDataPlotter).
@@ -299,7 +314,7 @@ CHANGELOG:
  - added example use of the StandardPreselector class and derived classes to
    LhefParserExample.cpp example.
  - update Makefile and READMEs.
- 
+
  * 15th January 2013: version 0.7.5
  - fixed SlhaSimplisticInterpreter::operator( std::string blockNameAndIndices )
    to correctly return an empty string if given the name of a block that does
@@ -558,6 +573,11 @@ The C++ files of LesHouchesParserClasses are:
  ParticleCodesAndDataClasses/PdgData.hpp
  ParticleCodesAndDataClasses/SevenDigitSlhaCodes.hpp
  SlhaSpectrumPlottingClasses/LineData.hpp
+ SlhaSpectrumPlottingClasses/SlhaValueColoredSegments.hpp
+ SlhaSpectrumPlottingClasses/SlhaValueLineColoring.hpp
+ SlhaSpectrumPlottingClasses/SlhaValuePlotLine.hpp
+ SlhaSpectrumPlottingClasses/SlhaValuePlotter.hpp
+ SlhaSpectrumPlottingClasses/SlhaValueSingleColor.hpp
  SlhaSpectrumPlottingClasses/SpectrumDrawer.hpp
  SusyLesHouchesAccordClasses/BlockClasses.hpp
  SusyLesHouchesAccordClasses/BlockTypes.hpp
@@ -644,6 +664,11 @@ The C++ files of LesHouchesParserClasses are:
  ParticleCodesAndDataClasses/PdgData.cpp
  ParticleCodesAndDataClasses/SevenDigitSlhaCodes.cpp
  SlhaSpectrumPlottingClasses/LineData.cpp
+ SlhaSpectrumPlottingClasses/SlhaValueColoredSegments.cpp
+ SlhaSpectrumPlottingClasses/SlhaValueLineColoring.cpp
+ SlhaSpectrumPlottingClasses/SlhaValuePlotLine.cpp
+ SlhaSpectrumPlottingClasses/SlhaValuePlotter.cpp
+ SlhaSpectrumPlottingClasses/SlhaValueSingleColor.cpp
  SlhaSpectrumPlottingClasses/SpectrumDrawer.cpp
  SusyLesHouchesAccordClasses/FlavorObservable.cpp
  SusyLesHouchesAccordClasses/FlavorObservableError.cpp
@@ -661,6 +686,7 @@ The C++ files of LesHouchesParserClasses are:
    - InterpreterClasses/LinesAsStrings.cpp
  LhcoParserExample.cpp
  LhefParserExample.cpp
+ LhpcSlhaValuePlotter.cpp
  LhpcSpectrumPlotter.cpp
  SlhaParserExample.cpp
  
@@ -669,11 +695,14 @@ The C++ files of LesHouchesParserClasses are:
  and README.LHPC_CPP.txt which describes the package (copied as README.txt).
  The files of BOLlib are also included, and are described in
  BOLlib/README.BOLlib.txt.
- The makefile creates four executables in LHPC/bin/:
- LhcoParserExample.exe, a demonstration of the LHCO parser
- LhefParserExample.exe, a demonstration of the LHEF parser
+ The makefile creates five executables in LHPC/bin/:
+ LhcoParserExample.exe, a demonstration of the LHCO parser;
+ LhefParserExample.exe, a demonstration of the LHEF parser;
+ LhpcSlhaValuePlotter.exe, a program that uses gnuplot to plot values from
+                           blocks in an SLHA file;
  LhpcSpectrumPlotter.exe, a program that uses gnuplot to plot a mass spectrum
-                          from an SLHA file
+                          from an SLHA file (obsoleted by
+                          LhpcSlhaValuePlotter.exe);
  SlhaParserExample.exe, a demonstration of the SLHA parser.
  
  

@@ -12,7 +12,7 @@
 
 SHELL=/bin/sh
 
-CC=g++ -g
+CC=g++
 CCOBJFLAGS=-c -Wall -O3 -I./include/
 CCEXEFLAGS=-Wall -O3 -I./include/
 AR=ar

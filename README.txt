@@ -240,6 +240,10 @@
 
 
 CHANGELOG:
+* 19th October 2015: version 0.8.10
+ - fixed bug in LhefEvent class, where getEventWeight was returning eventId
+   instead of eventWeight.
+
  * 24th June 2014: version 0.8.8
  - updated to version 0.5.1 BOLlib (added extra functionality to
    TwoDimensionalDataPlotter).

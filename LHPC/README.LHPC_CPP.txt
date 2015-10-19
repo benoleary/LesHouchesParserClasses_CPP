@@ -249,6 +249,10 @@
 
 
 CHANGELOG:
+* 19th October 2015: version 0.8.10
+ - fixed bug in LhefEvent class, where getEventWeight was returning eventId
+   instead of eventWeight.
+
  * 29th March 2015: version 0.8.9
  - added LhpcSlhaValuePlotter and requisite classes to expand on functionality
    of LhpcSpectrumPlotter, using XML for the input, allowing for any SLHA value

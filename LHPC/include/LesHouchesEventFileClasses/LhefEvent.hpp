@@ -148,7 +148,7 @@ namespace LHPC
     inline double
     LhefEvent::getEventWeight() const
     {
-      return eventId;
+      return eventWeight;
     }
 
     inline double

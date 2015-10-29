@@ -24,40 +24,12 @@ namespace LHPC
   }
 
 
-  std::string
-  SlhaSimplisticInterpreter::operator()( std::string blockNameAndIndices )
+  std::string SlhaSimplisticInterpreter::getBlockEntry(
+                       SLHA::BlockClass::BaseStringBlock const& blockAsStrings,
+                                std::vector< int > const& indicesVector ) const
   {
     std::string returnString( "" );
-    BOL::StringParser::substituteCharacterWith( blockNameAndIndices,
-                                                '[',
-                                                ' ' );
-    BOL::StringParser::substituteCharacterWith( blockNameAndIndices,
-                                                ']',
-                                                ' ' );
-    BOL::StringParser::substituteCharacterWith( blockNameAndIndices,
-                                                '(',
-                                                ' ' );
-    BOL::StringParser::substituteCharacterWith( blockNameAndIndices,
-                                                ')',
-                                                ' ' );
-    std::string indicesString( "" );
-    std::string blockName( BOL::StringParser::substringToFirst(
-                         BOL::StringParser::trimFromFront( blockNameAndIndices,
-                                BOL::StringParser::whitespaceAndNewlineChars ),
-                                                                " ",
-                                                            &indicesString ) );
-    std::vector< int >
-    indicesVector( BOL::StringParser::stringToIntVector( indicesString ) );
-    SLHA::SameNameBlockSet*
-    blockPointer( slhaParser.getBlockAsStrings( blockName ) );
-    if( NULL == blockPointer )
-    {
-      return returnString;
-    }
-    SLHA::BlockClass::BaseStringBlock const&
-    blockAsStrings( (*blockPointer)[ 0 ] );
     BOL::VectorlikeArray< std::string > blockLine;
-
     for( int whichLine( blockAsStrings.getNumberOfBodyLines() );
          0 < whichLine;
          --whichLine )
@@ -67,10 +39,10 @@ namespace LHPC
                                       blockLine,
                                       BOL::StringParser::whitespaceChars );
       bool indicesMatch( false );
-      if( blockLine.getSize() > (int)(indicesVector.size()) )
+      if( blockLine.getSize() > static_cast< int >( indicesVector.size() ) )
       {
         indicesMatch = true;
-        for( unsigned int whichIndex( 0 );
+        for( size_t whichIndex( 0 );
              indicesVector.size() > whichIndex;
              ++whichIndex )
         {
@@ -84,7 +56,7 @@ namespace LHPC
       }
       if( indicesMatch )
       {
-        for( int whichReturnWord( indicesVector.size() );
+        for( int whichReturnWord( static_cast< int >( indicesVector.size() ) );
              blockLine.getSize() > whichReturnWord;
              ++whichReturnWord )
         {

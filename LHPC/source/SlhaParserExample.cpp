@@ -202,6 +202,21 @@ main( int argumentCount,
     << "\"" << blockNameAndIndices << "\" => \""
     << slhaSimplisticInterpreter( blockNameAndIndices ) << "\"";
     std::cout << std::endl;
+    std::cout
+    << "At given scales: \"" << blockNameAndIndices << "\" => \"";
+    std::list< std::pair< double, std::string > > const
+    scalesWithStrings( slhaSimplisticInterpreter.getScalesPairedWithValues(
+                                                       blockNameAndIndices ) );
+    for( std::list< std::pair< double, std::string > >::const_iterator
+         scaleWithString( scalesWithStrings.begin() );
+         scaleWithString != scalesWithStrings.end();
+         ++scaleWithString )
+    {
+      std::cout
+      << "{scale " << scaleWithString->first
+      << ", value \"" << scaleWithString->second << "\"} ";
+    }
+    std::cout << std::endl;
     blockNameAndIndices.assign( "MASS[ 1.000021E+06 ]" );
     std::cout
     << "\"" << blockNameAndIndices << "\" => \""

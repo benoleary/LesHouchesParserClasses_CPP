@@ -240,6 +240,11 @@
 
 
 CHANGELOG:
+* 29th October 2015: version 0.8.11
+ - added SlhaSimplisticInterpreter::getScalesPairedWithValues to return a list
+   of scales paired with values (in the same order as that in which they were
+   read).
+
 * 19th October 2015: version 0.8.10
  - fixed bug in LhefEvent class, where getEventWeight was returning eventId
    instead of eventWeight.

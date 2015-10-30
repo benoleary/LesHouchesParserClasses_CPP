@@ -9,6 +9,14 @@
 
 namespace LHPC
 {
+  SlhaSimplisticInterpreter::SlhaSimplisticInterpreter() :
+      slhaParser( true,
+                  false ),
+      stringParser()
+  {
+    // This constructor is just an initialization list.
+  }
+
   SlhaSimplisticInterpreter::SlhaSimplisticInterpreter(
                                             std::string const& slhaFilename ) :
       slhaParser( true,

@@ -28,6 +28,7 @@ namespace LHPC
   class SlhaSimplisticInterpreter
   {
   public:
+    SlhaSimplisticInterpreter();
     SlhaSimplisticInterpreter( std::string const& slhaFilename );
     ~SlhaSimplisticInterpreter();
 

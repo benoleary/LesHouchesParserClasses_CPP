@@ -19,7 +19,8 @@
 #include <string>
 #include <map>
 #include <stdexcept>
-#include "ParsingUtilities.hpp"
+
+#include "Utilities/ParsingUtilities.hpp"
 
 namespace LHPC
 {
@@ -130,6 +131,11 @@ namespace LHPC
     // This returns the body of the element just read by the last call of
     // ReadNextElement().
     std::string const& CurrentBody() { return currentBody; }
+
+    // This returns a string which is the current body with leading and
+    // trailing whitespace and newline characters removed.
+    std::string TrimmedCurrentBody() const
+    { return ParsingUtilities::TrimWhitespaceFromFrontAndBack( currentBody ); }
 
     // This returns the text of the file opened by OpenRootElementOfFile(...)
     // or ReadAllOfRootElementOfFile(...) up to the beginning of the root
@@ -1008,6 +1014,7 @@ namespace LHPC
     }
     nameDestination = nameStream.str();
   }
+
 }
 
 #endif /* RESTRICTEDXMLPARSER_HPP_ */

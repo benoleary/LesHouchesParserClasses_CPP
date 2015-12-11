@@ -21,7 +21,6 @@
 #include <utility>
 #include <list>
 #include <stdexcept>
-
 #include "Utilities/ParsingUtilities.hpp"
 
 namespace LHPC
@@ -499,6 +498,9 @@ namespace LHPC
   }
 
 
+
+
+
   // This examines each line to see if it starts with the given indices, and
   // then returns the rest of the first line which matches the indices
   // (without the indices). If no match is found, and empty string is
@@ -521,6 +523,9 @@ namespace LHPC
     }
     return "";
   }
+
+
+
 
 
   // This adds a LhaBlockAtSingleScale to blocksInReadOrder without an
@@ -581,6 +586,9 @@ namespace LHPC
       }
     }
   }
+
+
+
 
 
   // This splits a string in the format of block name followed by whitespace

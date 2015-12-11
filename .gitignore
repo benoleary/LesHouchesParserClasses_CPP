@@ -617,3 +617,4 @@ LHPC_CPP/libLHPC_CPP.a
 *.o
 
 *.mk
+/Debug/

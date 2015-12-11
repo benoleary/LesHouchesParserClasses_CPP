@@ -237,9 +237,20 @@
  by indices, and returns the string following matched indices in the block, if
  any are found. It is, however, quite inefficient compared to the above, since
  it involves lots of string interpretation with every search.
+ (There is also now a very similar class: SimpleLhaParser. This behaves in the
+ same way, but is only a header file, and requires only
+ Utilities/ParsingUtilities.hpp to be present as well.)
 
 
 CHANGELOG:
+* 11th December 2015: version 0.8.13
+ - added SimpleLhaParser class, and various utility classes in Utilities
+   folder.
+
+* 30th October 2015: version 0.8.12
+ - added SlhaSimplisticInterpreter constructor which does not try to open a
+   file straight away.
+
 * 29th October 2015: version 0.8.11
  - added SlhaSimplisticInterpreter::getScalesPairedWithValues to return a list
    of scales paired with values (in the same order as that in which they were

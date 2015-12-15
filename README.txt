@@ -243,6 +243,14 @@
 
 
 CHANGELOG:
+* 15th December 2015: version 0.8.14
+ - added functionality to SimpleLhaParser so that decays are recorded.
+ - added functionality to ParsingUtilities so that doubles can be printed in
+   the format specified in the SLHA1 paper.
+ - fixed bug in SimpleLhaParser, where it was holding the blocks from every
+   file read in, instead of dropping the old blocks before reading in the new
+   file.
+
 * 11th December 2015: version 0.8.13
  - added SimpleLhaParser class, and various utility classes in Utilities
    folder.

@@ -20,7 +20,7 @@ namespace BOL
   FilePlaceholderManager::FilePlaceholderManager(
                                                  std::string const inputSuffix,
                                            std::string const placeholderSuffix,
-                                              std::string const outputSuffix ):
+                                             std::string const outputSuffix ) :
     inputSuffix( inputSuffix ),
     placeholderSuffix( placeholderSuffix ),
     outputSuffix( outputSuffix ),
